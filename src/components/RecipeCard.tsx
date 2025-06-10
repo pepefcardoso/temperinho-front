@@ -2,93 +2,118 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Clock, Users, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Heart, Clock, Users } from 'lucide-react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface Recipe {
-    id: string;
-    title: string;
-    image: string;
-    prepTime: string;
-    servings: number;
-    difficulty: string;
-    dietaryTags: string[];
-}
+import type { Recipe, DietaryTag, Difficulty } from '@/types/recipe';
+import { cn } from '@/lib/utils';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
-interface RecipeCardProps {
+const StatIcon = ({ icon: Icon, children }: { icon: React.ElementType, children: React.ReactNode }) => (
+    <div className="flex items-center" title={String(children)}>
+        <Icon className="h-4 w-4 mr-1.5 text-muted-foreground" />
+        <span className="text-sm text-foreground">{children}</span>
+    </div>
+);
+
+const variantsConfig = {
+    variant: {
+        default: "bg-muted text-muted-foreground border-border",
+        vegan: "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800",
+        'gluten-free': "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-800",
+        'lactose-free': "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/50 dark:text-purple-300 dark:border-purple-800",
+        vegetarian: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/50 dark:text-emerald-300 dark:border-emerald-800",
+        'low-fodmap': "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:border-orange-800",
+        'keto': "bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-900/50 dark:text-slate-300 dark:border-slate-800",
+    }
+};
+
+const dietaryTagVariants = cva(
+    "inline-block px-2.5 py-1 text-xs font-medium rounded-full border",
+    { variants: variantsConfig, defaultVariants: { variant: "default" } }
+);
+
+const difficultyStyles: Record<Difficulty, string> = {
+    'Fácil': 'text-primary',
+    'Médio': 'text-amber-500',
+    'Difícil': 'text-destructive',
+};
+
+const cardVariants = cva(
+    "bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-border",
+    {
+        variants: {
+            viewMode: {
+                grid: "group flex flex-col hover:-translate-y-1",
+                list: "flex flex-row items-center",
+            }
+        },
+        defaultVariants: { viewMode: "grid" }
+    }
+);
+
+interface RecipeCardProps extends VariantProps<typeof cardVariants> {
     recipe: Recipe;
-    onFavorite?: (recipeId: string) => void;
-    isFavorited?: boolean;
 }
 
-const getDietaryTagClass = (tag: string) => {
-    const baseClass = "px-2 py-1 text-xs font-medium rounded-full border";
-    switch (tag.toLowerCase()) {
-        case 'vegano': return `${baseClass} bg-green-100 text-green-800 border-green-200`;
-        case 'sem glúten': return `${baseClass} bg-blue-100 text-blue-800 border-blue-200`;
-        case 'sem lactose': return `${baseClass} bg-indigo-100 text-indigo-800 border-indigo-200`;
-        default: return `${baseClass} bg-gray-100 text-gray-800 border-gray-200`;
-    }
-};
+export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
+    const [isFavorited, setIsFavorited] = useLocalStorage(`favorite_${recipe.id}`, false);
 
-const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-        case 'Fácil': return 'text-green-600';
-        case 'Médio': return 'text-yellow-600';
-        case 'Difícil': return 'text-red-600';
-        default: return 'text-gray-600';
-    }
-};
+    const getTagVariant = (tag: DietaryTag) => {
+        const validVariants = Object.keys(variantsConfig.variant);
+        return validVariants.includes(tag) ? tag : 'default';
+    };
 
-const RecipeCard = ({ recipe, onFavorite, isFavorited = false }: RecipeCardProps) => {
     return (
-        <Link href={`/receitas/${recipe.id}`} className="block group recipe-card">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-                <div className="relative">
+        <div className={cn(cardVariants({ viewMode }))}>
+            <div className={cn("relative overflow-hidden flex-shrink-0", viewMode === 'grid' ? 'w-full h-48' : 'w-1/3 h-full max-w-48')}>
+                <Link href={`/receitas/${recipe.slug}`} aria-label={`Ver receita ${recipe.name}`}>
                     <Image
-                        src={recipe.image}
-                        alt={recipe.title}
-                        width={400}
-                        height={200}
-                        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                        src={recipe.imageUrl}
+                        alt={recipe.name}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                    <div className="absolute top-2 right-2">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => { e.preventDefault(); onFavorite?.(recipe.id); }}
-                            className={`rounded-full bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 ${isFavorited ? 'text-red-500 hover:text-red-600' : 'text-gray-600 hover:text-gray-800'
-                                }`}
-                        >
-                            <Heart className={`h-5 w-5 ${isFavorited ? 'fill-current' : ''}`} />
-                        </Button>
-                    </div>
+                </Link>
+                <button
+                    onClick={(e) => { e.preventDefault(); setIsFavorited(!isFavorited); }}
+                    aria-label={isFavorited ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+                    className={cn(
+                        "absolute top-3 right-3 h-9 w-9 grid place-items-center rounded-full bg-card/80 backdrop-blur-sm transition-colors duration-200 hover:bg-card",
+                        isFavorited ? "text-destructive" : "text-muted-foreground hover:text-foreground"
+                    )}
+                >
+                    <Heart className={cn("h-5 w-5 transition-all", isFavorited && "fill-destructive")} />
+                </button>
+            </div>
+
+            <div className={cn("p-4 flex flex-col space-y-3", viewMode === 'grid' ? 'flex-grow' : 'flex-1')}>
+                <div className="flex flex-wrap gap-2">
+                    {recipe.dietaryTags.slice(0, viewMode === 'grid' ? 2 : 3).map((tag) => (
+                        <span key={tag} className={dietaryTagVariants({ variant: getTagVariant(tag) as DietaryTag })}>
+                            {tag}
+                        </span>
+                    ))}
                 </div>
-
-                <div className="p-4 space-y-3">
-                    <h3 className="font-semibold text-lg text-warm-900 line-clamp-2 group-hover:text-sage-700 transition-colors">
-                        {recipe.title}
-                    </h3>
-
-                    <div className="flex flex-wrap gap-2">
-                        {recipe.dietaryTags.slice(0, 3).map((tag, index) => (
-                            <span key={index} className={getDietaryTagClass(tag)}>
-                                {tag}
-                            </span>
-                        ))}
+                <h3 className={cn("font-display font-bold text-foreground group-hover:text-primary transition-colors", viewMode === 'grid' ? 'text-xl line-clamp-2 flex-grow' : 'text-lg line-clamp-1')}>
+                    <Link href={`/receitas/${recipe.slug}`}>{recipe.name}</Link>
+                </h3>
+                {viewMode === 'list' && (
+                    <p className="text-muted-foreground text-sm line-clamp-2">{recipe.description}</p>
+                )}
+                <div className="flex items-center justify-between text-sm pt-3 border-t border-border mt-auto">
+                    <div className="flex items-center space-x-4">
+                        <StatIcon icon={Clock}>{recipe.prepTimeMinutes} min</StatIcon>
+                        <StatIcon icon={Users}>{recipe.servings}</StatIcon>
                     </div>
-
-                    <div className="flex items-center justify-between text-sm text-warm-600 pt-3 border-t border-warm-200">
-                        <div className="flex items-center space-x-4">
-                            <div className="flex items-center"><Clock className="h-4 w-4 mr-1" />{recipe.prepTime}</div>
-                            <div className="flex items-center"><Users className="h-4 w-4 mr-1" />{recipe.servings}</div>
+                    {recipe.difficulty && (
+                        <div className={cn("font-bold", difficultyStyles[recipe.difficulty])}>
+                            {recipe.difficulty}
                         </div>
-                        <div className={`font-medium ${getDifficultyColor(recipe.difficulty)}`}>{recipe.difficulty}</div>
-                    </div>
+                    )}
                 </div>
             </div>
-        </Link>
+        </div>
     );
-};
-
-export default RecipeCard;
+}

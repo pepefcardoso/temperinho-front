@@ -1,46 +1,83 @@
-import { ExternalLink } from 'lucide-react';
+import { Image as ImageIcon } from 'lucide-react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
-interface AdBannerProps {
-    size?: 'small' | 'medium' | 'large';
-    position?: 'top' | 'middle' | 'bottom' | 'sidebar';
+const adBannerVariants = cva(
+    "flex items-center justify-center rounded-xl transition-all duration-300 group",
+    {
+        variants: {
+            variant: {
+                placeholder: "bg-muted/30 border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/50 text-muted-foreground",
+                image: "bg-card overflow-hidden",
+            },
+            size: {
+                small: "h-24 md:h-28",
+                medium: "h-32 md:h-40",
+                large: "h-40 md:h-56",
+            },
+            layout: {
+                full: "w-full",
+                sidebar: "max-w-xs w-full",
+            }
+        },
+        defaultVariants: {
+            variant: "placeholder",
+            size: "medium",
+            layout: "full",
+        },
+    }
+);
+
+export interface AdBannerProps extends Omit<VariantProps<typeof adBannerVariants>, 'variant'> {
+    href: string;
+    imageUrl?: string;
+    altText?: string;
     className?: string;
 }
 
-const AdBanner = ({ size = 'medium', position = 'middle', className = '' }: AdBannerProps) => {
-    const getSizeClasses = () => {
-        switch (size) {
-            case 'small':
-                return 'h-20 md:h-24';
-            case 'large':
-                return 'h-32 md:h-40';
-            default:
-                return 'h-24 md:h-32';
-        }
-    };
+const PlaceholderContent = () => (
+    <div className="text-center">
+        <ImageIcon className="h-6 w-6 mx-auto mb-2 transition-colors group-hover:text-primary" />
+        <p className="text-sm font-medium transition-colors group-hover:text-primary">
+            Espaço Publicitário
+        </p>
+        <p className="text-xs">Clique para saber mais</p>
+    </div>
+);
 
-    const getPositionClasses = () => {
-        switch (position) {
-            case 'sidebar':
-                return 'max-w-xs';
-            default:
-                return 'max-w-4xl mx-auto';
-        }
-    };
+const AdBanner = ({
+    size,
+    layout,
+    className,
+    href,
+    imageUrl,
+    altText = "Anúncio publicitário"
+}: AdBannerProps) => {
+
+    const hasImage = imageUrl && href;
+    const finalVariant = hasImage ? 'image' : 'placeholder';
 
     return (
-        <div className={`${getPositionClasses()} ${className}`}>
-            <div className={`${getSizeClasses()} bg-gradient-to-r from-warm-100 to-sage-100 border-2 border-dashed border-warm-300 rounded-xl flex items-center justify-center text-warm-600 hover:border-sage-400 transition-colors duration-200 group cursor-pointer`}>
-                <div className="text-center">
-                    <ExternalLink className="h-6 w-6 mx-auto mb-2 group-hover:text-sage-600 transition-colors" />
-                    <p className="text-sm font-medium group-hover:text-sage-600 transition-colors">
-                        Espaço Publicitário
-                    </p>
-                    <p className="text-xs text-warm-500">
-                        {position === 'sidebar' ? 'Banner Lateral' : 'Banner Principal'}
-                    </p>
-                </div>
-            </div>
-        </div>
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            aria-label={altText}
+            className={cn(adBannerVariants({ variant: finalVariant, size, layout }), className)}
+        >
+            {hasImage ? (
+                <Image
+                    src={imageUrl}
+                    alt={altText}
+                    width={layout === 'sidebar' ? 320 : 1024}
+                    height={size === 'small' ? 90 : (size === 'medium' ? 150 : 250)}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+            ) : (
+                <PlaceholderContent />
+            )}
+        </a>
     );
 };
 
