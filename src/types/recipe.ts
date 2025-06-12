@@ -36,6 +36,7 @@ export interface Recipe {
   imageUrl: string;
   servings: string;
   difficulty: Difficulty;
+  category?: string;
   dietaryTags: DietaryTag[];
   prepTimeMinutes: number;
   cookTimeMinutes: number;
@@ -44,10 +45,9 @@ export interface Recipe {
   reviewCount: number;
   author: Author;
   ingredients: Ingredient[];
-  instructions: string[];
+  instructions: { text: string }[];
   tips?: string[];
   nutritionalInfo?: NutritionalInfo;
-  category?: string;
 }
 
 export interface FilterConfig {
