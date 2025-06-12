@@ -47,6 +47,7 @@ export interface Recipe {
   instructions: string[];
   tips?: string[];
   nutritionalInfo?: NutritionalInfo;
+  category?: string;
 }
 
 export interface FilterConfig {

@@ -3,7 +3,11 @@ import { Post } from "./blog";
 import type { DietaryTag, Recipe } from "./recipe";
 
 // O restante dos tipos permanece o mesmo.
-export type ExperienceLevel = 'iniciante' | 'intermediario' | 'avancado' | 'profissional';
+export type ExperienceLevel =
+  | "iniciante"
+  | "intermediario"
+  | "avancado"
+  | "profissional";
 
 export interface UserProfile {
   id: string;
@@ -21,12 +25,20 @@ export interface UserProfile {
 }
 
 export interface UserManagedRecipe extends Recipe {
-  status: 'publicado' | 'rascunho' | 'pendente';
+  status: "publicado" | "rascunho" | "pendente";
   views: number;
   likes: number;
 }
 
 export interface UserManagedPost extends Post {
-  status: 'publicado' | 'rascunho' | 'pendente';
+  status: "publicado" | "rascunho" | "pendente";
   views: number;
+}
+
+export interface UserFavoritePost extends Post {
+  favoritedAt: string;
+}
+
+export interface UserFavoriteRecipe extends Recipe {
+  favoritedAt: string;
 }
