@@ -24,24 +24,29 @@ export const dummyRecipes: Recipe[] = [
     prepTimeMinutes: 15,
     cookTimeMinutes: 20,
     totalTime: "35 min",
-    servings: "2 porções", // CORREÇÃO: number para string
+    servings: "2 porções",
     difficulty: "Fácil",
+    category: "Saladas",
     rating: 4.8,
     reviewCount: 132,
     dietaryTags: ["vegan", "gluten-free", "vegetarian"],
     author: authorAna,
     ingredients: [
-      // CORREÇÃO: 'amount' -> 'quantity', 'name' -> 'item'
       { quantity: "1 xícara", item: "Quinoa cozida" },
       { quantity: "1", item: "Abobrinha em rodelas" },
       { quantity: "1", item: "Pimentão vermelho em tiras" },
       { quantity: "1/4 xícara", item: "Azeite de oliva" },
     ],
+    // CORREÇÃO: Cada instrução agora é um objeto { text: "..." }
     instructions: [
-      "Tempere os legumes com azeite, sal e pimenta.",
-      "Grelhe a abobrinha e o pimentão em uma frigideira quente até ficarem macios e com marcas de grelhado.",
-      "Em uma tigela grande, misture a quinoa cozida com os legumes grelhados.",
-      "Sirva imediatamente ou guarde na geladeira.",
+      { text: "Tempere os legumes com azeite, sal e pimenta." },
+      {
+        text: "Grelhe a abobrinha e o pimentão em uma frigideira quente até ficarem macios e com marcas de grelhado.",
+      },
+      {
+        text: "Em uma tigela grande, misture a quinoa cozida com os legumes grelhados.",
+      },
+      { text: "Sirva imediatamente ou guarde na geladeira." },
     ],
     tips: [
       "Adicione um punhado de folhas de hortelã fresca para um sabor extra.",
@@ -65,8 +70,9 @@ export const dummyRecipes: Recipe[] = [
     prepTimeMinutes: 10,
     cookTimeMinutes: 30,
     totalTime: "40 min",
-    servings: "4 porções", // CORREÇÃO: number para string
+    servings: "4 porções",
     difficulty: "Fácil",
+    category: "Sopas",
     rating: 4.7,
     reviewCount: 205,
     dietaryTags: ["vegan", "gluten-free"],
@@ -80,10 +86,16 @@ export const dummyRecipes: Recipe[] = [
       { quantity: "4 xícaras", item: "Caldo de legumes" },
     ],
     instructions: [
-      "Em uma panela grande, refogue a cebola, cenoura e aipo em um fio de azeite até ficarem macios.",
-      "Adicione as lentilhas e o caldo de legumes. Deixe ferver e cozinhe em fogo baixo por cerca de 20 minutos.",
-      "Adicione o espinafre e cozinhe por mais 5 minutos, até as folhas murcharem.",
-      "Tempere com sal, pimenta e sirva quente.",
+      {
+        text: "Em uma panela grande, refogue a cebola, cenoura e aipo em um fio de azeite até ficarem macios.",
+      },
+      {
+        text: "Adicione as lentilhas e o caldo de legumes. Deixe ferver e cozinhe em fogo baixo por cerca de 20 minutos.",
+      },
+      {
+        text: "Adicione o espinafre e cozinhe por mais 5 minutos, até as folhas murcharem.",
+      },
+      { text: "Tempere com sal, pimenta e sirva quente." },
     ],
     tips: [
       "Adicione uma colher de iogurte de coco ao servir para um toque cremoso.",
@@ -107,8 +119,9 @@ export const dummyRecipes: Recipe[] = [
     prepTimeMinutes: 10,
     cookTimeMinutes: 30,
     totalTime: "40 min",
-    servings: "8 fatias", // CORREÇÃO: number para string
+    servings: "8 fatias",
     difficulty: "Médio",
+    category: "Sobremesas",
     rating: 4.9,
     reviewCount: 310,
     dietaryTags: ["gluten-free", "vegetarian"],
@@ -121,10 +134,14 @@ export const dummyRecipes: Recipe[] = [
       { quantity: "1 colher de chá", item: "Fermento em pó" },
     ],
     instructions: [
-      "Pré-aqueça o forno a 180°C e unte uma forma de bolo.",
-      "Em uma tigela, misture as bananas amassadas, os ovos e o mel.",
-      "Adicione a farinha de amêndoas e o fermento, e misture até incorporar.",
-      "Despeje a massa na forma e asse por 30-35 minutos, ou até um palito sair limpo.",
+      { text: "Pré-aqueça o forno a 180°C e unte uma forma de bolo." },
+      { text: "Em uma tigela, misture as bananas amassadas, os ovos e o mel." },
+      {
+        text: "Adicione a farinha de amêndoas e o fermento, e misture até incorporar.",
+      },
+      {
+        text: "Despeje a massa na forma e asse por 30-35 minutos, ou até um palito sair limpo.",
+      },
     ],
     tips: [
       "Adicione nozes picadas ou gotas de chocolate à massa para mais textura.",
@@ -137,5 +154,4 @@ export const dummyRecipes: Recipe[] = [
       fibras: "5g",
     },
   },
-  // ... adicione mais receitas completas conforme necessário
 ];

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Recipe, Ingredient } from '@/types/recipe';
+import type { Recipe } from '@/types/recipe';
 import { cn } from '@/lib/utils';
 import { Lightbulb } from 'lucide-react';
-import AdBanner from './AdBanner';
+import AdBanner from '@/components/AdBanner'; // Corrigido o caminho de importação
 
 interface RecipeContentProps {
     recipe: Recipe;
@@ -25,39 +25,43 @@ export function RecipeContent({ recipe }: RecipeContentProps) {
                         {recipe.tips && recipe.tips.length > 0 && <TabsTrigger value="tips">Dicas</TabsTrigger>}
                     </TabsList>
 
+                    {/* Tab de Ingredientes */}
                     <TabsContent value="ingredients">
                         <div className="bg-card rounded-xl p-6 shadow-sm border">
                             <h3 className="text-xl font-semibold text-foreground mb-6">Ingredientes para {recipe.servings}</h3>
-                            <div className="space-y-4">
-                                {recipe.ingredients.map((ing: Ingredient, index: number) => (
-                                    <div key={index} className="flex items-start justify-between p-3 bg-muted rounded-lg border">
+                            <ul className="space-y-4">
+                                {recipe.ingredients.map((ing, index) => (
+                                    <li key={index} className="flex items-start justify-between p-3 bg-muted rounded-lg border">
                                         <div>
                                             <span className="font-medium text-foreground">{ing.quantity}</span>
                                             <span className="ml-2 text-foreground/80">{ing.item}</span>
                                             {ing.notes && (<p className="text-sm text-muted-foreground mt-1 italic">{ing.notes}</p>)}
                                         </div>
-                                    </div>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         </div>
                     </TabsContent>
 
+                    {/* Tab de Modo de Preparo */}
                     <TabsContent value="instructions">
                         <div className="bg-card rounded-xl p-6 shadow-sm border">
                             <h3 className="text-xl font-semibold text-foreground mb-6">Modo de Preparo</h3>
                             <div className="space-y-4">
-                                {recipe.instructions.map((step: string, index: number) => (
+                                {/* CORREÇÃO: O map agora espera um objeto 'step' e acessa 'step.text' */}
+                                {recipe.instructions.map((step, index) => (
                                     <div key={index} className={cn('flex items-start space-x-4 p-4 rounded-lg transition-colors cursor-pointer', currentStep === index ? 'bg-primary/10 border-l-4 border-primary' : 'bg-muted hover:bg-muted/80')} onClick={() => setCurrentStep(index)}>
                                         <div className={cn('flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors', currentStep === index ? 'bg-primary text-primary-foreground' : 'bg-border text-foreground')}>
                                             {index + 1}
                                         </div>
-                                        <p className="text-foreground/90 leading-relaxed pt-1">{step}</p>
+                                        <p className="text-foreground/90 leading-relaxed pt-1">{step.text}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </TabsContent>
 
+                    {/* Tab Nutricional */}
                     {recipe.nutritionalInfo && (
                         <TabsContent value="nutrition">
                             <div className="bg-card rounded-xl p-6 shadow-sm border">
@@ -74,6 +78,7 @@ export function RecipeContent({ recipe }: RecipeContentProps) {
                         </TabsContent>
                     )}
 
+                    {/* Tab de Dicas */}
                     {recipe.tips && recipe.tips.length > 0 && (
                         <TabsContent value="tips">
                             <div className="bg-card rounded-xl p-6 shadow-sm border">
@@ -92,7 +97,9 @@ export function RecipeContent({ recipe }: RecipeContentProps) {
                         </TabsContent>
                     )}
                 </Tabs>
-                <div className="my-12"><AdBanner href="/anuncie" layout="full" /></div>
+                <div className="my-12">
+                    <AdBanner href="/anuncie" layout="full" />
+                </div>
             </div>
         </section>
     );

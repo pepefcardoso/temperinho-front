@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Edit, Trash2, Eye, Heart, Clock, Users } from 'lucide-react';
+import { Edit, Trash2, Eye, Heart, Clock } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 import { toast } from 'sonner';
 
