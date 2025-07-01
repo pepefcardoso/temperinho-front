@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Camera, Save, Loader2, Edit, User } from 'lucide-react';
 
-import type { UserProfile } from '@/types/user';
+import type { User } from '@/types/user';
 import type { DietaryTag } from '@/types/recipe';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,13 +44,13 @@ const specialtyButtonVariants = cva(
 );
 
 interface UserProfileFormProps {
-    user: UserProfile;
+    user: User;
 }
 
 export function UserProfileForm({ user }: UserProfileFormProps) {
     const [isEditing, setIsEditing] = React.useState(false);
 
-    const form = useForm<UserProfile>({
+    const form = useForm<User>({
         resolver: zodResolver(profileSchema),
         defaultValues: user,
     });
@@ -61,7 +61,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     const watchedEmail = watch("email");
     const watchedAvatar = watch("avatarUrl");
 
-    const onSubmit = async (data: UserProfile) => {
+    const onSubmit = async (data: User) => {
         const result = await updateUserProfile(data);
         if (result.success) {
             toast.success(result.message);

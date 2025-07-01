@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import type { UserProfile } from "@/types/user";
+import type { User } from "@/types/user";
 import { SPECIALTY_OPTIONS } from "@/lib/config/user-profile";
 import type { DietaryTag } from "@/types/recipe";
 
@@ -46,7 +46,7 @@ const profileSchema = z.object({
  * Recebe dados do formulário, valida no servidor e simula o salvamento.
  */
 export async function updateUserProfile(
-  data: UserProfile
+  data: User
 ): Promise<{ success: boolean; message: string }> {
   // 2. Valida os dados recebidos do cliente usando o schema Zod.
   const parsed = profileSchema.safeParse(data);
