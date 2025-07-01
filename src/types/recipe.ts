@@ -1,57 +1,63 @@
-export type DietaryTag =
-  | "vegan"
-  | "vegetarian"
-  | "gluten-free"
-  | "lactose-free"
-  | "keto"
-  | "low-fodmap";
+import { User } from "@/types/user";
 
-export type Difficulty = "Fácil" | "Médio" | "Difícil";
-
-export interface Ingredient {
-  quantity: string;
-  item: string;
-  notes?: string;
+interface Image {
+  id: number;
+  url: string;
 }
 
-export interface NutritionalInfo {
-  calorias: string;
-  proteínas: string;
-  carboidratos: string;
-  gorduras: string;
-  fibras?: string;
+export enum RecipeDifficultyEnum {
+  FACIL = 'Fácil',
+  MEDIO = 'Médio',
+  DIFICIL = 'Difícil',
 }
 
-export interface Author {
+export interface RecipeCategory {
+  id: number;
   name: string;
-  avatarUrl: string;
-  bio?: string;
+  normalized_name: string;
+}
+
+export interface RecipeDiet {
+  id: number;
+  name: string;
+  normalized_name: string;
+}
+
+export interface RecipeUnit {
+  id: number;
+  name: string;
+  normalized_name: string;
+}
+
+export interface RecipeIngredient {
+  id: number;
+  quantity: string;
+  name: string;
+  unit?: RecipeUnit;
+  unit_id: number;
+}
+
+export interface RecipeStep {
+  id: number;
+  order: number;
+  description: string;
 }
 
 export interface Recipe {
-  id: string;
-  slug: string;
-  name: string;
+  id: number;
+  title: string;
   description: string;
-  imageUrl: string;
-  servings: string;
-  difficulty: Difficulty;
-  category?: string;
-  dietaryTags: DietaryTag[];
-  prepTimeMinutes: number;
-  cookTimeMinutes: number;
-  totalTime: string;
-  rating: number;
-  reviewCount: number;
-  author: Author;
-  ingredients: Ingredient[];
-  instructions: { text: string }[];
-  tips?: string[];
-  nutritionalInfo?: NutritionalInfo;
-}
-
-export interface FilterConfig {
-  id: DietaryTag;
-  name: string;
-  icon: string;
+  time: number;
+  portion: number;
+  difficulty: RecipeDifficultyEnum;
+  user_id: number;
+  user?: User;
+  category_id: number;
+  category?: RecipeCategory;
+  diets?: RecipeDiet[];
+  steps?: RecipeStep[];
+  ingredients?: RecipeIngredient[];
+  image?: Image;
+  is_favorite?: boolean;
+  average_rating?: number;
 }

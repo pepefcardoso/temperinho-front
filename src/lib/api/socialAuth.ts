@@ -1,6 +1,6 @@
 import axiosClient from "../axios";
 
-type Provider = "google" | "github" | "facebook";
+export type Provider = "google" | "github" | "facebook";
 
 export const getSocialRedirectUrl = async (provider: Provider) => {
   const response = await axiosClient.get(`/api/auth/social/${provider}`);

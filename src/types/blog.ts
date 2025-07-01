@@ -1,20 +1,34 @@
-export type Author = {
-  name: string;
-  avatarUrl: string;
-};
+import { User } from "./user";
 
-export type Post = {
-  id: string;
-  slug: string;
+interface Image {
+  id: number;
+  url: string;
+}
+
+export interface PostCategory {
+  id: number;
+  name: string;
+  normalized_name: string;
+}
+
+export interface PostTopic {
+  id: number;
+  name: string;
+  normalized_name: string;
+}
+
+export interface Post {
+  id: number;
   title: string;
-  excerpt: string;
-  imageUrl: string;
-  content: string;
-  author: Author;
-  date: string;
-  category: string;
-  tags: string[];
-  readTimeInMinutes: number;
-  featured: boolean;
-  views: number;
-};
+  summary: string;
+  content?: string;
+  image?: Image;
+  author?: User;
+  category?: PostCategory;
+  topics?: PostTopic[];
+  average_rating?: number;
+  ratings_count?: number;
+  is_favorited?: boolean;
+  created_at: string;
+  updated_at?: string;
+}

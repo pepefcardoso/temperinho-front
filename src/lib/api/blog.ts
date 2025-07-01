@@ -1,56 +1,87 @@
-import { dummyBlogPosts } from "@/lib/dummy-data/blog";
-import { Post } from "@/types/blog";
+import axiosClient from "@/lib/axios";
+import { PaginatedResponse } from "@/types/api";
+import type { Post, PostCategory, PostTopic } from "@/types/blog";
 
-/**
- * Simula uma chamada de API para buscar os últimos posts do blog.
- */
-export async function getLatestPosts(limit: number = 3): Promise<Post[]> {
-  console.log("Fetching latest blog posts...");
-  await new Promise((resolve) => setTimeout(resolve, 300)); // Simula delay
-
-  // Ordena por data (mais recente primeiro) e pega o limite
-  const sortedPosts = [...dummyBlogPosts].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-
-  return sortedPosts.slice(0, limit);
+export interface GetPostsOptions {
+  sortBy?: 'title' | 'created_at';
+  sortDirection?: 'asc' | 'desc';
+  filters?: {
+    search?: string;
+    category_id?: number;
+    user_id?: number;
+  };
+  page?: number;
+  limit?: number;
 }
 
-export async function getPostBySlug(slug: string): Promise<Post | undefined> {
-  console.log(`Fetching post with slug: ${slug}`);
-  await new Promise((resolve) => setTimeout(resolve, 300)); // Simula delay
 
-  return dummyBlogPosts.find((post) => post.slug === slug);
-}
 
-// Função principal para buscar todos os posts, com filtros
-export async function getPosts(options?: {
-  category?: string;
-  tag?: string;
-}): Promise<Post[]> {
-  await new Promise((resolve) => setTimeout(resolve, 200)); // Simula delay
+export async function getPosts(options: GetPostsOptions = {}): Promise<PaginatedResponse<Post>> {
+  const params = new URLSearchParams();
 
-  let posts = [...dummyBlogPosts].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  if (options.sortBy) params.append('order_by', options.sortBy);
+  if (options.sortDirection) params.append('order_direction', options.sortDirection);
+  if (options.page) params.append('page', options.page.toString());
+  if (options.limit) params.append('per_page', options.limit.toString());
 
-  if (options?.category) {
-    posts = posts.filter((post) => post.category === options.category);
+  if (options.filters) {
+    if (options.filters.search) params.append('search', options.filters.search);
+    if (options.filters.category_id) params.append('category_id', options.filters.category_id.toString());
+    if (options.filters.user_id) params.append('user_id', options.filters.user_id.toString());
   }
-  if (options?.tag) {
-    posts = posts.filter((post) => post.tags.includes(options.tag!));
-  }
-  return posts;
+
+  const response = await axiosClient.get<PaginatedResponse<Post>>(`/posts`, { params });
+  return response.data;
 }
 
-// Funções específicas para conveniência
-export async function getFeaturedPosts(limit: number = 3): Promise<Post[]> {
-  const allPosts = await getPosts();
-  return allPosts.filter((post) => post.featured).slice(0, limit);
+export async function getPostById(id: number): Promise<Post> {
+  const response = await axiosClient.get<{ data: Post }>(`/posts/${id}`);
+  return response.data.data;
 }
 
-export async function getAllCategories(): Promise<string[]> {
-  // Em uma API real, isso viria do backend. Aqui, extraímos dos dados.
-  const categories = new Set(dummyBlogPosts.map((p) => p.category));
-  return ["Todas", ...Array.from(categories)];
+export async function createPost(data: FormData): Promise<Post> {
+  const response = await axiosClient.post<{ data: Post }>('/posts', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data.data;
+}
+
+
+export async function updatePost(id: number, data: FormData): Promise<Post> {
+  data.append('_method', 'PUT');
+
+  const response = await axiosClient.post<{ data: Post }>(`/posts/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data.data;
+}
+
+export async function deletePost(id: number): Promise<void> {
+  await axiosClient.delete(`/posts/${id}`);
+}
+
+export async function getMyPosts(page = 1, limit = 10): Promise<PaginatedResponse<Post>> {
+  const params = { page: page.toString(), per_page: limit.toString() };
+  const response = await axiosClient.get<PaginatedResponse<Post>>('/posts/my', { params });
+  return response.data;
+}
+
+export async function getFavoritePosts(page = 1, limit = 10): Promise<PaginatedResponse<Post>> {
+  const params = { page: page.toString(), per_page: limit.toString() };
+  const response = await axiosClient.get<PaginatedResponse<Post>>('/posts/favorites', { params });
+  return response.data;
+}
+
+export async function getPostCategories(): Promise<PostCategory[]> {
+  const response = await axiosClient.get<{ data: PostCategory[] }>('/post-categories');
+  return response.data.data;
+}
+
+export async function getPostTopics(): Promise<PostTopic[]> {
+  const response = await axiosClient.get<{ data: PostTopic[] }>('/post-topics');
+  return response.data.data;
 }

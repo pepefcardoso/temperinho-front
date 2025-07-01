@@ -1,7 +1,4 @@
-// types/auth.ts
 import { User } from "./user";
-
-export type User = User;
 
 export interface AuthContextType {
   user: User | null;

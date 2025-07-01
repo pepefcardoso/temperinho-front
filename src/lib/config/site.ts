@@ -7,13 +7,6 @@ export const SITE_NAV_LINKS = [
   { label: "Contato", href: "/contato" },
 ];
 
-export const RESTRICTION_LINKS = [
-  { label: "Vegano", href: "/receitas?filters=vegan" },
-  { label: "Sem Glúten", href: "/receitas?filters=gluten-free" },
-  { label: "Sem Lactose", href: "/receitas?filters=lactose-free" },
-  { label: "Vegetariano", href: "/receitas?filters=vegetarian" },
-];
-
 export const SOCIAL_LINKS = [
     { label: "Instagram", href: "https://instagram.com", icon: Instagram },
     { label: "Facebook", href: "https://facebook.com", icon: Facebook },
