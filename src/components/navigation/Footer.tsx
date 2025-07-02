@@ -4,10 +4,17 @@ import { Button } from '@/components/ui/button';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
 import { getRecipeDiets } from '@/lib/api/recipe';
 import NewsletterSection from '../newsletter/NewsletterSection';
+import { RecipeDiet } from '@/types/recipe';
 
 export default async function Footer() {
     const currentYear = new Date().getFullYear();
-    const restrictionLinks = await getRecipeDiets();
+    let restrictionLinks: RecipeDiet[] = [];
+
+    try {
+        restrictionLinks = await getRecipeDiets();
+    } catch (error) {
+        console.error("Falha ao buscar dietas para o footer:", error);
+    }
 
     return (
         <footer className="bg-foreground text-background">

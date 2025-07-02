@@ -1,14 +1,17 @@
+'use client';
+
 import {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import axiosClient from "../lib/axios";
-import { useRouter } from "next/router";
-import type { AuthContextType } from "@/types/auth";
-import { User } from "@/types/user";
+import { useRouter } from "next/navigation";
+import type { AuthContextType, LoginData, RegisterData } from "@/types/auth";
+import type { User } from "@/types/user";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,76 +21,61 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("AUTH_TOKEN");
-    if (storedToken) {
-      setToken(storedToken);
-    } else {
+  const fetchUser = useCallback(async () => {
+    if (!localStorage.getItem("AUTH_TOKEN")) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axiosClient.get("/users/me");
+      setUser(response.data.data);
+    } catch (error) {
+      localStorage.removeItem("AUTH_TOKEN");
+      setUser(null);
+      console.error("Falha ao buscar usuário, token inválido.", error);
+    } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (token) {
-      axiosClient
-        .get("/api/users/me")
-        .then((response) => setUser(response.data.data))
-        .catch(() => {
-          localStorage.removeItem("AUTH_TOKEN");
-          setToken(null);
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [token]);
+    fetchUser();
+  }, [fetchUser]);
 
-  const login = async (email: string, password: string) => {
-    const response = await axiosClient.post("/api/auth/login", {
-      email,
-      password,
-    });
-    const { token: newToken, user: newUser } = response.data;
-    localStorage.setItem("AUTH_TOKEN", newToken);
-    setToken(newToken);
+  const login = async (data: LoginData) => {
+    const response = await axiosClient.post("/auth/login", data);
+    const { data: newUser, token } = response.data;
+    localStorage.setItem("AUTH_TOKEN", token);
     setUser(newUser);
-    router.push("/usuario/painel");
+    router.push("/usuario/dashboard");
   };
 
-  const register = async (
-    name: string,
-    email: string,
-    phone: string,
-    password: string,
-    password_confirmation: string
-  ) => {
-    const response = await axiosClient.post("/api/users", {
-      name,
-      email,
-      phone,
-      password,
-      password_confirmation,
-    });
-    const { token: newToken, user: newUser } = response.data;
-    localStorage.setItem("AUTH_TOKEN", newToken);
-    setToken(newToken);
+  const register = async (data: RegisterData) => {
+    const response = await axiosClient.post("/users", data);
+    const { data: newUser, token } = response.data;
+    localStorage.setItem("AUTH_TOKEN", token);
     setUser(newUser);
-    router.push("/usuario/painel");
+    router.push("/usuario/dashboard");
   };
 
   const logout = async () => {
-    await axiosClient.post("/api/auth/logout");
-    localStorage.removeItem("AUTH_TOKEN");
-    setToken(null);
-    setUser(null);
-    router.push("/login");
+    try {
+      await axiosClient.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout falhou, mas o cliente será deslogado.", error);
+    } finally {
+      localStorage.removeItem("AUTH_TOKEN");
+      setUser(null);
+      window.location.pathname = '/login';
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

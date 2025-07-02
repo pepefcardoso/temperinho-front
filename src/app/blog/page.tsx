@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { BlogPostCard } from '@/components/blog/BlogPostCard';
 import { getPosts, getPostCategories } from '@/lib/api/blog';
 import type { Post, PostCategory } from '@/types/blog';
+import { PaginatedResponse } from '@/types/api';
 
 interface BlogPageProps {
   searchParams: { category_id?: string };
@@ -11,15 +12,28 @@ interface BlogPageProps {
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const currentCategoryId = searchParams.category_id ? parseInt(searchParams.category_id, 10) : undefined;
 
-  const [paginatedResponse, categories] = await Promise.all([
-    getPosts({
-      filters: {
-        category_id: currentCategoryId,
-      },
-      limit: 100
-    }),
-    getPostCategories()
-  ]);
+  let paginatedResponse: PaginatedResponse<Post> = {
+    data: [],
+    meta: { current_page: 1, last_page: 1, from: 0, to: 0, total: 0, per_page: 100, path: '', links: [] },
+    links: { first: '', last: '', prev: null, next: null },
+  };
+  let categories: PostCategory[] = [];
+
+  try {
+    const [postsData, categoriesData] = await Promise.all([
+      getPosts({
+        filters: {
+          category_id: currentCategoryId,
+        },
+        limit: 100
+      }),
+      getPostCategories()
+    ]);
+    paginatedResponse = postsData;
+    categories = categoriesData;
+  } catch (error) {
+    console.error("Falha ao carregar a página do blog:", error);
+  }
 
   const allPosts: Post[] = paginatedResponse.data;
   const featuredPosts = allPosts.slice(0, 3);
