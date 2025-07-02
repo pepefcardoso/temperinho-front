@@ -1,12 +1,10 @@
 'use client'; // Client component para o mapa de ícones
 
 import { Card, CardContent } from '@/components/ui/card';
-import type { UserStat } from '@/types/dashboard';
 import { BookOpen, FileText, Heart, TrendingUp } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-// Mapa de Ícones para resolver o problema de serialização
 const iconMap = { BookOpen, FileText, Heart, TrendingUp };
 
 // Variantes de cor com CVA
@@ -29,7 +27,7 @@ interface StatCardProps extends VariantProps<typeof statCardVariants> {
     stat: UserStat;
 }
 
-export function StatCard({ stat, variant }: StatCardProps) {
+export function UserStatCard({ stat, variant }: StatCardProps) {
     const Icon = iconMap[stat.iconName];
     return (
         <Card>

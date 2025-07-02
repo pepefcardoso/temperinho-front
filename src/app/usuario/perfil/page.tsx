@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getUserProfile } from '@/lib/api/user';
-import { UserProfileForm } from '@/components/UserProfileForm';
-import UserLayout from '@/components/UserLayout'; // Assumindo que este layout exista
+import { UserProfileForm } from '@/components/user-profile/UserProfileForm';
+import UserLayout from '@/components/user-profile/UserLayout'; // Assumindo que este layout exista
 
 export const metadata: Metadata = {
     title: 'Meu Perfil | Leve Sabor',

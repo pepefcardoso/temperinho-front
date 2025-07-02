@@ -5,10 +5,10 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
+import Header from "@/components/navigation/Header";
+import Footer from "@/components/navigation/Footer";
 
 const inter = Inter({
   subsets: ["latin"],

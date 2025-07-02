@@ -23,7 +23,6 @@ const StatItem = ({ stat }: { stat: MarketingStat }) => {
         ? stat.value.replace(/[0-9.,]/g, '')
         : '';
 
-    // Mapeia o nome do ícone para o componente real do Lucide
     const IconComponent = LucideIcons[stat.iconName] as React.ElementType;
 
     return (

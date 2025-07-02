@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getAboutPageData } from '@/lib/api/about';
 import { Button } from '@/components/ui/button';
-import { ValuesSection } from '@/components/ValuesSection';
-import { TeamSection } from '@/components/TeamSection';
+import { ValuesSection } from '@/components/about/ValuesSection';
+import { TeamSection } from '@/components/about/TeamSection';
+import { getAboutPageData } from '@/lib/api/about';
 
 export const metadata: Metadata = {
     title: 'Sobre Nós | Leve Sabor',
     description: 'Conheça nossa história, missão e a equipe apaixonada por trás da culinária verdadeiramente inclusiva.',
 };
 
-export default async function AboutPage() {
-    const { team, values } = await getAboutPageData();
+export default function AboutPage() {
+    const { team, values } = getAboutPageData();
 
     return (
         <div className="bg-background">

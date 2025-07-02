@@ -1,4 +1,4 @@
-import type { ValueCard } from '@/types/about';
+import { ValueCard } from "@/types/about";
 
 function ValueCardComponent({ value }: { value: ValueCard }) {
     return (

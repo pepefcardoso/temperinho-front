@@ -5,7 +5,7 @@ import { Calendar, Star } from 'lucide-react';
 import { getDashboardData } from '@/lib/api/dashboard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { StatCard } from '@/components/StatCard';
+import { UserStatCard } from '@/components/user-profile/UserStatCard';
 
 export const metadata: Metadata = {
     title: 'Dashboard | Leve Sabor',
@@ -30,7 +30,7 @@ export default async function UserDashboardPage() {
             {/* Cards de Estatísticas */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat) => (
-                    <StatCard key={stat.title} stat={stat} variant={stat.variant} />
+                    <UserStatCard key={stat.title} stat={stat} variant={stat.variant} />
                 ))}
             </div>
 

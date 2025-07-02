@@ -8,12 +8,6 @@ export interface PricingPackage {
   badge?: string;
 }
 
-export interface MarketingStatsData {
-  users: number;
-  recipes: number;
-  posts: number;
-}
-
 export interface MarketingStat {
   value: number | string;
   label: string;

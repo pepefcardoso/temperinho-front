@@ -1,10 +1,32 @@
-import type { PricingPackage, MarketingStatsData } from "@/types/marketing";
+import type { PricingPackage, MarketingStat } from "@/types/marketing";
 
-export const marketingStats: MarketingStatsData = {
-  users: 15000,
-  recipes: 2500,
-  posts: 800,
-};
+export const marketingStats: MarketingStat[] = [
+    {
+        value: 15000,
+        label: 'Usuários na Comunidade',
+        iconName: 'Users',
+        growth: '+12% este mês',
+    },
+    {
+        value: 2500,
+        label: 'Receitas Publicadas',
+        iconName: 'ChefHat',
+        growth: '+50 novas',
+    },
+    {
+        value: 800,
+        label: 'Artigos no Blog',
+        iconName: 'Newspaper',
+        growth: '+20 novos',
+    },
+    {
+        value: '4.8',
+        label: 'Avaliação Média',
+        iconName: 'Star',
+        growth: 'Baseado em 500+ reviews',
+    }
+];
+
 
 export const pricingPackages: PricingPackage[] = [
   {

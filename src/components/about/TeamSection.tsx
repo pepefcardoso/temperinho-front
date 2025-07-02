@@ -1,4 +1,5 @@
-import type { TeamMember } from '@/types/about';
+
+import { TeamMember } from '@/types/about';
 import Image from 'next/image';
 
 function TeamMemberCard({ member }: { member: TeamMember }) {
@@ -24,7 +25,7 @@ export function TeamSection({ teamMembers }: { teamMembers: TeamMember[] }) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                     {teamMembers.map((member) => (
-                        <TeamMemberCard key={member.name} member={member} />
+                        <TeamMemberCard key={member.id} member={member} />
                     ))}
                 </div>
             </div>
