@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import DietaryFilters from '@/components/DietaryFilters';
+import DietaryFilters from '@/components/recipe/DietaryFilters';
 import { getRecipes } from '@/lib/api/recipe';
 import { Recipe } from '@/types/recipe';
 import RecipeCard from './RecipeCard';

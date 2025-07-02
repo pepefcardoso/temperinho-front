@@ -1,6 +1,4 @@
-// src/components/ui/tabs.tsx
-
-"use client"; // Adicionado porque o componente Tabs é interativo e gerencia estado.
+"use client";
 
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"

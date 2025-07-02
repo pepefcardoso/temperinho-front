@@ -1,4 +1,4 @@
-import { RecipeForm } from '@/components/recipe/RecipeForm';
+import { RecipeForm } from '@/components/recipe/forms/RecipeForm';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Nova Receita | Leve Sabor' };

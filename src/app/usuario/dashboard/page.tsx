@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
-import Link from 'next/link'; // CORREÇÃO CRÍTICA
-import { Calendar, Star } from 'lucide-react';
-
-import { getDashboardData } from '@/lib/api/dashboard';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { ChefHat, Newspaper, Plus, ArrowRight } from 'lucide-react';
+import { getAuthenticatedUserProfile } from '@/lib/api/user';
+import { getMyRecipes } from '@/lib/api/recipe';
+import { getMyPosts } from '@/lib/api/blog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserStatCard } from '@/components/user-profile/UserStatCard';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
 
 export const metadata: Metadata = {
     title: 'Dashboard | Leve Sabor',
@@ -13,76 +16,92 @@ export const metadata: Metadata = {
 };
 
 export default async function UserDashboardPage() {
-    const { user, stats, activities, actions } = await getDashboardData();
+    try {
+        const [user, myRecipesResponse, myPostsResponse] = await Promise.all([
+            getAuthenticatedUserProfile(),
+            getMyRecipes(1, 3),
+            getMyPosts(1, 3),
+        ]);
 
-    return (
-        <div className="container mx-auto py-8 space-y-8">
-            {/* Seção de Boas-vindas */}
-            <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                    Bem-vindo, {user.name}! 👋
-                </h1>
-                <p className="text-muted-foreground">
-                    Aqui está um resumo da sua atividade e algumas ações rápidas para você.
-                </p>
-            </div>
+        const recentRecipes = myRecipesResponse.data;
+        const recentPosts = myPostsResponse.data;
 
-            {/* Cards de Estatísticas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat) => (
-                    <UserStatCard key={stat.title} stat={stat} variant={stat.variant} />
-                ))}
-            </div>
+        return (
+            <div className="space-y-8">
+                <div className="flex items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold text-foreground mb-1">
+                            Bem-vindo(a), {user.name.split(' ')[0]}! 👋
+                        </h1>
+                        <p className="text-muted-foreground">O que vamos criar hoje?</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button asChild>
+                            <Link href="/usuario/receitas/nova"><Plus className="h-4 w-4 mr-2" />Nova Receita</Link>
+                        </Button>
+                        <Button asChild variant="secondary">
+                            <Link href="/usuario/artigos/novo"><Plus className="h-4 w-4 mr-2" />Novo Artigo</Link>
+                        </Button>
+                    </div>
+                </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                {/* Atividade Recente */}
-                <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle className="flex items-center text-xl">
-                            <Calendar className="h-5 w-5 mr-3 text-primary" />
-                            Atividade Recente
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {activities.map((item, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg border">
-                                <div>
-                                    <p className="font-medium text-foreground">{item.title}</p>
-                                    <p className="text-sm text-muted-foreground capitalize">
-                                        {item.type} {item.action} • {item.date}
-                                    </p>
-                                </div>
-                                <div className="flex items-center text-sm text-amber-500 font-semibold">
-                                    <Star className="h-4 w-4 mr-1.5 fill-current" />
-                                    {item.views}
-                                </div>
-                            </div>
-                        ))}
-                        <div className="pt-4">
-                            <Button variant="outline" className="w-full" asChild>
-                                <Link href="/usuario/minhas-atividades">Ver toda a atividade</Link>
+                <Separator />
+
+                <div className="grid gap-8 md:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Suas Receitas Recentes</CardTitle>
+                            <CardDescription>As últimas receitas que você criou.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {recentRecipes.length > 0 ? (
+                                recentRecipes.map(recipe => (
+                                    <div key={`recipe-${recipe.id}`} className="flex items-center">
+                                        <Avatar className="h-9 w-9 hidden sm:flex"><AvatarImage src={recipe.image?.url} alt={recipe.title} /><AvatarFallback><ChefHat /></AvatarFallback></Avatar>
+                                        <div className="ml-4 space-y-1">
+                                            <p className="text-sm font-medium leading-none">{recipe.title}</p>
+                                        </div>
+                                        <Link href={`/usuario/receitas/editar/${recipe.id}`} className="ml-auto font-medium text-sm text-primary hover:underline">Editar</Link>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-muted-foreground py-4 text-center">Você ainda não criou nenhuma receita.</p>
+                            )}
+                            <Button variant="outline" className="w-full mt-4" asChild>
+                                <Link href="/usuario/receitas">Ver todas as suas receitas <ArrowRight className="h-4 w-4 ml-2" /></Link>
                             </Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
 
-                {/* Ações Rápidas */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-xl">Ações Rápidas</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {actions.map((action) => (
-                            <Link key={action.href} href={action.href} className="block group">
-                                <div className="p-4 border rounded-lg hover:bg-muted transition-colors">
-                                    <h3 className="font-semibold text-foreground group-hover:text-primary">{action.title}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">{action.description}</p>
-                                </div>
-                            </Link>
-                        ))}
-                    </CardContent>
-                </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Seus Artigos Recentes</CardTitle>
+                            <CardDescription>Os últimos artigos que você publicou.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {recentPosts.length > 0 ? (
+                                recentPosts.map(post => (
+                                    <div key={`post-${post.id}`} className="flex items-center">
+                                        <Avatar className="h-9 w-9 hidden sm:flex"><AvatarImage src={post.image?.url} alt={post.title} /><AvatarFallback><Newspaper /></AvatarFallback></Avatar>
+                                        <div className="ml-4 space-y-1">
+                                            <p className="text-sm font-medium leading-none">{post.title}</p>
+                                        </div>
+                                        <Link href={`/usuario/artigos/editar/${post.id}`} className="ml-auto font-medium text-sm text-primary hover:underline">Editar</Link>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-muted-foreground py-4 text-center">Você ainda não publicou nenhum artigo.</p>
+                            )}
+                            <Button variant="outline" className="w-full mt-4" asChild>
+                                <Link href="/usuario/artigos">Ver todos os seus artigos <ArrowRight className="h-4 w-4 ml-2" /></Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-        </div>
-    );
+        );
+    } catch (error) {
+        console.error("Falha ao carregar o dashboard:", error);
+        notFound();
+    }
 }

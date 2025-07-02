@@ -70,7 +70,7 @@ export function RecipeContent({ recipe }: RecipeContentProps) {
                     )}
                 </Tabs>
                 <div className="my-12">
-                    <AdBanner href="/anuncie" layout="full" />
+                    <AdBanner href="/marketing" layout="full" />
                 </div>
             </div>
         </section>

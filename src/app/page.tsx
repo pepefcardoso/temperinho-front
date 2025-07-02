@@ -1,6 +1,6 @@
-import HeroSection from '@/components/HeroSection';
+import HeroSection from '@/components/hero/HeroSection';
 import BlogSection from '@/components/blog/BlogSection';
-import NewsletterSection from '@/components/Newsletter/NewsletterSection';
+import NewsletterSection from '@/components/newsletter/NewsletterSection';
 import RecipeSection from '@/components/recipe/RecipeSection';
 import { getRecipes } from '@/lib/api/recipe';
 

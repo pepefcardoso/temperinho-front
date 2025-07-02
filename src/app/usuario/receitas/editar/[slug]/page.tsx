@@ -1,4 +1,4 @@
-import { RecipeForm } from '@/components/recipe/RecipeForm';
+import { RecipeForm } from '@/components/recipe/forms/RecipeForm';
 import { getRecipeById } from '@/lib/api/recipe';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';

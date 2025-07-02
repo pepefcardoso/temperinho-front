@@ -11,11 +11,11 @@ import axios from 'axios';
 import { Recipe, RecipeDifficultyEnum } from '@/types/recipe';
 import { Button } from '@/components/ui/button';
 import { createRecipe, updateRecipe } from '@/lib/api/recipe';
-import { RecipeFormBasicInfo } from './forms/RecipeFormBasicInfo';
-import { RecipeFormImage } from './forms/RecipeFormImage';
-import { RecipeFormDiets } from './forms/RecipeFormDiets';
-import { RecipeFormIngredients } from './forms/RecipeFormIngredients';
-import { RecipeFormSteps } from './forms/RecipeFormSteps';
+import { RecipeFormBasicInfo } from './RecipeFormBasicInfo';
+import { RecipeFormImage } from './RecipeFormImage';
+import { RecipeFormDiets } from './RecipeFormDiets';
+import { RecipeFormIngredients } from './RecipeFormIngredients';
+import { RecipeFormSteps } from './RecipeFormSteps';
 
 const recipeSchema = z.object({
   title: z.string().min(5, "O título precisa ter pelo menos 5 caracteres."),

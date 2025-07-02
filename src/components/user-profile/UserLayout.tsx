@@ -1,17 +1,12 @@
-// src/app/usuario/layout.tsx
-
 "use client";
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { User, BookOpen, PlusCircle, Heart, FileText, Menu, Home } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-
-// --- Menu de Navegação Extraído para melhor organização ---
 
 const menuItems = [
   { icon: Home, label: 'Painel', href: '/usuario/painel' },
@@ -22,10 +17,8 @@ const menuItems = [
   { icon: PlusCircle, label: 'Novo Artigo', href: '/usuario/artigos/novo' },
   { icon: Heart, label: 'Receitas Favoritas', href: '/usuario/receitas-favoritas' },
   { icon: Heart, label: 'Artigos Favoritos', href: '/usuario/artigos-favoritos' },
-  // O item de Configurações não estava na lista original, mas poderia ser adicionado aqui.
 ];
 
-// Componente de navegação reutilizável para desktop e mobile
 function NavigationMenu({ onLinkClick }: { onLinkClick?: () => void }) {
   const pathname = usePathname();
 
@@ -35,7 +28,7 @@ function NavigationMenu({ onLinkClick }: { onLinkClick?: () => void }) {
         <Link
           key={item.href}
           href={item.href}
-          onClick={onLinkClick} // Fecha o menu mobile ao clicar
+          onClick={onLinkClick}
           className={cn(
             "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-sm",
             pathname === item.href
@@ -51,9 +44,6 @@ function NavigationMenu({ onLinkClick }: { onLinkClick?: () => void }) {
   );
 }
 
-
-// --- Layout Principal da Área do Usuário ---
-
 export default function UserDashboardLayout({
   children,
 }: {
@@ -62,10 +52,7 @@ export default function UserDashboardLayout({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    // Note que removemos o Header, Footer e a div com min-h-screen,
-    // pois eles já são fornecidos pelo layout raiz (src/app/layout.tsx)
-    <div className="container mx-auto flex min-h-[calc(100vh-8rem)]"> {/* Garante altura mínima descontando header/footer */}
-      {/* --- Mobile Sidebar (Sheet) --- */}
+    <div className="container mx-auto flex min-h-[calc(100vh-8rem)]">
       <div className="md:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
@@ -82,8 +69,7 @@ export default function UserDashboardLayout({
           </SheetContent>
         </Sheet>
       </div>
-      
-      {/* --- Desktop Sidebar --- */}
+
       <aside className="hidden md:flex flex-col w-64 flex-shrink-0 border-r bg-card">
         <div className="w-full p-6">
           <div className="mb-8">
@@ -94,7 +80,6 @@ export default function UserDashboardLayout({
         </div>
       </aside>
 
-      {/* --- Main Content --- */}
       <main className="flex-1 p-6 md:p-8">
         {children}
       </main>

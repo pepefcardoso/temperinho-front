@@ -28,17 +28,13 @@ export default function NewsletterSection() {
 
   const onSubmit = async (data: NewsletterFormData) => {
     try {
-      // Chama a função da API que se conecta ao backend
       await subscribeToNewsletter(data.email);
       toast.success('Inscrição realizada com sucesso! 🎉');
-      reset(); // Limpa o formulário após o sucesso
+      reset();
     } catch (error) {
-      // Tratamento de erro aprimorado
       if (axios.isAxiosError(error) && error.response?.status === 422) {
-        // Erro de validação do Laravel (e.g., email já existe)
         toast.error('Este e-mail já está cadastrado.');
       } else {
-        // Outros erros
         toast.error('Ocorreu um erro. Por favor, tente novamente.');
       }
       console.error(error);

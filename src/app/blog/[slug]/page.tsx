@@ -90,7 +90,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <Image src={article.image?.url ?? '/images/placeholder.png'} alt={article.title} fill className="object-cover rounded-xl shadow-lg" />
             </div>
 
-            <AdBanner href="/anuncie" layout="full" size="large" className="mb-8" />
+            <AdBanner href="/marketing" layout="full" size="large" className="mb-8" />
           </div>
         </section>
 
@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               </article>
 
               <aside className="w-full lg:w-80 lg:sticky top-24 self-start space-y-6">
-                <AdBanner href="/anuncie" layout="sidebar" />
+                <AdBanner href="/marketing" layout="sidebar" />
               </aside>
             </div>
           </div>

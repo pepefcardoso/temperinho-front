@@ -1,6 +1,4 @@
-// src/components/ui/sheet.tsx
-
-"use client"; // Adicionado porque o Sheet é um componente interativo que gerencia estado.
+"use client";
 
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"

@@ -1,10 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { DIETARY_FILTERS_CONFIG } from '@/lib/config/filters';
-import type { DietaryTag } from '@/types/recipe';
+import { getRecipeDiets } from '@/lib/api/recipe';
+import type { RecipeDiet } from '@/types/recipe';
 
 const filterButtonVariants = cva(
     "flex flex-col items-center justify-center text-center p-3 h-24 w-full space-y-2 transition-all duration-200 rounded-lg",
@@ -18,13 +19,29 @@ const filterButtonVariants = cva(
     }
 );
 
+const emojiCycle = ['🌱', '🌾', '🥛', '🥬', '🧅', '🥑', '🥕', '🍅', '🌶️', '🌽'];
+
 interface DietaryFiltersProps {
-    selectedFilters: DietaryTag[];
-    onFiltersChange: (filters: DietaryTag[]) => void;
+    selectedFilters: number[];
+    onFiltersChange: (filters: number[]) => void;
 }
 
 const DietaryFilters = ({ selectedFilters, onFiltersChange }: DietaryFiltersProps) => {
-    const toggleFilter = (filterId: DietaryTag) => {
+    const [availableDiets, setAvailableDiets] = useState<RecipeDiet[]>([]);
+
+    useEffect(() => {
+        const fetchDiets = async () => {
+            try {
+                const diets = await getRecipeDiets();
+                setAvailableDiets(diets);
+            } catch (error) {
+                console.error("Falha ao buscar as dietas:", error);
+            }
+        };
+        fetchDiets();
+    }, []);
+
+    const toggleFilter = (filterId: number) => {
         const updatedFilters = selectedFilters.includes(filterId)
             ? selectedFilters.filter(id => id !== filterId)
             : [...selectedFilters, filterId];
@@ -35,18 +52,18 @@ const DietaryFilters = ({ selectedFilters, onFiltersChange }: DietaryFiltersProp
         <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
             <h3 className="text-lg font-semibold text-foreground mb-4">Filtre por Restrições</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                {DIETARY_FILTERS_CONFIG.map((filter) => {
-                    const isSelected = selectedFilters.includes(filter.id);
+                {availableDiets.map((diet, index) => {
+                    const isSelected = selectedFilters.includes(diet.id);
                     return (
                         <button
-                            key={filter.id}
-                            onClick={() => toggleFilter(filter.id)}
-                            aria-pressed={isSelected} // 4. Melhoria de acessibilidade
+                            key={diet.id}
+                            onClick={() => toggleFilter(diet.id)}
+                            aria-pressed={isSelected}
                             className={cn(filterButtonVariants({ selected: isSelected }))}
                         >
-                            <span className="text-3xl">{filter.icon}</span>
+                            <span className="text-3xl">{emojiCycle[index % emojiCycle.length]}</span>
                             <span className="text-xs font-medium leading-tight">
-                                {filter.name}
+                                {diet.name}
                             </span>
                         </button>
                     )

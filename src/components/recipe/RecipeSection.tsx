@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import DietaryFilters from '@/components/DietaryFilters';
+import DietaryFilters from '@/components/recipe/DietaryFilters';
 import type { Recipe } from '@/types/recipe';
 import { getRecipes } from '@/lib/api/recipe';
 import FeaturedRecipes from './FeaturedRecipes';

@@ -56,7 +56,7 @@ export default function ContactPage() {
                     ))}
                   </div>
                 </div>
-                <AdBanner href="/anuncie" layout="full" />
+                <AdBanner href="/marketing" layout="full" />
               </div>
             </div>
           </div>

@@ -6,7 +6,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// 1. Definindo as variantes de estilo com CVA
 const avatarVariants = cva(
     "relative flex shrink-0 overflow-hidden rounded-full",
     {
@@ -23,7 +22,6 @@ const avatarVariants = cva(
     }
 )
 
-// 2. A interface de props agora inclui as variantes de tamanho
 export interface AvatarProps
     extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>,
     VariantProps<typeof avatarVariants> { }
@@ -31,11 +29,9 @@ export interface AvatarProps
 const Avatar = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Root>,
     AvatarProps
-// 3. O componente agora aceita a prop 'size'
 >(({ className, size, ...props }, ref) => (
     <AvatarPrimitive.Root
         ref={ref}
-        // 4. As classes de variantes são aplicadas dinamicamente
         className={cn(avatarVariants({ size }), className)}
         {...props}
     />

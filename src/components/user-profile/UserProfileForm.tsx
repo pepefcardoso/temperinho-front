@@ -14,7 +14,6 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { updateUserProfile } from '@/lib/api/user';
-// import { useAuth } from '@/context/AuthContext';
 
 const profileSchema = z.object({
     name: z.string().min(3, { message: "O nome precisa ter pelo menos 3 caracteres." }),
@@ -31,7 +30,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     const [isEditing, setIsEditing] = React.useState(false);
     const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = React.useState<string | null>(user.image?.url ?? null);
-    // const { setUser } = useAuth();
 
     const {
         register,
@@ -54,7 +52,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         }
     };
 
-    // Lógica de submissão que cria um FormData e chama a API
     const onSubmit = async (data: ProfileFormData) => {
         const formData = new FormData();
         formData.append('name', data.name);
@@ -68,7 +65,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         try {
             const updatedUser = await updateUserProfile(user.id, formData);
             toast.success("Perfil atualizado com sucesso!");
-            // setUser(updatedUser);
             reset({ name: updatedUser.name, phone: updatedUser.phone });
             setAvatarFile(null);
             setIsEditing(false);

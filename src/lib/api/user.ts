@@ -1,3 +1,4 @@
+import { Post } from "@/types/blog";
 import axiosClient from "../axios";
 import type { User, UserFavoriteRecipe, UserManagedRecipe } from "@/types/user";
 
@@ -21,12 +22,12 @@ export async function getUserFavoriteRecipes(): Promise<UserFavoriteRecipe[]> {
   return response.data.data;
 }
 
-export async function getUserManagedPosts(): Promise<any[]> {
+export async function getUserManagedPosts(): Promise<Post[]> {
   const response = await axiosClient.get("/api/posts/my");
   return response.data.data;
 }
 
-export async function getUserFavoritePosts(): Promise<any[]> {
+export async function getUserFavoritePosts(): Promise<Post[]> {
   const response = await axiosClient.get("/api/posts/favorites");
   return response.data.data;
 }

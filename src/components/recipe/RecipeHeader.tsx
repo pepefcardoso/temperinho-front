@@ -122,7 +122,7 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                         </div>
                     </div>
                 </div>
-                <div className="mt-12"><AdBanner href="/anuncie" layout="full" /></div>
+                <div className="mt-12"><AdBanner href="/marketing" layout="full" /></div>
             </div>
         </section>
     );

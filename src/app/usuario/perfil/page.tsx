@@ -1,20 +1,24 @@
 import type { Metadata } from 'next';
-import { getUserProfile } from '@/lib/api/user';
+import { notFound } from 'next/navigation';
+import { getAuthenticatedUserProfile } from '@/lib/api/user';
 import { UserProfileForm } from '@/components/user-profile/UserProfileForm';
-import UserLayout from '@/components/user-profile/UserLayout'; // Assumindo que este layout exista
 
 export const metadata: Metadata = {
     title: 'Meu Perfil | Leve Sabor',
+    description: 'Gerencie suas informações pessoais, foto de perfil e preferências na plataforma Leve Sabor.',
 };
 
 export default async function UserProfilePage() {
-    const userProfileData = await getUserProfile();
+    try {
+        const userProfileData = await getAuthenticatedUserProfile();
 
-    return (
-        <UserLayout>
-            <div className="container mx-auto py-8">
+        return (
+            <div className="space-y-6">
                 <UserProfileForm user={userProfileData} />
             </div>
-        </UserLayout>
-    );
+        );
+    } catch (error) {
+        console.error("Falha ao buscar perfil do usuário:", error);
+        notFound();
+    }
 }
