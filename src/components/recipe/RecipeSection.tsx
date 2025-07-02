@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import DietaryFilters from '@/components/DietaryFilters';
-import FeaturedRecipes from '@/components/FeaturedRecipes';
 import type { Recipe } from '@/types/recipe';
 import { getRecipes } from '@/lib/api/recipe';
+import FeaturedRecipes from './FeaturedRecipes';
 
 interface RecipeSectionProps {
     initialRecipes: Recipe[];

@@ -3,39 +3,40 @@
 import { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Grid, List, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import DietaryFilters from '@/components/DietaryFilters';
-import RecipeCard from '@/components/RecipeCard';
-import type { Recipe, DietaryTag } from '@/types/recipe';
-import { fetchMoreRecipes } from '@/app/receitas/actions';
-import AdBanner from './marketing/AdBanner';
-import Link from 'next/link';
+import { getRecipes } from '@/lib/api/recipe';
+import { Recipe } from '@/types/recipe';
+import RecipeCard from './RecipeCard';
+import AdBanner from '../marketing/AdBanner';
+
+type SortByType = 'created_at' | 'time' | 'difficulty';
 
 interface RecipesPageClientProps {
   initialRecipes: Recipe[];
-  initialSortBy?: 'recent' | 'rating' | 'time' | 'difficulty';
+  initialMeta: {
+    current_page: number;
+    last_page: number;
+  };
 }
 
-export function RecipesPageClient({ initialRecipes, initialSortBy = 'recent' }: RecipesPageClientProps) {
+export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Estados da UI
   const [recipes, setRecipes] = useState(initialRecipes);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  // Estados da Paginação
-  const [page, setPage] = useState(2);
-  const [hasMore, setHasMore] = useState(initialRecipes.length === 9); // Assumindo limite de 9 por página
+  const [page, setPage] = useState(initialMeta.current_page + 1);
+  const [hasMore, setHasMore] = useState(initialMeta.current_page < initialMeta.last_page);
   const [isLoadingMore, startTransition] = useTransition();
 
-  // Função para atualizar a URL (dispara recarregamento no servidor)
-  const handleUrlChange = (key: 'sortBy' | 'filters', value: string) => {
+  const handleUrlChange = (key: 'sortBy' | 'diets', value: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    if (!value) {
+    if (!value || value === 'todos') {
       current.delete(key);
     } else {
       current.set(key, value);
@@ -45,29 +46,39 @@ export function RecipesPageClient({ initialRecipes, initialSortBy = 'recent' }: 
     router.push(`${pathname}${query}`);
   };
 
-  const handleDietaryFiltersChange = (filters: DietaryTag[]) => {
-    handleUrlChange('filters', filters.join(','));
+  const handleDietaryFiltersChange = (filters: number[]) => {
+    handleUrlChange('diets', filters.join(','));
   };
 
-  // Função para carregar mais receitas com Server Action
   const loadMoreRecipes = () => {
     startTransition(async () => {
-      const currentSortBy = searchParams.get('sortBy') as 'recent' | 'rating' | 'time' | 'difficulty' || 'recent';
-      const currentFilters = (searchParams.get('filters')?.split(',') || []) as DietaryTag[];
+      const sortBy = (searchParams.get('sortBy') as SortByType) || 'created_at';
+      const diets = searchParams.get('diets')?.split(',').map(Number) || [];
 
-      const newRecipes = await fetchMoreRecipes({ page, filters: currentFilters, sortBy: currentSortBy });
+      try {
+        const paginatedResponse = await getRecipes({
+          page,
+          sortBy,
+          filters: { diets },
+        });
 
-      if (newRecipes.length > 0) {
-        setRecipes(prev => [...prev, ...newRecipes]);
-        setPage(prev => prev + 1);
-      }
-      if (newRecipes.length < 9) {
-        setHasMore(false);
+        const newRecipes = paginatedResponse.data;
+
+        if (newRecipes.length > 0) {
+          setRecipes(prev => [...prev, ...newRecipes]);
+          setPage(prev => prev + 1);
+        }
+
+        setHasMore(paginatedResponse.meta.current_page < paginatedResponse.meta.last_page);
+
+      } catch (error) {
+        console.error("Falha ao carregar mais receitas:", error);
       }
     });
   };
 
-  const currentDietaryFilters = (searchParams.get('filters')?.split(',') || []) as DietaryTag[];
+  const currentDietaryFilters = searchParams.get('diets')?.split(',').map(Number) || [];
+  const currentSortBy = (searchParams.get('sortBy') as SortByType) || 'created_at';
 
   return (
     <>
@@ -78,11 +89,10 @@ export function RecipesPageClient({ initialRecipes, initialSortBy = 'recent' }: 
             onFiltersChange={handleDietaryFiltersChange}
           />
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-            <Select value={initialSortBy} onValueChange={(value) => handleUrlChange('sortBy', value)}>
+            <Select value={currentSortBy} onValueChange={(value) => handleUrlChange('sortBy', value)}>
               <SelectTrigger className="w-48"><SelectValue placeholder="Ordenar por" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="recent">Mais Recentes</SelectItem>
-                <SelectItem value="rating">Melhor Avaliadas</SelectItem>
+                <SelectItem value="created_at">Mais Recentes</SelectItem>
                 <SelectItem value="time">Tempo de Preparo</SelectItem>
                 <SelectItem value="difficulty">Dificuldade</SelectItem>
               </SelectContent>

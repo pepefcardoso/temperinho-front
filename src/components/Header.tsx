@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { SITE_NAV_LINKS } from '@/lib/config/site';
-import { ThemeToggle } from './ThemeToggle';
+import { ThemeToggle } from './theme/ThemeToggle';
 
 function GlobalSearch() {
     const [query, setQuery] = useState('');

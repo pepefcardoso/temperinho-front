@@ -1,28 +1,43 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import Link from 'next/link';
 import { Search, Heart } from 'lucide-react';
-
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { FavoriteRecipeCard } from './FavoriteRecipeCard';
-import type { UserFavoriteRecipe } from '@/types/user';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
+import type { Recipe, RecipeCategory } from '@/types/recipe';
+import { getRecipeCategories } from '@/lib/api/recipe';
 
-// CORREÇÃO 1: A interface de props agora espera 'recipes'
 interface UserFavoritesClientProps {
-    recipes: UserFavoriteRecipe[];
+    initialRecipes: Recipe[];
 }
 
-export function UserFavoritesRecipesClient({ recipes }: UserFavoritesClientProps) { // CORREÇÃO 2: A prop desestruturada agora é 'recipes'
+export function UserFavoritesRecipesClient({ initialRecipes }: UserFavoritesClientProps) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    const handleFilter = (key: 'q' | 'category', value: string) => {
+    const [recipes, setRecipes] = useState<Recipe[]>(initialRecipes);
+    const [categories, setCategories] = useState<RecipeCategory[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const fetchedCategories = await getRecipeCategories();
+                setCategories(fetchedCategories);
+            } catch (error) {
+                console.error("Falha ao buscar categorias de receita:", error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    const handleFilter = (key: 'title' | 'category_id', value: string) => {
         const params = new URLSearchParams(searchParams);
         if (value && value !== 'todas') {
             params.set(key, value);
@@ -32,10 +47,11 @@ export function UserFavoritesRecipesClient({ recipes }: UserFavoritesClientProps
         replace(`${pathname}?${params.toString()}`);
     };
 
-    const debouncedSearch = useDebouncedCallback((value: string) => handleFilter('q', value), 500);
+    const debouncedSearch = useDebouncedCallback((value: string) => handleFilter('title', value), 500);
 
-    // CORREÇÃO 3: Usa 'recipes' para gerar a lista de categorias
-    const categories = ['todas', ...Array.from(new Set(recipes.map(r => r.category || 'Outros')))];
+    const handleRecipeRemove = (removedRecipeId: number) => {
+        setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== removedRecipeId));
+    };
 
     return (
         <>
@@ -46,19 +62,24 @@ export function UserFavoritesRecipesClient({ recipes }: UserFavoritesClientProps
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                             <Input
                                 placeholder="Buscar nos seus favoritos..."
-                                defaultValue={searchParams.get('q') || ''}
+                                defaultValue={searchParams.get('title') || ''}
                                 onChange={e => debouncedSearch(e.target.value)}
                                 className="pl-10"
                             />
                         </div>
                         <div className="sm:w-56">
                             <Select
-                                defaultValue={searchParams.get('category') || 'todas'}
-                                onValueChange={value => handleFilter('category', value)}
+                                defaultValue={searchParams.get('category_id') || 'todas'}
+                                onValueChange={value => handleFilter('category_id', value)}
                             >
                                 <SelectTrigger><SelectValue placeholder="Filtrar por categoria" /></SelectTrigger>
                                 <SelectContent>
-                                    {categories.map(cat => <SelectItem key={cat} value={cat.toLowerCase()} className="capitalize">{cat}</SelectItem>)}
+                                    <SelectItem value="todas">Todas as Categorias</SelectItem>
+                                    {categories.map(cat => (
+                                        <SelectItem key={cat.id} value={String(cat.id)}>
+                                            {cat.name}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -67,15 +88,20 @@ export function UserFavoritesRecipesClient({ recipes }: UserFavoritesClientProps
             </Card>
 
             <div className="space-y-4 mt-6">
-                {/* CORREÇÃO 4: Usa 'recipes' para o map e para verificar o tamanho */}
                 {recipes.length > 0 ? (
-                    recipes.map(recipe => <FavoriteRecipeCard key={recipe.id} recipe={recipe} />)
+                    recipes.map(recipe => (
+                        <FavoriteRecipeCard
+                            key={recipe.id}
+                            recipe={recipe}
+                            onRemove={handleRecipeRemove}
+                        />
+                    ))
                 ) : (
                     <div className="text-center py-16 border-2 border-dashed rounded-lg bg-card">
                         <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                         <h3 className="text-lg font-medium text-foreground">Nenhuma receita encontrada</h3>
                         <p className="text-muted-foreground mt-2 mb-6">
-                            {searchParams.get('q') || searchParams.get('category')
+                            {searchParams.get('title') || searchParams.get('category_id')
                                 ? 'Tente ajustar seus filtros de busca.'
                                 : 'Explore nossas receitas e salve as que você mais ama.'
                             }

@@ -1,27 +1,31 @@
 import type { Metadata } from 'next';
-import type { DietaryTag } from '@/types/recipe';
 import { getRecipes } from '@/lib/api/recipe';
-import { RecipesPageClient } from '@/components/RecipePageClient';
-
+import { RecipesPageClient } from '@/components/recipe/RecipePageClient';
 
 export const metadata: Metadata = {
   title: 'Receitas | Leve Sabor',
   description: 'Explore centenas de receitas deliciosas e inclusivas, com filtros para todas as suas necessidades.',
 };
 
+type SortByType = 'created_at' | 'time' | 'difficulty';
+
 interface RecipesPageProps {
   searchParams: {
-    sortBy?: 'recent' | 'rating' | 'time' | 'difficulty';
-    filters?: DietaryTag | DietaryTag[];
+    sortBy?: SortByType;
+    diets?: string;
   }
 }
 
 export default async function RecipesPage({ searchParams }: RecipesPageProps) {
-  const filters = typeof searchParams.filters === 'string' ? [searchParams.filters] : searchParams.filters;
+  const dietFilters = searchParams.diets
+    ? searchParams.diets.split(',').map(Number).filter(id => !isNaN(id))
+    : [];
 
-  const initialRecipes = await getRecipes({
+  const paginatedResponse = await getRecipes({
     sortBy: searchParams.sortBy,
-    filters: filters,
+    filters: {
+      diets: dietFilters,
+    },
     page: 1,
     limit: 9,
   });
@@ -36,8 +40,8 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
           </div>
         </section>
         <RecipesPageClient
-          initialRecipes={initialRecipes}
-          initialSortBy={searchParams.sortBy}
+          initialRecipes={paginatedResponse.data}
+          initialMeta={paginatedResponse.meta}
         />
       </main>
     </div>
