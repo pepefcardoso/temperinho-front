@@ -1,10 +1,6 @@
 import type { Post } from "./blog";
+import { Image } from "./image";
 import type { Recipe } from "./recipe";
-
-interface Image {
-  id: number;
-  url: string;
-}
 
 export interface User {
   id: number;

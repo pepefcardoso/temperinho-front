@@ -1,9 +1,5 @@
 import { User } from "@/types/user";
-
-interface Image {
-  id: number;
-  url: string;
-}
+import { Image } from "./image";
 
 export enum RecipeDifficultyEnum {
   FACIL = 'Fácil',

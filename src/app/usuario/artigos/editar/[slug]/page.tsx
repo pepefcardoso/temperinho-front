@@ -1,32 +1,38 @@
+import { ArticleForm } from '@/components/blog/ArticleForm';
+import { getPostById } from '@/lib/api/blog';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPostBySlug } from '@/lib/api/blog'; // Reutilizamos a função da API do blog
-import { ArticleForm } from '@/components/blog/ArticleForm';
 
 export const metadata: Metadata = {
     title: 'Editar Artigo | Leve Sabor',
 };
 
-interface EditPageProps {
-    params: { slug: string };
-}
+const extractIdFromSlug = (slug: string): number | null => {
+    const match = slug.match(/^(\d+)/);
+    return match ? parseInt(match[1], 10) : null;
+};
 
-export default async function EditArticlePage({ params }: EditPageProps) {
-    const article = await getPostBySlug(params.slug);
-
-    if (!article) {
+export default async function EditArticlePage({ params }: { params: { slug: string } }) {
+    const postId = extractIdFromSlug(params.slug);
+    if (!postId) {
         notFound();
     }
 
-    return (
-        <div className="container mx-auto py-8">
-            <div className="max-w-4xl mx-auto">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-foreground mb-1">Editar Artigo</h1>
-                    <p className="text-muted-foreground">Ajuste e melhore seu conteúdo.</p>
+    try {
+        const article = await getPostById(postId);
+        return (
+            <div className="container mx-auto py-8">
+                <div className="max-w-4xl mx-auto">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-foreground mb-1">Editar Artigo</h1>
+                        <p className="text-muted-foreground">Ajuste e melhore seu conteúdo.</p>
+                    </div>
+                    <ArticleForm action="update" initialData={article} />
                 </div>
-                <ArticleForm action="update" initialData={article} />
             </div>
-        </div>
-    );
+        );
+    } catch (error) {
+        console.error("Erro ao buscar artigo para edição:", error);
+        notFound();
+    }
 }
