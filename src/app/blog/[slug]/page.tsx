@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Calendar, User, Clock, Eye } from 'lucide-react';
-import AdBanner from '@/components/AdBanner';
+import AdBanner from '@/components/marketing/AdBanner';
 import { getPostBySlug } from '@/lib/api/blog';
 import { PostActions } from '@/components/PostActions';
 

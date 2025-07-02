@@ -1,18 +1,46 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getMarketingData } from '@/lib/api/marketing';
 import { Button } from '@/components/ui/button';
-import { StatsCounter } from '@/components/StatsCounter';
-import { PricingCard } from '@/components/PricingCard';
+import { StatsCounter } from '@/components/marketing/StatsCounter';
+import { PricingCard } from '@/components/marketing/PricingCard';
+import { getMarketingData } from '@/lib/api/marketing';
+import type { MarketingStat } from '@/types/marketing';
 
 export const metadata: Metadata = {
     title: 'Anuncie Conosco | Leve Sabor',
     description: 'Conecte sua marca com milhares de pessoas apaixonadas por culinária inclusiva e alimentação saudável.',
 };
 
-export default async function MarketingPage() {
-    const { stats, packages } = await getMarketingData();
+export default function MarketingPage() {
+    const { stats, packages } = getMarketingData();
+
+    const formattedStats: MarketingStat[] = [
+        {
+            value: stats.users,
+            label: 'Usuários na Comunidade',
+            iconName: 'Users',
+            growth: '+12% este mês',
+        },
+        {
+            value: stats.recipes,
+            label: 'Receitas Publicadas',
+            iconName: 'ChefHat',
+            growth: '+50 novas',
+        },
+        {
+            value: stats.posts,
+            label: 'Artigos no Blog',
+            iconName: 'Newspaper',
+            growth: '+20 novos',
+        },
+        {
+            value: '4.8', // Valor como string para demonstrar o sufixo
+            label: 'Avaliação Média',
+            iconName: 'Star',
+            growth: 'Baseado em 500+ reviews',
+        }
+    ];
 
     return (
         <div className="bg-background">
@@ -47,7 +75,7 @@ export default async function MarketingPage() {
                             <h2 className="text-3xl font-display font-bold text-foreground mb-4">Números que Impressionam</h2>
                             <p className="text-muted-foreground max-w-2xl mx-auto">Nossa audiência engajada cresce constantemente, oferecendo excelentes oportunidades.</p>
                         </div>
-                        <StatsCounter stats={stats} />
+                        <StatsCounter stats={formattedStats} />
                     </div>
                 </section>
 

@@ -10,7 +10,7 @@ import { toggleFavoriteRecipe } from '@/lib/api/user';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import AdBanner from './AdBanner';
+import AdBanner from './marketing/AdBanner';
 
 const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value: string | number, label: string }) => (
     <div className="text-center p-3 bg-muted rounded-lg">

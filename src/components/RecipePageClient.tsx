@@ -10,7 +10,7 @@ import DietaryFilters from '@/components/DietaryFilters';
 import RecipeCard from '@/components/RecipeCard';
 import type { Recipe, DietaryTag } from '@/types/recipe';
 import { fetchMoreRecipes } from '@/app/receitas/actions';
-import AdBanner from './AdBanner';
+import AdBanner from './marketing/AdBanner';
 import Link from 'next/link';
 
 interface RecipesPageClientProps {

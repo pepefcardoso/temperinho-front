@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Recipe } from '@/types/recipe';
 import { cn } from '@/lib/utils';
-import AdBanner from '@/components/AdBanner';
+import AdBanner from '@/components/marketing/AdBanner';
 
 interface RecipeContentProps {
     recipe: Recipe;

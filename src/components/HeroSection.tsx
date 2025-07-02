@@ -1,6 +1,6 @@
 import { getMarketingData } from '@/lib/api/marketing';
 import { HeroSearchForm } from './HeroSearchForm';
-import { StatsCounter } from './StatsCounter';
+import { StatsCounter } from './marketing/StatsCounter';
 
 const HeroSection = async () => {
     const { stats } = await getMarketingData();

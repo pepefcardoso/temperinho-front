@@ -2,15 +2,8 @@
 
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
-import type { MarketingStat } from '@/types/marketing';
-import { Users, TrendingUp, Star, Target } from 'lucide-react';
-
-const iconMap = {
-    Users,
-    TrendingUp,
-    Star,
-    Target,
-};
+import * as LucideIcons from 'lucide-react';
+import { MarketingStat } from '@/types/marketing';
 
 interface StatsCounterProps {
     stats: MarketingStat[];
@@ -23,25 +16,27 @@ const StatItem = ({ stat }: { stat: MarketingStat }) => {
     });
 
     const endValue = typeof stat.value === 'string'
-        ? parseFloat(stat.value)
+        ? parseFloat(stat.value.replace(',', '.'))
         : stat.value;
+        
     const suffix = typeof stat.value === 'string'
-        ? stat.value.replace(/[0-9.]/g, '')
+        ? stat.value.replace(/[0-9.,]/g, '')
         : '';
 
-    const IconComponent = iconMap[stat.iconName];
+    // Mapeia o nome do ícone para o componente real do Lucide
+    const IconComponent = LucideIcons[stat.iconName] as React.ElementType;
 
     return (
         <div ref={ref} className="text-center bg-background p-6 rounded-xl border">
             {IconComponent && <IconComponent className="h-8 w-8 text-primary mx-auto mb-4" />}
 
             <div className="text-3xl md:text-4xl font-bold text-primary">
-                {inView ? <CountUp end={endValue} duration={2.5} suffix={suffix} decimals={stat.value === 4.8 ? 1 : 0} separator="." decimal="," /> : `0${suffix}`}
+                {inView ? <CountUp end={endValue} duration={2.5} suffix={suffix} decimals={String(endValue).includes('.') ? 1 : 0} separator="." decimal="," /> : `0${suffix}`}
             </div>
             <div className="text-muted-foreground font-medium mt-1">{stat.label}</div>
             {stat.growth && (
                 <div className="text-sm text-green-500 font-semibold mt-1 flex items-center justify-center gap-1">
-                    <TrendingUp className="h-4 w-4" />
+                    <LucideIcons.TrendingUp className="h-4 w-4" />
                     {stat.growth}
                 </div>
             )}
@@ -51,7 +46,7 @@ const StatItem = ({ stat }: { stat: MarketingStat }) => {
 
 export function StatsCounter({ stats }: StatsCounterProps) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {stats.map((stat) => (
                 <StatItem key={stat.label} stat={stat} />
             ))}

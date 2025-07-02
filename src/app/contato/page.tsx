@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
-import { ContactForm } from '@/components/ContactForm';
-import AdBanner from '@/components/AdBanner';
+import { ContactForm } from '@/components/marketing/ContactForm';
+import AdBanner from '@/components/marketing/AdBanner';
 
 export const metadata: Metadata = {
   title: 'Contato | Leve Sabor',

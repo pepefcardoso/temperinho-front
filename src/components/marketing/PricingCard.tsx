@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowRight } from 'lucide-react';
-import type { PricingPackage } from '@/types/marketing';
 import Link from 'next/link';
+import { PricingPackage } from '@/types/marketing';
 
 interface PricingCardProps {
     pkg: PricingPackage;
