@@ -1,16 +1,29 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { BlogPostCard } from '@/components/BlogPostCard';
-import { getPosts, getFeaturedPosts, getAllCategories } from '@/lib/api/blog';
+import { BlogPostCard } from '@/components/blog/BlogPostCard';
+import { getPosts, getPostCategories } from '@/lib/api/blog';
+import type { Post, PostCategory } from '@/types/blog';
 
-export default async function BlogPage({ searchParams }: { searchParams: { category?: string; tag?: string } }) {
-  const currentCategory = searchParams.category || 'Todas';
+interface BlogPageProps {
+  searchParams: { category_id?: string };
+}
 
-  const allPosts = await getPosts({ category: currentCategory === 'Todas' ? undefined : currentCategory, tag: searchParams.tag });
-  const featuredPosts = await getFeaturedPosts();
-  const categories = await getAllCategories();
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const currentCategoryId = searchParams.category_id ? parseInt(searchParams.category_id, 10) : undefined;
 
-  const regularPosts = allPosts.filter(p => !p.featured);
+  const [paginatedResponse, categories] = await Promise.all([
+    getPosts({
+      filters: {
+        category_id: currentCategoryId,
+      },
+      limit: 100
+    }),
+    getPostCategories()
+  ]);
+
+  const allPosts: Post[] = paginatedResponse.data;
+  const featuredPosts = allPosts.slice(0, 3);
+  const regularPosts = allPosts.slice(3);
 
   return (
     <div className="bg-background">
@@ -22,12 +35,14 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
           </div>
         </section>
 
-        {currentCategory === 'Todas' && featuredPosts.length > 0 && (
+        {!currentCategoryId && featuredPosts.length > 0 && (
           <section className="py-12">
             <div className="container mx-auto px-4">
               <h2 className="text-2xl font-semibold text-foreground mb-8">Artigos em Destaque</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-[25rem]">
-                {featuredPosts.map((post) => <BlogPostCard key={post.id} post={post} variant="featured" />)}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredPosts.map((post: Post) => (
+                  <BlogPostCard key={post.id} post={post} variant="featured" />
+                ))}
               </div>
             </div>
           </section>
@@ -36,9 +51,12 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
         <section className="py-8 border-y bg-card sticky top-16 z-10">
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap gap-3 justify-center">
-              {categories.map((category) => (
-                <Button key={category} variant={currentCategory === category ? "default" : "outline"} asChild>
-                  <Link href={category === 'Todas' ? '/blog' : `/blog?category=${category}`}>{category}</Link>
+              <Button key="todas" variant={!currentCategoryId ? "default" : "outline"} asChild>
+                <Link href="/blog">Todas</Link>
+              </Button>
+              {categories.map((category: PostCategory) => (
+                <Button key={category.id} variant={currentCategoryId === category.id ? "default" : "outline"} asChild>
+                  <Link href={`/blog?category_id=${category.id}`}>{category.name}</Link>
                 </Button>
               ))}
             </div>
@@ -48,9 +66,11 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {regularPosts.map((post) => <BlogPostCard key={post.id} post={post} variant="default" />)}
+              {regularPosts.map((post: Post) => (
+                <BlogPostCard key={post.id} post={post} variant="default" />
+              ))}
             </div>
-            {regularPosts.length === 0 && (
+            {allPosts.length === 0 && (
               <p className="text-center text-muted-foreground py-12">Nenhum artigo encontrado para esta categoria.</p>
             )}
           </div>

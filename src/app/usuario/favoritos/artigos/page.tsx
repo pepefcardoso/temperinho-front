@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { BookOpen } from 'lucide-react';
 import { getFavoriteArticles } from '@/lib/api/user';
-import { UserFavoritesArticlesClient } from '@/components/UserFavoritesArticlesClient';
+import { UserFavoritesArticlesClient } from '@/components/blog/UserFavoritesArticlesClient';
 
 export const metadata: Metadata = {
     title: 'Meus Favoritos | Leve Sabor',

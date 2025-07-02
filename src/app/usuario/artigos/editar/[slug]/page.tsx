@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getPostBySlug } from '@/lib/api/blog'; // Reutilizamos a função da API do blog
-import { ArticleForm } from '@/components/ArticleForm';
+import { ArticleForm } from '@/components/blog/ArticleForm';
 
 export const metadata: Metadata = {
     title: 'Editar Artigo | Leve Sabor',

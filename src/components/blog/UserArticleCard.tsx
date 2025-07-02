@@ -5,6 +5,7 @@ import { Edit, Trash2, Calendar, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+
 import type { Post } from '@/types/blog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,8 +33,6 @@ export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
             }
         }
     }
-
-    const slug = article.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
     return (
         <Card className="hover:shadow-md transition-shadow">

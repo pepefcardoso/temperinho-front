@@ -1,4 +1,4 @@
-import { ArticleForm } from '@/components/ArticleForm';
+import { ArticleForm } from '@/components/blog/ArticleForm';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

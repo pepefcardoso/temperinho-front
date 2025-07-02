@@ -1,5 +1,5 @@
 import HeroSection from '@/components/HeroSection';
-import BlogSection from '@/components/BlogSection';
+import BlogSection from '@/components/blog/BlogSection';
 import NewsletterSection from '@/components/Newsletter/NewsletterSection';
 import RecipeSection from '@/components/RecipeSection';
 import { getFeaturedRecipes } from '@/lib/api/recipe';

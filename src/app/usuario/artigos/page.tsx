@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 import { getUserArticles, getUserArticleStats } from '@/lib/api/user';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { UserArticlesClient } from '@/components/UserArticlesClient';
+import { UserArticlesClient } from '@/components/blog/UserArticlesClient';
 
 export const metadata: Metadata = {
     title: 'Meus Artigos | Leve Sabor',
