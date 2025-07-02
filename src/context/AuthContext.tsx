@@ -7,7 +7,8 @@ import {
 } from "react";
 import axiosClient from "../lib/axios";
 import { useRouter } from "next/router";
-import type { User, AuthContextType } from "@/types/auth";
+import type { AuthContextType } from "@/types/auth";
+import { User } from "@/types/user";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

@@ -1,32 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-const quickFilters = [
-    { label: 'Vegano', emoji: '🌱', query: 'vegano' },
-    { label: 'Sem Glúten', emoji: '🌾', query: 'sem glúten' },
-    { label: 'Sem Lactose', emoji: '🥛', query: 'sem lactose' },
-    { label: 'Vegetariano', emoji: '🥬', query: 'vegetariano' },
-];
+import { getRecipeDiets } from '@/lib/api/recipe';
+import type { RecipeDiet } from '@/types/recipe';
 
 export function HeroSearchForm() {
     const [query, setQuery] = useState('');
+    const [quickFilters, setQuickFilters] = useState<RecipeDiet[]>([]);
     const router = useRouter();
 
-    const handleSearch = (searchQuery: string) => {
-        if (!searchQuery.trim()) return;
+    useEffect(() => {
+        const fetchDiets = async () => {
+            try {
+                const diets = await getRecipeDiets();
+                setQuickFilters(diets.slice(0, 4));
+            } catch (error) {
+                console.error("Falha ao buscar as dietas:", error);
+            }
+        };
 
-        const encodedQuery = encodeURIComponent(searchQuery.trim());
-        router.push(`/receitas?q=${encodedQuery}`);
-    };
+        fetchDiets();
+    }, []);
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        handleSearch(query);
+        if (!query.trim()) return;
+
+        const params = new URLSearchParams();
+        params.set('title', query.trim());
+        router.push(`/receitas?${params.toString()}`);
+    };
+
+    const handleQuickFilterClick = (dietId: number) => {
+        const params = new URLSearchParams();
+        params.set('diets', dietId.toString());
+        router.push(`/receitas?${params.toString()}`);
     };
 
     return (
@@ -37,26 +49,27 @@ export function HeroSearchForm() {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Busque por 'bolo de chocolate vegano'..."
+                    placeholder="Busque por 'bolo de chocolate'"
                     className="w-full pl-12 pr-4 py-3 text-lg bg-card/80 backdrop-blur-sm border-border focus:border-primary focus:ring-primary rounded-xl shadow-lg"
                     style={{ height: 'auto' }}
                 />
             </form>
 
-            <div className="flex flex-wrap justify-center items-center gap-3">
-                <span className="text-sm font-medium text-muted-foreground">Ou busque por:</span>
-                {quickFilters.map((filter) => (
-                    <Button
-                        key={filter.query}
-                        variant="outline"
-                        onClick={() => handleSearch(filter.query)}
-                        className="bg-card/60 border-border text-foreground hover:bg-accent hover:border-primary rounded-full px-4 py-2 text-sm"
-                    >
-                        <span className="mr-2">{filter.emoji}</span>
-                        {filter.label}
-                    </Button>
-                ))}
-            </div>
+            {quickFilters.length > 0 && (
+                <div className="flex flex-wrap justify-center items-center gap-3">
+                    <span className="text-sm font-medium text-muted-foreground">Ou busque por:</span>
+                    {quickFilters.map((diet) => (
+                        <Button
+                            key={diet.id}
+                            variant="outline"
+                            onClick={() => handleQuickFilterClick(diet.id)}
+                            className="bg-card/60 border-border text-foreground hover:bg-accent hover:border-primary rounded-full px-4 py-2 text-sm"
+                        >
+                            {diet.name}
+                        </Button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

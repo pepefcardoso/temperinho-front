@@ -58,6 +58,9 @@ export interface Recipe {
   steps?: RecipeStep[];
   ingredients?: RecipeIngredient[];
   image?: Image;
-  is_favorite?: boolean;
+  is_favorited?: boolean;
   average_rating?: number;
+  ratings_count?: number;
+  created_at: string;
+  updated_at: string;
 }

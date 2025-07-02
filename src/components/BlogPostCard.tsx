@@ -1,8 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { User, Clock } from 'lucide-react';
+import { User } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
-
 import type { Post } from '@/types/blog';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -34,14 +35,16 @@ const MetaInfo = ({ icon: Icon, text }: { icon: React.ElementType, text: string 
     </div>
 );
 
-
 export function BlogPostCard({ post, variant, className }: BlogPostCardProps) {
+    const slug = post.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    const href = `/blog/${slug}`;
+
     return (
         <article className={cn(cardVariants({ variant }), className)}>
-            <Link href={`/blog/${post.slug}`} className="block w-full h-full" aria-label={`Ler o artigo ${post.title}`}>
+            <Link href={href} className="block w-full h-full" aria-label={`Ler o artigo ${post.title}`}>
                 <div className={cn("relative w-full overflow-hidden", variant === 'featured' ? 'h-full' : 'h-48')}>
                     <Image
-                        src={post.imageUrl}
+                        src={post.image?.url ?? '/images/placeholder.png'}
                         alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -57,7 +60,7 @@ export function BlogPostCard({ post, variant, className }: BlogPostCardProps) {
                     {variant === 'featured' ? (
                         <Badge className="w-fit">Destaque</Badge>
                     ) : (
-                        <Badge variant="secondary" className="w-fit mb-2">{post.category}</Badge>
+                        <Badge variant="secondary" className="w-fit mb-2">{post.category?.name ?? 'Sem Categoria'}</Badge>
                     )}
 
                     <h3 className={cn(
@@ -70,11 +73,10 @@ export function BlogPostCard({ post, variant, className }: BlogPostCardProps) {
                     {variant === 'default' && (
                         <>
                             <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-grow">
-                                {post.excerpt}
+                                {post.summary}
                             </p>
                             <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground border-t border-border pt-4 mt-auto">
-                                <MetaInfo icon={User} text={post.author.name} />
-                                <MetaInfo icon={Clock} text={`${post.readTimeInMinutes} min`} />
+                                <MetaInfo icon={User} text={post.author?.name ?? 'Autor Desconhecido'} />
                             </div>
                         </>
                     )}

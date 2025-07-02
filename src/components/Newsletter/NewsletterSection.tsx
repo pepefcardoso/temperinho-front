@@ -1,22 +1,47 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { subscribeToNewsletter } from '@/lib/api/customer';
+import axios from 'axios';
+
+const newsletterSchema = z.object({
+  email: z.string().email({ message: "Por favor, insira um email válido." }),
+});
+
+type NewsletterFormData = z.infer<typeof newsletterSchema>;
 
 export default function NewsletterSection() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset
+  } = useForm<NewsletterFormData>({
+    resolver: zodResolver(newsletterSchema),
+  });
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-    await new Promise(res => setTimeout(res, 1500));
-    if (email.includes('@')) {
-      setStatus('success');
-    } else {
-      setStatus('error');
+  const onSubmit = async (data: NewsletterFormData) => {
+    try {
+      // Chama a função da API que se conecta ao backend
+      await subscribeToNewsletter(data.email);
+      toast.success('Inscrição realizada com sucesso! 🎉');
+      reset(); // Limpa o formulário após o sucesso
+    } catch (error) {
+      // Tratamento de erro aprimorado
+      if (axios.isAxiosError(error) && error.response?.status === 422) {
+        // Erro de validação do Laravel (e.g., email já existe)
+        toast.error('Este e-mail já está cadastrado.');
+      } else {
+        // Outros erros
+        toast.error('Ocorreu um erro. Por favor, tente novamente.');
+      }
+      console.error(error);
     }
   };
 
@@ -29,31 +54,31 @@ export default function NewsletterSection() {
         <p className="text-xl text-sage-100 mb-8 max-w-2xl mx-auto">
           Receba receitas exclusivas, dicas de substituições e novidades direto no seu email.
         </p>
-        
-        {status === 'success' ? (
-          <p className="text-xl text-white font-medium">Obrigado por se inscrever! 🎉</p>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <div className="flex-1 flex flex-col">
             <Input
+              {...register('email')}
               type="email"
               placeholder="Digite seu email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={status === 'loading'}
+              disabled={isSubmitting}
               required
-              className="flex-1 px-4 py-3 rounded-xl border-0 text-warm-900 placeholder-warm-500 focus:ring-2 focus:ring-white focus:outline-none"
+              className="px-4 py-3 rounded-xl border-0 text-warm-900 placeholder-warm-500 focus:ring-2 focus:ring-white focus:outline-none"
+              aria-invalid={!!errors.email}
             />
-            <Button type="submit" size="lg" disabled={status === 'loading'} className="bg-sunset-500 hover:bg-sunset-600 text-white font-medium whitespace-nowrap">
-              {status === 'loading' ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              Assinar Grátis
-            </Button>
-          </form>
-        )}
-        
-        {status === 'error' && <p className="text-red-300 text-sm mt-4">Ocorreu um erro. Tente novamente.</p>}
-        {status !== 'success' && <p className="text-sage-200 text-sm mt-4">Sem spam. Cancele a qualquer momento.</p>}
+            {errors.email && (
+              <p className="text-red-300 text-sm mt-2 text-left">{errors.email.message}</p>
+            )}
+          </div>
+          <Button type="submit" size="lg" disabled={isSubmitting} className="bg-sunset-500 hover:bg-sunset-600 text-white font-medium whitespace-nowrap">
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
+            Assinar Grátis
+          </Button>
+        </form>
+
+        <p className="text-sage-200 text-sm mt-4">Sem spam. Cancele a qualquer momento.</p>
       </div>
     </section>
   );

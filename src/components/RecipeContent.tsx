@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Recipe } from '@/types/recipe';
 import { cn } from '@/lib/utils';
-import { Lightbulb } from 'lucide-react';
-import AdBanner from '@/components/AdBanner'; // Corrigido o caminho de importação
+import AdBanner from '@/components/AdBanner';
 
 interface RecipeContentProps {
     recipe: Recipe;
@@ -14,82 +13,55 @@ interface RecipeContentProps {
 export function RecipeContent({ recipe }: RecipeContentProps) {
     const [currentStep, setCurrentStep] = useState(-1);
 
+    const hasIngredients = recipe.ingredients && recipe.ingredients.length > 0;
+    const hasSteps = recipe.steps && recipe.steps.length > 0;
+
     return (
         <section className="py-12 bg-background">
             <div className="container mx-auto px-4 max-w-4xl">
-                <Tabs defaultValue="ingredients" className="space-y-8">
-                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
-                        <TabsTrigger value="ingredients">Ingredientes</TabsTrigger>
-                        <TabsTrigger value="instructions">Modo de Preparo</TabsTrigger>
-                        {recipe.nutritionalInfo && <TabsTrigger value="nutrition">Nutricional</TabsTrigger>}
-                        {recipe.tips && recipe.tips.length > 0 && <TabsTrigger value="tips">Dicas</TabsTrigger>}
+                <Tabs defaultValue={hasIngredients ? "ingredients" : "instructions"} className="space-y-8">
+                    <TabsList className="grid w-full grid-cols-2 h-auto">
+                        {hasIngredients && <TabsTrigger value="ingredients">Ingredientes</TabsTrigger>}
+                        {hasSteps && <TabsTrigger value="instructions">Modo de Preparo</TabsTrigger>}
                     </TabsList>
 
-                    {/* Tab de Ingredientes */}
-                    <TabsContent value="ingredients">
-                        <div className="bg-card rounded-xl p-6 shadow-sm border">
-                            <h3 className="text-xl font-semibold text-foreground mb-6">Ingredientes para {recipe.servings}</h3>
-                            <ul className="space-y-4">
-                                {recipe.ingredients.map((ing, index) => (
-                                    <li key={index} className="flex items-start justify-between p-3 bg-muted rounded-lg border">
-                                        <div>
-                                            <span className="font-medium text-foreground">{ing.quantity}</span>
-                                            <span className="ml-2 text-foreground/80">{ing.item}</span>
-                                            {ing.notes && (<p className="text-sm text-muted-foreground mt-1 italic">{ing.notes}</p>)}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </TabsContent>
-
-                    {/* Tab de Modo de Preparo */}
-                    <TabsContent value="instructions">
-                        <div className="bg-card rounded-xl p-6 shadow-sm border">
-                            <h3 className="text-xl font-semibold text-foreground mb-6">Modo de Preparo</h3>
-                            <div className="space-y-4">
-                                {/* CORREÇÃO: O map agora espera um objeto 'step' e acessa 'step.text' */}
-                                {recipe.instructions.map((step, index) => (
-                                    <div key={index} className={cn('flex items-start space-x-4 p-4 rounded-lg transition-colors cursor-pointer', currentStep === index ? 'bg-primary/10 border-l-4 border-primary' : 'bg-muted hover:bg-muted/80')} onClick={() => setCurrentStep(index)}>
-                                        <div className={cn('flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors', currentStep === index ? 'bg-primary text-primary-foreground' : 'bg-border text-foreground')}>
-                                            {index + 1}
-                                        </div>
-                                        <p className="text-foreground/90 leading-relaxed pt-1">{step.text}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </TabsContent>
-
-                    {/* Tab Nutricional */}
-                    {recipe.nutritionalInfo && (
-                        <TabsContent value="nutrition">
+                    {hasIngredients && (
+                        <TabsContent value="ingredients">
                             <div className="bg-card rounded-xl p-6 shadow-sm border">
-                                <h3 className="text-xl font-semibold text-foreground mb-6">Informações Nutricionais (por porção)</h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                                    {Object.entries(recipe.nutritionalInfo).map(([key, value]) => (
-                                        <div key={key} className="text-center p-4 bg-muted rounded-lg border">
-                                            <div className="text-lg font-bold text-foreground">{value}</div>
-                                            <div className="text-sm text-muted-foreground capitalize">{key.replace('_', ' ')}</div>
-                                        </div>
+                                <h3 className="text-xl font-semibold text-foreground mb-6">Ingredientes para {recipe.portion} porções</h3>
+                                <ul className="space-y-4">
+                                    {recipe.ingredients?.map((ing, index) => (
+                                        <li key={index} className="flex items-start justify-between p-3 bg-muted rounded-lg border">
+                                            <div>
+                                                <span className="font-medium text-foreground">{ing.quantity} {ing.unit?.name}</span>
+                                                <span className="ml-2 text-foreground/80">{ing.name}</span>
+                                            </div>
+                                        </li>
                                     ))}
-                                </div>
+                                </ul>
                             </div>
                         </TabsContent>
                     )}
 
-                    {/* Tab de Dicas */}
-                    {recipe.tips && recipe.tips.length > 0 && (
-                        <TabsContent value="tips">
+                    {hasSteps && (
+                        <TabsContent value="instructions">
                             <div className="bg-card rounded-xl p-6 shadow-sm border">
-                                <h3 className="text-xl font-semibold text-foreground mb-6">Dicas do Chef</h3>
+                                <h3 className="text-xl font-semibold text-foreground mb-6">Modo de Preparo</h3>
                                 <div className="space-y-4">
-                                    {recipe.tips.map((tip, index) => (
-                                        <div key={index} className="flex items-start space-x-3 p-4 bg-accent/10 rounded-lg border border-accent/20">
-                                            <div className="flex-shrink-0 w-6 h-6 bg-accent rounded-full flex items-center justify-center mt-1">
-                                                <Lightbulb className="h-4 w-4 text-accent-foreground" />
+                                    {recipe.steps?.map((step, index) => (
+                                        <div
+                                            key={step.id}
+                                            className={cn('flex items-start space-x-4 p-4 rounded-lg transition-colors cursor-pointer',
+                                                currentStep === index ? 'bg-primary/10 border-l-4 border-primary' : 'bg-muted hover:bg-muted/80'
+                                            )}
+                                            onClick={() => setCurrentStep(index)}
+                                        >
+                                            <div className={cn('flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors',
+                                                currentStep === index ? 'bg-primary text-primary-foreground' : 'bg-border text-foreground'
+                                            )}>
+                                                {step.order}
                                             </div>
-                                            <p className="text-foreground/90">{tip}</p>
+                                            <p className="text-foreground/90 leading-relaxed pt-1">{step.description}</p>
                                         </div>
                                     ))}
                                 </div>

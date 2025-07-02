@@ -1,34 +1,49 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import DietaryFilters from '@/components/DietaryFilters';
 import FeaturedRecipes from '@/components/FeaturedRecipes';
-import type { Recipe, DietaryTag } from '@/types/recipe';
-import { getFilteredRecipes } from '@/lib/api/recipe';
+import type { Recipe } from '@/types/recipe';
+import { getRecipes } from '@/lib/api/recipe';
 
 interface RecipeSectionProps {
     initialRecipes: Recipe[];
 }
 
 export default function RecipeSection({ initialRecipes }: RecipeSectionProps) {
-    const [selectedFilters, setSelectedFilters] = useState<DietaryTag[]>([]);
+    const [selectedFilters, setSelectedFilters] = useState<number[]>([]);
     const [recipes, setRecipes] = useState<Recipe[]>(initialRecipes);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchRecipes = async () => {
             setIsLoading(true);
-            const newRecipes = selectedFilters.length > 0
-                ? await getFilteredRecipes(selectedFilters)
-                : initialRecipes;
-            setRecipes(newRecipes);
-            setIsLoading(false);
+            try {
+                const options = {
+                    filters: {
+                        diets: selectedFilters,
+                    },
+                };
+
+                const paginatedResponse = await getRecipes(options);
+                setRecipes(paginatedResponse.data);
+
+            } catch (error) {
+                console.error("Falha ao buscar receitas filtradas:", error);
+                setRecipes(initialRecipes);
+            } finally {
+                setIsLoading(false);
+            }
         };
 
-        fetchRecipes();
+        if (selectedFilters.length > 0) {
+            fetchRecipes();
+        } else {
+            setRecipes(initialRecipes);
+        }
     }, [selectedFilters, initialRecipes]);
 
-    const handleFiltersChange = (filters: DietaryTag[]) => {
+    const handleFiltersChange = (filters: number[]) => {
         setSelectedFilters(filters);
     };
 

@@ -1,13 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, Clock, Users } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
-
-import type { Recipe, DietaryTag, Difficulty } from '@/types/recipe';
+import { toast } from 'sonner';
+import { Recipe, RecipeDifficultyEnum } from '@/types/recipe';
 import { cn } from '@/lib/utils';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useAuth } from '@/context/AuthContext';
+import { toggleFavoriteRecipe } from '@/lib/api/user';
 
 const StatIcon = ({ icon: Icon, children }: { icon: React.ElementType, children: React.ReactNode }) => (
     <div className="flex items-center" title={String(children)}>
@@ -16,38 +18,20 @@ const StatIcon = ({ icon: Icon, children }: { icon: React.ElementType, children:
     </div>
 );
 
-const variantsConfig = {
-    variant: {
-        default: "bg-muted text-muted-foreground border-border",
-        vegan: "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800",
-        'gluten-free': "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-800",
-        'lactose-free': "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/50 dark:text-purple-300 dark:border-purple-800",
-        vegetarian: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/50 dark:text-emerald-300 dark:border-emerald-800",
-        'low-fodmap': "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:border-orange-800",
-        'keto': "bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-900/50 dark:text-slate-300 dark:border-slate-800",
-    }
-};
-
 const dietaryTagVariants = cva(
-    "inline-block px-2.5 py-1 text-xs font-medium rounded-full border",
-    { variants: variantsConfig, defaultVariants: { variant: "default" } }
+    "inline-block px-2.5 py-1 text-xs font-medium rounded-full border bg-muted text-muted-foreground border-border"
 );
 
-const difficultyStyles: Record<Difficulty, string> = {
-    'Fácil': 'text-primary',
-    'Médio': 'text-amber-500',
-    'Difícil': 'text-destructive',
+const difficultyStyles: Record<RecipeDifficultyEnum, string> = {
+    [RecipeDifficultyEnum.FACIL]: 'text-primary',
+    [RecipeDifficultyEnum.MEDIO]: 'text-amber-500',
+    [RecipeDifficultyEnum.DIFICIL]: 'text-destructive',
 };
 
 const cardVariants = cva(
     "bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-border",
     {
-        variants: {
-            viewMode: {
-                grid: "group flex flex-col hover:-translate-y-1",
-                list: "flex flex-row items-center",
-            }
-        },
+        variants: { viewMode: { grid: "group flex flex-col hover:-translate-y-1", list: "flex flex-row items-center" } },
         defaultVariants: { viewMode: "grid" }
     }
 );
@@ -57,31 +41,56 @@ interface RecipeCardProps extends VariantProps<typeof cardVariants> {
 }
 
 export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
-    const [isFavorited, setIsFavorited] = useLocalStorage(`favorite_${recipe.id}`, false);
+    const { user } = useAuth();
+    const [isFavorited, setIsFavorited] = useState(recipe.is_favorited ?? false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const getTagVariant = (tag: DietaryTag) => {
-        const validVariants = Object.keys(variantsConfig.variant);
-        return validVariants.includes(tag) ? tag : 'default';
+    const slug = recipe.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    const href = `/receitas/${slug}`;
+
+    const handleFavoriteClick = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (!user) {
+            toast.error("Você precisa estar logado para favoritar receitas.");
+            return;
+        }
+
+        setIsLoading(true);
+        const originalState = isFavorited;
+        setIsFavorited(!originalState);
+
+        try {
+            await toggleFavoriteRecipe(recipe.id);
+            toast.success(originalState ? "Receita removida dos favoritos!" : "Receita adicionada aos favoritos!");
+        } catch (error) {
+            setIsFavorited(originalState);
+            toast.error("Ocorreu um erro. Tente novamente.");
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <div className={cn(cardVariants({ viewMode }))}>
             <div className={cn("relative overflow-hidden flex-shrink-0", viewMode === 'grid' ? 'w-full h-48' : 'w-1/3 h-full max-w-48')}>
-                <Link href={`/receitas/${recipe.slug}`} aria-label={`Ver receita ${recipe.name}`}>
+                <Link href={href} aria-label={`Ver receita ${recipe.title}`}>
                     <Image
-                        src={recipe.imageUrl}
-                        alt={recipe.name}
+                        src={recipe.image?.url ?? '/images/placeholder.png'}
+                        alt={recipe.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 </Link>
                 <button
-                    onClick={(e) => { e.preventDefault(); setIsFavorited(!isFavorited); }}
+                    onClick={handleFavoriteClick}
+                    disabled={isLoading}
                     aria-label={isFavorited ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                     className={cn(
                         "absolute top-3 right-3 h-9 w-9 grid place-items-center rounded-full bg-card/80 backdrop-blur-sm transition-colors duration-200 hover:bg-card",
-                        isFavorited ? "text-destructive" : "text-muted-foreground hover:text-foreground"
+                        isFavorited ? "text-destructive" : "text-muted-foreground hover:text-foreground",
+                        isLoading && "cursor-not-allowed"
                     )}
                 >
                     <Heart className={cn("h-5 w-5 transition-all", isFavorited && "fill-destructive")} />
@@ -90,22 +99,22 @@ export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
 
             <div className={cn("p-4 flex flex-col space-y-3", viewMode === 'grid' ? 'flex-grow' : 'flex-1')}>
                 <div className="flex flex-wrap gap-2">
-                    {recipe.dietaryTags.slice(0, viewMode === 'grid' ? 2 : 3).map((tag) => (
-                        <span key={tag} className={dietaryTagVariants({ variant: getTagVariant(tag) as DietaryTag })}>
-                            {tag}
+                    {recipe.diets?.slice(0, viewMode === 'grid' ? 2 : 3).map((diet) => (
+                        <span key={diet.id} className={dietaryTagVariants()}>
+                            {diet.name}
                         </span>
                     ))}
                 </div>
                 <h3 className={cn("font-display font-bold text-foreground group-hover:text-primary transition-colors", viewMode === 'grid' ? 'text-xl line-clamp-2 flex-grow' : 'text-lg line-clamp-1')}>
-                    <Link href={`/receitas/${recipe.slug}`}>{recipe.name}</Link>
+                    <Link href={href}>{recipe.title}</Link>
                 </h3>
                 {viewMode === 'list' && (
                     <p className="text-muted-foreground text-sm line-clamp-2">{recipe.description}</p>
                 )}
                 <div className="flex items-center justify-between text-sm pt-3 border-t border-border mt-auto">
                     <div className="flex items-center space-x-4">
-                        <StatIcon icon={Clock}>{recipe.prepTimeMinutes} min</StatIcon>
-                        <StatIcon icon={Users}>{recipe.servings}</StatIcon>
+                        <StatIcon icon={Clock}>{recipe.time} min</StatIcon>
+                        <StatIcon icon={Users}>{recipe.portion} porções</StatIcon>
                     </div>
                     {recipe.difficulty && (
                         <div className={cn("font-bold", difficultyStyles[recipe.difficulty])}>

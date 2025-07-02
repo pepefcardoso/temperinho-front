@@ -1,10 +1,16 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getLatestPosts } from '@/lib/api/blog';
+import { getPosts } from '@/lib/api/blog';
 import { BlogPostCard } from './BlogPostCard';
 
 const BlogSection = async () => {
-  const posts = await getLatestPosts(3);
+  const paginatedResponse = await getPosts({
+    sortBy: 'created_at',
+    sortDirection: 'desc',
+    limit: 3,
+  });
+
+  const posts = paginatedResponse.data;
 
   if (!posts || posts.length === 0) {
     return null;
