@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { Recipe } from '@/types/recipe';
 import RecipeCard from './RecipeCard';
 import { Button } from '@/components/ui/button';
-import RecipeSkeleton from '../skeletons/RecipeSkeleton';
+import RecipeSkeleton from '../Skeletons/RecipeSkeleton';
 
 interface FeaturedRecipesProps {
     recipes: Recipe[];

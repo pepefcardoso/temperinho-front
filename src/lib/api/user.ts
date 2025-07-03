@@ -1,6 +1,6 @@
 import { Post } from "@/types/blog";
-import axiosClient from "../axios";
 import type { User, UserFavoriteRecipe, UserManagedRecipe } from "@/types/user";
+import axiosClient from "@/lib/axios";
 
 interface ToggleFavoriteResponse {
   attached: number[];
@@ -8,27 +8,27 @@ interface ToggleFavoriteResponse {
 }
 
 export async function getAuthenticatedUserProfile(): Promise<User> {
-  const response = await axiosClient.get("/api/users/me");
+  const response = await axiosClient.get("/users/me");
   return response.data.data;
 }
 
 export async function getUserManagedRecipes(): Promise<UserManagedRecipe[]> {
-  const response = await axiosClient.get("/api/recipes/my");
+  const response = await axiosClient.get("/recipes/my");
   return response.data.data;
 }
 
 export async function getUserFavoriteRecipes(): Promise<UserFavoriteRecipe[]> {
-  const response = await axiosClient.get("/api/recipes/favorites");
+  const response = await axiosClient.get("/recipes/favorites");
   return response.data.data;
 }
 
 export async function getUserManagedPosts(): Promise<Post[]> {
-  const response = await axiosClient.get("/api/posts/my");
+  const response = await axiosClient.get("/posts/my");
   return response.data.data;
 }
 
 export async function getUserFavoritePosts(): Promise<Post[]> {
-  const response = await axiosClient.get("/api/posts/favorites");
+  const response = await axiosClient.get("/posts/favorites");
   return response.data.data;
 }
 

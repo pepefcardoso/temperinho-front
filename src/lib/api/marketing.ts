@@ -1,8 +1,8 @@
 import { marketingStats, pricingPackages } from "@/lib/data/marketing";
-import type { MarketingStats, PricingPackage } from "@/types/marketing";
+import type {MarketingStat, PricingPackage } from "@/types/marketing";
 
 export function getMarketingData(): {
-  stats: MarketingStats;
+  stats: MarketingStat[];
   packages: PricingPackage[];
 } {
   return {

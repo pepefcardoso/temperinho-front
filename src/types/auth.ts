@@ -22,3 +22,10 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
+
+export interface ResetPasswordData {
+  token: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}

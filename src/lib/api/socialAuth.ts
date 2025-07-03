@@ -1,21 +1,10 @@
-import axiosClient from "../axios";
+// src/lib/api/socialAuth.ts
+
+import axiosClient from "@/lib/axios";
 
 export type Provider = "google" | "github" | "facebook";
 
-export const getSocialRedirectUrl = async (provider: Provider) => {
-  const response = await axiosClient.get(`/api/auth/social/${provider}`);
-  return response.data.url;
-};
-
-export const handleSocialCallback = async (
-  provider: Provider,
-  code: string
-) => {
-  const response = await axiosClient.get(
-    `/api/auth/social/${provider}/callback`,
-    {
-      params: { code },
-    }
-  );
+export const getSocialRedirectUrl = async (provider: Provider): Promise<{ url: string }> => {
+  const response = await axiosClient.get(`/auth/social/${provider}`);
   return response.data;
 };

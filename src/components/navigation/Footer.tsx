@@ -3,8 +3,8 @@ import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
 import { getRecipeDiets } from '@/lib/api/recipe';
-import NewsletterSection from '../newsletter/NewsletterSection';
 import { RecipeDiet } from '@/types/recipe';
+import NewsletterSection from '../Newsletter/NewsletterSection';
 
 export default async function Footer() {
     const currentYear = new Date().getFullYear();

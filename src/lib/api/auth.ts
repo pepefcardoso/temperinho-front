@@ -1,4 +1,5 @@
-import axiosClient from "../axios";
+import { ResetPasswordData } from "@/types/auth";
+import axiosClient from "@/lib/axios";
 
 export const registerUser = async (data: any) => {
   const response = await axiosClient.post("/api/users", data);
@@ -18,5 +19,10 @@ export const forgotPassword = async (email: string) => {
   const response = await axiosClient.post("/api/auth/password/forgot", {
     email,
   });
+  return response.data;
+};
+
+export const resetPassword = async (data: ResetPasswordData) => {
+  const response = await axiosClient.post("/api/auth/password/reset", data);
   return response.data;
 };

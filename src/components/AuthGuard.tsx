@@ -1,7 +1,9 @@
+'use client';
 
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, ReactNode } from "react";
+import { Loader2 } from "lucide-react";
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -18,7 +20,11 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   }, [user, loading, router]);
 
   if (loading || !user) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   }
 
   return <>{children}</>;

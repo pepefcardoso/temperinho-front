@@ -130,7 +130,7 @@ export default function Header() {
                             <UserNav />
                         ) : (
                             <Button variant="ghost" size="sm" asChild>
-                                <Link href="/login">
+                                <Link href="/auth/login">
                                     <User className="h-5 w-5 mr-0 sm:mr-2" />
                                     <span className="hidden sm:inline">Entrar</span>
                                 </Link>
