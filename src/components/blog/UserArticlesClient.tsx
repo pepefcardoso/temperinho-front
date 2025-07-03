@@ -5,11 +5,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import Link from 'next/link';
 import { Search, Plus } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { UserArticleCard } from './UserArticleCard';
 import type { Post, PostCategory } from '@/types/blog';
 import { getPostCategories } from '@/lib/api/blog';
@@ -25,14 +25,18 @@ export function UserArticlesClient({ initialArticles }: UserArticlesClientProps)
 
     const [articles, setArticles] = useState<Post[]>(initialArticles);
     const [categories, setCategories] = useState<PostCategory[]>([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
     useEffect(() => {
         const fetchCategories = async () => {
+            setIsLoadingCategories(true);
             try {
                 const fetchedCategories = await getPostCategories();
                 setCategories(fetchedCategories);
             } catch (error) {
                 console.error("Falha ao buscar categorias:", error);
+            } finally {
+                setIsLoadingCategories(false);
             }
         };
         fetchCategories();
@@ -69,20 +73,24 @@ export function UserArticlesClient({ initialArticles }: UserArticlesClientProps)
                             />
                         </div>
                         <div className="sm:w-48">
-                            <Select
-                                defaultValue={searchParams.get('category_id') || 'todos'}
-                                onValueChange={(value) => handleFilterChange('category_id', value)}
-                            >
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="todos">Todas as Categorias</SelectItem>
-                                    {categories.map(category => (
-                                        <SelectItem key={category.id} value={String(category.id)}>
-                                            {category.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {isLoadingCategories ? (
+                                <Skeleton className="h-10 w-full" />
+                            ) : (
+                                <Select
+                                    defaultValue={searchParams.get('category_id') || 'todos'}
+                                    onValueChange={(value) => handleFilterChange('category_id', value)}
+                                >
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="todos">Todas as Categorias</SelectItem>
+                                        {categories.map(category => (
+                                            <SelectItem key={category.id} value={String(category.id)}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
                         </div>
                     </div>
                 </CardContent>

@@ -7,6 +7,7 @@ import { Search, BookOpen } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { FavoriteArticleCard } from './FavoriteArticleCard';
 import type { Post, PostCategory } from '@/types/blog';
 import { getPostCategories } from '@/lib/api/blog';
@@ -22,14 +23,18 @@ export function UserFavoritesArticlesClient({ initialArticles }: UserFavoritesAr
 
     const [articles, setArticles] = useState<Post[]>(initialArticles);
     const [categories, setCategories] = useState<PostCategory[]>([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
     useEffect(() => {
         const fetchCategories = async () => {
+            setIsLoadingCategories(true);
             try {
                 const fetchedCategories = await getPostCategories();
                 setCategories(fetchedCategories);
             } catch (error) {
                 console.error("Falha ao buscar categorias de artigo:", error);
+            } finally {
+                setIsLoadingCategories(false);
             }
         };
         fetchCategories();
@@ -66,20 +71,24 @@ export function UserFavoritesArticlesClient({ initialArticles }: UserFavoritesAr
                             />
                         </div>
                         <div className="sm:w-56">
-                            <Select
-                                defaultValue={searchParams.get('category_id') || 'todas'}
-                                onValueChange={value => handleFilter('category_id', value)}
-                            >
-                                <SelectTrigger><SelectValue placeholder="Filtrar por categoria" /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="todas">Todas as Categorias</SelectItem>
-                                    {categories.map(cat => (
-                                        <SelectItem key={cat.id} value={String(cat.id)}>
-                                            {cat.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {isLoadingCategories ? (
+                                <Skeleton className="h-10 w-full" />
+                            ) : (
+                                <Select
+                                    defaultValue={searchParams.get('category_id') || 'todas'}
+                                    onValueChange={value => handleFilter('category_id', value)}
+                                >
+                                    <SelectTrigger><SelectValue placeholder="Filtrar por categoria" /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="todas">Todas as Categorias</SelectItem>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.id} value={String(cat.id)}>
+                                                {cat.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
                         </div>
                     </div>
                 </CardContent>

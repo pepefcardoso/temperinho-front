@@ -45,8 +45,7 @@ export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
     const [isFavorited, setIsFavorited] = useState(recipe.is_favorited ?? false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const slug = recipe.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-    const href = `/receitas/${slug}`;
+    const href = `/receitas/${recipe.id}`;
 
     const handleFavoriteClick = async (e: React.MouseEvent) => {
         e.preventDefault();

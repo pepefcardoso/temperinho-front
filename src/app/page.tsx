@@ -3,7 +3,7 @@ import BlogSection from '@/components/blog/BlogSection';
 import RecipeSection from '@/components/recipe/RecipeSection';
 import { getRecipes } from '@/lib/api/recipe';
 import { Recipe } from '@/types/recipe';
-import NewsletterSection from '@/components/Newsletter/NewsletterSection';
+import NewsletterSection from '@/components/newsletter/NewsletterSection';
 
 const HomePage = async () => {
   let initialRecipes: Recipe[] = [];

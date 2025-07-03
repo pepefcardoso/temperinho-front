@@ -20,7 +20,6 @@
   --color-border: hsl(25 20% 85%);
   --color-input: hsl(25 20% 85%);
   --color-ring: hsl(159 30% 35%);
-
   --color-sage-50: hsl(95 25% 95%);
   --color-sage-100: hsl(95 25% 90%);
   --color-sage-200: hsl(95 25% 80%);
@@ -31,7 +30,6 @@
   --color-sage-700: hsl(95 30% 30%);
   --color-sage-800: hsl(95 35% 20%);
   --color-sage-900: hsl(95 40% 10%);
-
   --color-warm-50: hsl(30 20% 95%);
   --color-warm-100: hsl(30 20% 90%);
   --color-warm-200: hsl(30 15% 85%);
@@ -41,10 +39,8 @@
   --color-warm-700: hsl(30 10% 40%);
   --color-warm-800: hsl(30 15% 25%);
   --color-warm-900: hsl(30 20% 15%);
-
   --color-sunset-500: hsl(24 90% 60%);
   --color-sunset-600: hsl(20 90% 55%);
-
   --color-sidebar-background: hsl(30 35% 95%);
   --color-sidebar-foreground: hsl(30 15% 25%);
   --color-sidebar-primary: hsl(159 30% 35%);
@@ -53,7 +49,6 @@
   --color-sidebar-accent-foreground: hsl(30 15% 25%);
   --color-sidebar-border: hsl(25 20% 82%);
   --color-sidebar-ring: hsl(159 30% 35%);
-
   --radius-lg: 0.75rem;
   --radius-md: calc(0.75rem - 2px);
   --radius-sm: calc(0.75rem - 4px);
@@ -80,20 +75,16 @@
     --color-border: hsl(30 10% 18%);
     --color-input: hsl(30 10% 18%);
     --color-ring: hsl(159 40% 65%);
-
     --color-sage-50: hsl(95 10% 15%);
     --color-sage-100: hsl(95 10% 20%);
     --color-sage-600: hsl(95 20% 60%);
     --color-sage-700: hsl(95 25% 70%);
-
     --color-warm-100: hsl(30 5% 85%);
     --color-warm-300: hsl(30 5% 65%);
     --color-warm-800: hsl(30 10% 18%);
     --color-warm-900: hsl(30 10% 10%);
-
     --color-sunset-500: hsl(24 90% 65%);
     --color-sunset-600: hsl(20 90% 60%);
-
     --color-sidebar-background: hsl(30 10% 5%);
     --color-sidebar-foreground: hsl(30 25% 85%);
     --color-sidebar-primary: hsl(159 40% 65%);
@@ -104,38 +95,11 @@
     --color-sidebar-ring: hsl(159 40% 65%);
   }
 
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground font-sans;
   }
+
   .font-display {
     font-family: "Playfair Display", serif;
-  }
-}
-
-
-@layer components {
-  .recipe-card {
-    @apply bg-card border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1;
-  }
-  .dietary-tag {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border;
-  }
-  .dietary-tag.vegan {
-    @apply bg-green-50 text-green-700 border-green-200;
-  }
-  .dietary-tag.gluten-free {
-    @apply bg-blue-50 text-blue-700 border-blue-200;
-  }
-  .dietary-tag.lactose-free {
-    @apply bg-purple-50 text-purple-700 border-purple-200;
-  }
-  .dietary-tag.vegetarian {
-    @apply bg-emerald-50 text-emerald-700 border-emerald-200;
-  }
-  .dietary-tag.low-fodmap {
-    @apply bg-orange-50 text-orange-700 border-orange-200;
   }
 }

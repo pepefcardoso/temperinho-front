@@ -1,49 +1,35 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { getRecipes } from '@/lib/api/recipe';
 import { RecipesPageClient } from '@/components/recipe/RecipePageClient';
-import type { PaginatedResponse, } from '@/types/api';
-import { Recipe } from '@/types/recipe';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export const metadata: Metadata = {
   title: 'Receitas | Leve Sabor',
-  description: 'Explore centenas de receitas deliciosas e inclusivas, com filtros para todas as suas necessidades.',
+  description: 'Explore centenas de receitas deliciosas e inclusivas.',
 };
 
-type SortByType = 'created_at' | 'time' | 'difficulty';
-
-interface RecipesPageProps {
+interface PageProps {
   searchParams: {
-    sortBy?: SortByType;
+    sortBy?: 'created_at' | 'time' | 'difficulty';
     diets?: string;
-  }
+  };
 }
 
-export default async function RecipesPage({ searchParams }: RecipesPageProps) {
-  let paginatedResponse: PaginatedResponse<Recipe> = {
-    data: [],
-    meta: { current_page: 1, last_page: 1, from: 0, to: 0, total: 0, per_page: 9, path: '', links: [] },
-    links: { first: '', last: '', prev: null, next: null },
-  };
-
+async function RecipesLoader({ searchParams }: PageProps) {
   try {
     const dietFilters = searchParams.diets
       ? searchParams.diets.split(',').map(Number).filter(id => !isNaN(id))
       : [];
 
-    paginatedResponse = await getRecipes({
+    const paginatedResponse = await getRecipes({
       sortBy: searchParams.sortBy,
-      filters: {
-        diets: dietFilters,
-      },
+      filters: { diets: dietFilters },
       page: 1,
       limit: 9,
     });
-  } catch (error) {
-    console.error("Falha ao carregar a página de receitas:", error);
-  }
 
-  return (
-    <div className="bg-background">
+    return (
       <main>
         <section className="bg-muted/50 py-12">
           <div className="container mx-auto px-4 text-center">
@@ -56,6 +42,26 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
           initialMeta={paginatedResponse.meta}
         />
       </main>
+    );
+  } catch (error) {
+    console.error("Falha ao carregar a página de receitas:", error);
+    return (
+      <div className="container mx-auto py-12 text-center">
+        <p className="text-destructive">Não foi possível carregar as receitas. Tente novamente mais tarde.</p>
+      </div>
+    );
+  }
+}
+
+export default function RecipesPage({ searchParams }: PageProps) {
+  return (
+    <div className="bg-background">
+      <Suspense
+        key={JSON.stringify(searchParams)}
+        fallback={<PageSkeleton layout="content-sidebar" sidebarPosition="right" />}
+      >
+        <RecipesLoader searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

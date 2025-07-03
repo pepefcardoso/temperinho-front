@@ -1,5 +1,3 @@
-// src/lib/api/socialAuth.ts
-
 import axiosClient from "@/lib/axios";
 
 export type Provider = "google" | "github" | "facebook";

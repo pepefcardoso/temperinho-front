@@ -37,8 +37,6 @@ export function FavoriteRecipeCard({ recipe, onRemove }: FavoriteRecipeCardProps
         }
     }
 
-    const slug = recipe.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-
     return (
         <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
@@ -64,7 +62,7 @@ export function FavoriteRecipeCard({ recipe, onRemove }: FavoriteRecipeCardProps
                 </div>
                 <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto self-start pt-2 sm:pt-0">
                     <Button variant="default" size="sm" asChild className="w-full">
-                        <Link href={`/receitas/${slug}`}>Ver Receita</Link>
+                        <Link href={`/receitas/${recipe.id}`}>Ver Receita</Link>
                     </Button>
                     <Button variant="destructive" size="sm" onClick={handleRemoveFavorite} className="w-full">
                         <Heart className="h-4 w-4 mr-2" />Remover

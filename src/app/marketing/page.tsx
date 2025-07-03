@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,17 +6,18 @@ import { Button } from '@/components/ui/button';
 import { getMarketingData } from '@/lib/api/marketing';
 import { StatsCounter } from '@/components/marketing/StatsCounter';
 import { PricingCard } from '@/components/marketing/PricingCard';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export const metadata: Metadata = {
     title: 'Anuncie Conosco | Leve Sabor',
     description: 'Conecte sua marca com milhares de pessoas apaixonadas por culinária inclusiva e alimentação saudável.',
 };
 
-export default async function MarketingPage() {
-    const { stats, packages } = await getMarketingData();
+async function MarketingContent() {
+    try {
+        const { stats, packages } = await getMarketingData();
 
-    return (
-        <div className="bg-background">
+        return (
             <main>
                 <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20">
                     <div className="container mx-auto px-4">
@@ -75,6 +77,24 @@ export default async function MarketingPage() {
                     </div>
                 </section>
             </main>
+        );
+    } catch (error) {
+        console.error("Falha ao carregar dados da página de marketing:", error);
+        return (
+            <div className="container mx-auto py-20 text-center">
+                <h1 className="text-2xl font-bold text-destructive">Algo deu errado</h1>
+                <p className="text-muted-foreground mt-2">Não foi possível carregar as informações da página. Por favor, tente novamente mais tarde.</p>
+            </div>
+        );
+    }
+}
+
+export default function MarketingPage() {
+    return (
+        <div className="bg-background">
+            <Suspense fallback={<PageSkeleton layout="single-column" />}>
+                <MarketingContent />
+            </Suspense>
         </div>
     );
 }

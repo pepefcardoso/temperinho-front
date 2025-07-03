@@ -27,8 +27,8 @@ export default function UserDashboardPage() {
             try {
                 const [userData, myRecipesResponse, myPostsResponse] = await Promise.all([
                     getAuthenticatedUserProfile(),
-                    getMyRecipes(1, 3),
-                    getMyPosts(1, 3),
+                    getMyRecipes({ page: 1, limit: 3 }),
+                    getMyPosts({ page: 1, limit: 3 }),
                 ]);
 
                 setUser(userData);

@@ -35,9 +35,8 @@ const MetaInfo = ({ icon: Icon, text }: { icon: React.ElementType, text: string 
     </div>
 );
 
-export function BlogPostCard({ post, variant, className }: BlogPostCardProps) {
-    const slug = post.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-    const href = `/blog/${slug}`;
+export function BlogPostCard({ post, variant = "default", className }: BlogPostCardProps) {
+    const href = `/blog/${post.id}`;
 
     return (
         <article className={cn(cardVariants({ variant }), className)}>

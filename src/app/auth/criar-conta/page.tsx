@@ -37,7 +37,6 @@ export default function CreateAccountPage() {
     const {
         register,
         handleSubmit,
-        control,
         formState: { errors, isSubmitting }
     } = useForm<CreateAccountFormData>({
         resolver: zodResolver(createAccountSchema),

@@ -31,8 +31,6 @@ export function FavoriteArticleCard({ article, onRemove }: FavoriteArticleCardPr
         }
     }
 
-    const slug = article.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-
     return (
         <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
@@ -53,7 +51,7 @@ export function FavoriteArticleCard({ article, onRemove }: FavoriteArticleCardPr
                 </div>
                 <div className="flex flex-col gap-2 self-start pt-2 sm:pt-0 w-full sm:w-auto">
                     <Button variant="outline" size="sm" asChild className="w-full">
-                        <Link href={`/blog/${slug}`}>Ler Artigo</Link>
+                        <Link href={`/blog/${article.id}`}>Ler Artigo</Link>
                     </Button>
                     <Button variant="destructive-outline" size="sm" onClick={handleRemoveFavorite} className="w-full">
                         <Heart className="h-4 w-4 mr-2" />Remover

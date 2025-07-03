@@ -41,6 +41,7 @@ export default function LoginPage() {
             const { url } = await getSocialRedirectUrl(provider);
             window.location.href = url;
         } catch (error) {
+            console.error('Erro ao iniciar login social:', error);
             toast.error(`Não foi possível iniciar o login com ${provider}.`);
             setIsSocialLoading(null);
         }

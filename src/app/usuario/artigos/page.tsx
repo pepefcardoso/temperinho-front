@@ -1,29 +1,63 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { getMyPosts } from '@/lib/api/blog';
 import { Button } from '@/components/ui/button';
 import { UserArticlesClient } from '@/components/blog/UserArticlesClient';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export const metadata: Metadata = {
     title: 'Meus Artigos | Leve Sabor',
     description: 'Gerencie, edite e crie seus artigos e posts para a comunidade Leve Sabor.',
 };
 
-export default async function UserMyArticlesPage() {
-    const paginatedResponse = await getMyPosts();
+interface PageProps {
+    searchParams: {
+        search?: string;
+        category_id?: string;
+    };
+}
 
-    return (
-        <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground mb-1">Meus Artigos</h1>
-                    <p className="text-muted-foreground">Gerencie seus artigos publicados e rascunhos.</p>
+async function ArticlesLoader({ searchParams }: PageProps) {
+    try {
+        const paginatedResponse = await getMyPosts({
+            search: searchParams.search,
+            categoryId: searchParams.category_id,
+        });
+
+        return (
+            <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold text-foreground mb-1">Meus Artigos</h1>
+                        <p className="text-muted-foreground">Gerencie seus artigos publicados e rascunhos.</p>
+                    </div>
+                    <Button asChild><Link href="/usuario/artigos/novo"><Plus className="h-4 w-4 mr-2" />Novo Artigo</Link></Button>
                 </div>
-                <Button asChild><Link href="/usuario/artigos/novo"><Plus className="h-4 w-4 mr-2" />Novo Artigo</Link></Button>
+                <UserArticlesClient initialArticles={paginatedResponse.data} />
             </div>
+        );
+    } catch (error) {
+        console.error("Falha ao carregar os artigos do usuário:", error);
+        return (
+            <div className="text-center py-16">
+                <h2 className="text-xl font-bold text-destructive">Ocorreu um Erro</h2>
+                <p className="text-muted-foreground mt-2">Não foi possível carregar seus artigos. Tente novamente.</p>
+            </div>
+        );
+    }
+}
 
-            <UserArticlesClient initialArticles={paginatedResponse.data} />
+export default function UserMyArticlesPage({ searchParams }: PageProps) {
+    return (
+        <div className="container mx-auto py-8">
+            <Suspense
+                key={JSON.stringify(searchParams)}
+                fallback={<PageSkeleton layout="single-column" />}
+            >
+                <ArticlesLoader searchParams={searchParams} />
+            </Suspense>
         </div>
     );
 }

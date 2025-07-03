@@ -60,15 +60,14 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
           page,
           sortBy,
           filters: { diets },
+          limit: 9
         });
 
         const newRecipes = paginatedResponse.data;
-
         if (newRecipes.length > 0) {
           setRecipes(prev => [...prev, ...newRecipes]);
           setPage(prev => prev + 1);
         }
-
         setHasMore(paginatedResponse.meta.current_page < paginatedResponse.meta.last_page);
 
       } catch (error) {
@@ -110,11 +109,9 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
         <div className="container mx-auto px-4">
           <div className="flex gap-8">
             <div className="flex-1">
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-foreground">
-                  Mostrando {recipes.length} receita{recipes.length !== 1 ? 's' : ''}
-                </h2>
-              </div>
+              <h2 className="text-xl font-semibold text-foreground mb-6">
+                Mostrando {recipes.length} receita{recipes.length !== 1 ? 's' : ''}
+              </h2>
 
               {recipes.length > 0 ? (
                 <div className={cn('grid gap-8', viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')}>
@@ -142,7 +139,6 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
                 <h3 className="font-semibold text-foreground mb-4">Anuncie Aqui</h3>
                 <p className="text-sm text-muted-foreground">Alcance um público engajado e apaixonado por culinária. <Link href="/marketing" className="text-primary underline">Saiba mais</Link>.</p>
               </div>
-              <AdBanner href='/anuncie' layout="sidebar" size="small" />
             </aside>
           </div>
         </div>
