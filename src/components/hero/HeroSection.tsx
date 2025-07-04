@@ -13,7 +13,7 @@ const HeroSection = async () => {
                 <div className="absolute bottom-20 left-1/3 w-24 h-24 bg-warm-300 rounded-full blur-2xl"></div>
             </div>
 
-            <div className="relative container mx-auto px-4 text-center">
+            <div className="relative container mx-auto px-4 text-center space-y-8 md:space-y-12">
                 <div className="space-y-6 mb-12">
                     <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-tight">
                         Culinária para

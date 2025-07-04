@@ -3,28 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { getRecipeDiets } from '@/lib/api/recipe';
-import type { RecipeDiet } from '@/types/recipe';
 
 export function HeroSearchForm() {
     const [query, setQuery] = useState('');
-    const [quickFilters, setQuickFilters] = useState<RecipeDiet[]>([]);
     const router = useRouter();
-
-    useEffect(() => {
-        const fetchDiets = async () => {
-            try {
-                const diets = await getRecipeDiets();
-                setQuickFilters(diets.slice(0, 4));
-            } catch (error) {
-                console.error("Falha ao buscar as dietas:", error);
-            }
-        };
-
-        fetchDiets();
-    }, []);
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,12 +15,6 @@ export function HeroSearchForm() {
 
         const params = new URLSearchParams();
         params.set('title', query.trim());
-        router.push(`/receitas?${params.toString()}`);
-    };
-
-    const handleQuickFilterClick = (dietId: number) => {
-        const params = new URLSearchParams();
-        params.set('diets', dietId.toString());
         router.push(`/receitas?${params.toString()}`);
     };
 
@@ -54,22 +31,6 @@ export function HeroSearchForm() {
                     style={{ height: 'auto' }}
                 />
             </form>
-
-            {quickFilters.length > 0 && (
-                <div className="flex flex-wrap justify-center items-center gap-3">
-                    <span className="text-sm font-medium text-muted-foreground">Ou busque por:</span>
-                    {quickFilters.map((diet) => (
-                        <Button
-                            key={diet.id}
-                            variant="outline"
-                            onClick={() => handleQuickFilterClick(diet.id)}
-                            className="bg-card/60 border-border text-foreground hover:bg-accent hover:border-primary rounded-full px-4 py-2 text-sm"
-                        >
-                            {diet.name}
-                        </Button>
-                    ))}
-                </div>
-            )}
         </div>
     );
 }

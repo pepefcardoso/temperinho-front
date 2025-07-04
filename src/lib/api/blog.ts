@@ -9,6 +9,7 @@ export interface GetPostsOptions {
     search?: string;
     category_id?: number;
     user_id?: number;
+    title?: string;
   };
   page?: number;
   limit?: number;
@@ -31,6 +32,7 @@ export async function getPosts(
       params.append("category_id", options.filters.category_id.toString());
     if (options.filters.user_id)
       params.append("user_id", options.filters.user_id.toString());
+    if (options.filters.title) params.append("title", options.filters.title);
   }
 
   const response = await axiosClient.get<PaginatedResponse<Post>>(`/posts`, {

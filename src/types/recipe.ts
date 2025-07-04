@@ -1,11 +1,15 @@
 import { User } from "@/types/user";
 import { Image } from "./image";
 
-export enum RecipeDifficultyEnum {
-  FACIL = 'Fácil',
-  MEDIO = 'Médio',
-  DIFICIL = 'Difícil',
-}
+export type RecipeDifficulty = 1 | 2 | 3 | 4 | 5;
+
+export const RecipeDifficultyLabels: Record<RecipeDifficulty, string> = {
+  1: 'Muito Fácil',
+  2: 'Fácil',
+  3: 'Médio',
+  4: 'Difícil',
+  5: 'Muito Difícil',
+};
 
 export interface RecipeCategory {
   id: number;
@@ -45,7 +49,7 @@ export interface Recipe {
   description: string;
   time: number;
   portion: number;
-  difficulty: RecipeDifficultyEnum;
+  difficulty: RecipeDifficulty;
   user_id: number;
   user?: User;
   category_id: number;

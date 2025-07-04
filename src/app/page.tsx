@@ -1,9 +1,9 @@
 import HeroSection from '@/components/hero/HeroSection';
 import BlogSection from '@/components/blog/BlogSection';
-import RecipeSection from '@/components/recipe/RecipeSection';
+import FeaturedRecipes from '@/components/recipe/FeaturedRecipes';
 import { getRecipes } from '@/lib/api/recipe';
 import { Recipe } from '@/types/recipe';
-import NewsletterSection from '@/components/newsletter/NewsletterSection';
+import NewsletterSection from '@/components/Newsletter/NewsletterSection';
 
 const HomePage = async () => {
   let initialRecipes: Recipe[] = [];
@@ -24,7 +24,7 @@ const HomePage = async () => {
       <main>
         <HeroSection />
 
-        <RecipeSection initialRecipes={initialRecipes} />
+        <FeaturedRecipes recipes={initialRecipes} isLoading={false} />
 
         <BlogSection />
 

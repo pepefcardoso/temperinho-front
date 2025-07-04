@@ -10,57 +10,64 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
+    title?: string;
+    category_id?: string;
     sortBy?: 'created_at' | 'time' | 'difficulty';
     diets?: string;
-  };
+  }>;
 }
 
-async function RecipesLoader({ searchParams }: PageProps) {
-  try {
-    const dietFilters = searchParams.diets
-      ? searchParams.diets.split(',').map(Number).filter(id => !isNaN(id))
-      : [];
+async function RecipesLoader({
+  searchParams,
+}: PageProps) {
+  const sp = await searchParams;
 
-    const paginatedResponse = await getRecipes({
-      sortBy: searchParams.sortBy,
-      filters: { diets: dietFilters },
-      page: 1,
-      limit: 9,
-    });
+  const dietFilters = sp.diets
+    ? sp.diets.split(',').map(Number).filter(id => !isNaN(id))
+    : [];
 
-    return (
-      <main>
-        <section className="bg-muted/50 py-12">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl font-display font-bold text-foreground mb-4">Nossas Receitas</h1>
-            <p className="text-lg text-muted-foreground">Encontre o prato perfeito para qualquer ocasião.</p>
-          </div>
-        </section>
-        <RecipesPageClient
-          initialRecipes={paginatedResponse.data}
-          initialMeta={paginatedResponse.meta}
-        />
-      </main>
-    );
-  } catch (error) {
-    console.error("Falha ao carregar a página de receitas:", error);
-    return (
-      <div className="container mx-auto py-12 text-center">
-        <p className="text-destructive">Não foi possível carregar as receitas. Tente novamente mais tarde.</p>
-      </div>
-    );
-  }
+  const paginatedResponse = await getRecipes({
+    sortBy: sp.sortBy,
+    filters: {
+      title: sp.title,
+      category_id: sp.category_id ? Number(sp.category_id) : undefined,
+      diets: dietFilters,
+    },
+    page: 1,
+    limit: 9,
+  });
+
+  return (
+    <main>
+      <section className="bg-muted/50 py-12">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl font-display font-bold text-foreground mb-4">
+            Nossas Receitas
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Encontre o prato perfeito para qualquer ocasião.
+          </p>
+        </div>
+      </section>
+      <RecipesPageClient
+        initialRecipes={paginatedResponse.data}
+        initialMeta={paginatedResponse.meta}
+      />
+    </main>
+  );
 }
 
-export default function RecipesPage({ searchParams }: PageProps) {
+export default async function RecipesPage({ searchParams }: PageProps) {
+  const sp = await searchParams;
+
   return (
     <div className="bg-background">
       <Suspense
-        key={JSON.stringify(searchParams)}
+        key={JSON.stringify(sp)}
         fallback={<PageSkeleton layout="content-sidebar" sidebarPosition="right" />}
       >
-        <RecipesLoader searchParams={searchParams} />
+        <RecipesLoader searchParams={Promise.resolve(sp)} />
       </Suspense>
     </div>
   );

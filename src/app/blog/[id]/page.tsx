@@ -10,11 +10,12 @@ import AdBanner from '@/components/marketing/AdBanner';
 import { PostActions } from '@/components/blog/PostActions';
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const postId = parseInt(params.id, 10);
+  const { id } = await params;
+  const postId = parseInt(id, 10);
   if (isNaN(postId)) {
     return { title: 'Artigo não encontrado' };
   }
@@ -42,9 +43,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-
 export default async function BlogPostPage({ params }: PageProps) {
-  const postId = parseInt(params.id, 10);
+  const { id } = await params;
+  const postId = parseInt(id, 10);
   if (isNaN(postId)) {
     notFound();
   }
@@ -61,9 +62,17 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="container mx-auto px-4 max-w-4xl">
             <nav className="mb-6">
               <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
+                <li>
+                  <Link href="/blog" className="hover:text-primary">
+                    Blog
+                  </Link>
+                </li>
                 <li className="select-none">/</li>
-                <li><span className="text-foreground">{article.category?.name ?? 'Artigo'}</span></li>
+                <li>
+                  <span className="text-foreground">
+                    {article.category?.name ?? 'Artigo'}
+                  </span>
+                </li>
               </ol>
             </nav>
 
@@ -72,17 +81,39 @@ export default async function BlogPostPage({ params }: PageProps) {
                 {article.title}
               </h1>
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-6">
-                <div className="flex items-center"><User className="h-4 w-4 mr-2" />{article.author?.name ?? 'Autor'}</div>
-                <div className="flex items-center"><Calendar className="h-4 w-4 mr-2" />{format(new Date(article.created_at), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}</div>
-                <div className="flex items-center"><Clock className="h-4 w-4 mr-2" />{readTimeInMinutes} min de leitura</div>
-                <div className="flex items-center"><Star className="h-4 w-4 mr-2 text-amber-400" />{(article.average_rating ?? 0).toFixed(1)} ({article.ratings_count ?? 0} avaliações)</div>
+                <div className="flex items-center">
+                  <User className="h-4 w-4 mr-2" />
+                  {article.author?.name ?? 'Autor'}
+                </div>
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  {format(
+                    new Date(article.created_at),
+                    "dd 'de' MMMM 'de' yyyy",
+                    { locale: ptBR }
+                  )}
+                </div>
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 mr-2" />
+                  {readTimeInMinutes} min de leitura
+                </div>
+                <div className="flex items-center">
+                  <Star className="h-4 w-4 mr-2 text-amber-400" />
+                  {(article.average_rating ?? 0).toFixed(1)} (
+                  {article.ratings_count ?? 0} avaliações)
+                </div>
               </div>
 
               <PostActions post={article} />
             </div>
 
             <div className="relative w-full h-64 md:h-80 mb-8">
-              <Image src={article.image?.url ?? '/images/placeholder.png'} alt={article.title} fill className="object-cover rounded-xl shadow-lg" />
+              <Image
+                src={article.image?.url ?? '/images/placeholder.png'}
+                alt={article.title}
+                fill
+                className="object-cover rounded-xl shadow-lg"
+              />
             </div>
 
             <AdBanner href="/marketing" layout="full" size="large" className="mb-8" />

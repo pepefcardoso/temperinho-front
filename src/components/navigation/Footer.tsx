@@ -1,20 +1,54 @@
+'use client';
+
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Heart, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
 import { getRecipeDiets } from '@/lib/api/recipe';
+import { subscribeToNewsletter } from '@/lib/api/customer';
 import { RecipeDiet } from '@/types/recipe';
-import NewsletterSection from '@/components/newsletter/NewsletterSection';
 
-export default async function Footer() {
+export default function Footer() {
     const currentYear = new Date().getFullYear();
-    let restrictionLinks: RecipeDiet[] = [];
+    const [restrictionLinks, setRestrictionLinks] = useState<RecipeDiet[]>([]);
 
-    try {
-        restrictionLinks = await getRecipeDiets();
-    } catch (error) {
-        console.error("Falha ao buscar dietas para o footer:", error);
-    }
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const fetchDiets = async () => {
+            try {
+                const diets = await getRecipeDiets();
+                setRestrictionLinks(diets);
+            } catch (error) {
+                console.error("Falha ao buscar dietas para o footer:", error);
+            }
+        };
+        fetchDiets();
+    }, []);
+
+    const handleNewsletterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) return;
+
+        setStatus('loading');
+        setMessage('');
+
+        try {
+            const response = await subscribeToNewsletter(email);
+            setStatus('success');
+            setMessage(response ? 'Inscrição bem-sucedida!' : 'Você já está inscrito!');
+            setEmail('');
+        } catch (error: any) {
+            setStatus('error');
+            setMessage(error.response?.data?.message || 'Ocorreu um erro.');
+        } finally {
+            setTimeout(() => setStatus('idle'), 3000);
+        }
+    };
 
     return (
         <footer className="bg-foreground text-background">
@@ -47,36 +81,43 @@ export default async function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="font-semibold mb-4 text-background">Restrições</h4>
-                        <ul className="space-y-3">
-                            {restrictionLinks.slice(0, 5).map((link) => (
-                                <li key={link.id}><Link href={`/receitas?diets=${link.id}`} className="text-muted-foreground hover:text-background transition-colors">{link.name}</Link></li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div>
                         <h4 className="font-semibold mb-4 text-background">Newsletter</h4>
-                        <p className="text-muted-foreground mb-4 text-sm">Receba receitas exclusivas e dicas semanais no seu email.</p>
+                        <p className="text-muted-foreground mb-4 text-sm">Receba receitas e dicas exclusivas no seu email.</p>
+                        <form onSubmit={handleNewsletterSubmit} className="relative">
+                            <Input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Seu melhor email"
+                                required
+                                disabled={status === 'loading'}
+                                className="bg-background/20 border-background/30 text-background placeholder:text-muted-foreground/80 pr-12 h-11"
+                            />
+                            <Button type="submit" size="icon" variant="ghost" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:bg-background/20 hover:text-background" disabled={status === 'loading'}>
+                                {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                            </Button>
+                        </form>
+                        {status === 'success' && (
+                            <p className="mt-2 text-sm text-green-400 flex items-center">
+                                <CheckCircle className="h-4 w-4 mr-2" /> {message}
+                            </p>
+                        )}
+                        {status === 'error' && <p className="mt-2 text-sm text-red-400">{message}</p>}
                     </div>
                 </div>
             </div>
 
-            <div className="border-t border-background/20">
-                <NewsletterSection />
-            </div>
-
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="border-t border-background/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div className="border-t border-background/20 mt-8">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
                     <p className="text-muted-foreground text-sm mb-4 md:mb-0">
                         © {currentYear} Leve Sabor. Todos os direitos reservados.
                     </p>
-                    <div className="flex items-center text-muted-foreground text-sm">
+                    <div className="flex items-center text-muted-foreground text-sm mb-4 md:mb-0">
                         <span>Feito com</span>
                         <Heart className="h-4 w-4 mx-1.5 text-red-500" fill="currentColor" />
                         <span>para uma cozinha mais inclusiva</span>
                     </div>
-                    <div className="flex space-x-6 text-muted-foreground text-sm mt-4 md:mt-0">
+                    <div className="flex space-x-6 text-muted-foreground text-sm">
                         {LEGAL_LINKS.map((link: NavItem) => (
                             <Link key={link.href} href={link.href} className="hover:text-background transition-colors">{link.label}</Link>
                         ))}
