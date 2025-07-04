@@ -1,34 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Heart, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
-import { getRecipeDiets } from '@/lib/api/recipe';
 import { subscribeToNewsletter } from '@/lib/api/customer';
-import { RecipeDiet } from '@/types/recipe';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
-    const [restrictionLinks, setRestrictionLinks] = useState<RecipeDiet[]>([]);
-
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
 
-    useEffect(() => {
-        const fetchDiets = async () => {
-            try {
-                const diets = await getRecipeDiets();
-                setRestrictionLinks(diets);
-            } catch (error) {
-                console.error("Falha ao buscar dietas para o footer:", error);
-            }
-        };
-        fetchDiets();
-    }, []);
 
     const handleNewsletterSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

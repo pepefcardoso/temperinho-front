@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Heart, ChefHat, Clock, Users, Star, Printer, Share2, Bookmark } from 'lucide-react';
 import { toast } from 'sonner';
-import type { Recipe } from '@/types/recipe';
+import { type Recipe, RecipeDifficultyLabels, type RecipeDifficulty } from '@/types/recipe';
 import { useAuth } from '@/context/AuthContext';
 import { toggleFavoriteRecipe } from '@/lib/api/user';
 import { Button } from '@/components/ui/button';
@@ -93,7 +93,15 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <StatItem icon={Clock} value={`${recipe.time} min`} label="Total" />
                             <StatItem icon={Users} value={`${recipe.portion} porções`} label="Serve" />
-                            <StatItem icon={ChefHat} value={recipe.difficulty} label="Nível" />
+
+                            {recipe.difficulty && (
+                                <StatItem
+                                    icon={ChefHat}
+                                    value={RecipeDifficultyLabels[recipe.difficulty as RecipeDifficulty]}
+                                    label="Nível"
+                                />
+                            )}
+
                             <div className="text-center p-3 bg-muted rounded-lg">
                                 <Star className="h-5 w-5 mx-auto mb-2 text-amber-400 fill-amber-400" />
                                 <div className="text-sm font-bold text-foreground">{(recipe.average_rating ?? 0).toFixed(1)}</div>

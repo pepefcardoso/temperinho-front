@@ -1,5 +1,5 @@
 import axiosClient from "@/lib/axios";
-import { PaginatedResponse } from "@/types/api";
+import type { PaginatedResponse } from "@/types/api";
 import type {
   Recipe,
   RecipeCategory,
@@ -70,7 +70,6 @@ export async function updateRecipe(
   data: FormData
 ): Promise<Recipe> {
   data.append("_method", "PUT");
-
   const response = await axiosClient.post<{ data: Recipe }>(
     `/recipes/${id}`,
     data,
@@ -85,70 +84,6 @@ export async function updateRecipe(
 
 export async function deleteRecipe(id: number): Promise<void> {
   await axiosClient.delete(`/recipes/${id}`);
-}
-
-interface GetMyRecipesParams {
-  title?: string;
-  categoryId?: string;
-  page?: number;
-  limit?: number;
-}
-
-export async function getMyRecipes({
-  title,
-  categoryId,
-  page = 1,
-  limit = 10,
-}: GetMyRecipesParams = {}): Promise<PaginatedResponse<Recipe>> {
-  const params: Record<string, string> = {
-    page: page.toString(),
-    per_page: limit.toString(),
-  };
-
-  if (title) {
-    params.title = title;
-  }
-  if (categoryId) {
-    params.category_id = categoryId;
-  }
-
-  const response = await axiosClient.get<PaginatedResponse<Recipe>>(
-    "/recipes/my",
-    { params }
-  );
-  return response.data;
-}
-
-interface GetFavoriteRecipesParams {
-  page?: number;
-  limit?: number;
-  title?: string;
-  categoryId?: string;
-}
-
-export async function getFavoriteRecipes({
-  page = 1,
-  limit = 100,
-  title,
-  categoryId,
-}: GetFavoriteRecipesParams = {}): Promise<PaginatedResponse<Recipe>> {
-  const params: Record<string, string> = {
-    page: page.toString(),
-    per_page: limit.toString(),
-  };
-
-  if (title) {
-    params.title = title;
-  }
-  if (categoryId) {
-    params.category_id = categoryId;
-  }
-
-  const response = await axiosClient.get<PaginatedResponse<Recipe>>(
-    "/recipes/favorites",
-    { params }
-  );
-  return response.data;
 }
 
 export async function getRecipeCategories(): Promise<RecipeCategory[]> {

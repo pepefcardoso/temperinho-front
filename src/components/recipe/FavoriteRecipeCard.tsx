@@ -4,17 +4,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, Clock, Users } from 'lucide-react';
 import { toast } from 'sonner';
-import { Recipe, RecipeDifficultyEnum } from '@/types/recipe';
+import { type Recipe, type RecipeDifficulty, RecipeDifficultyLabels } from '@/types/recipe';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toggleFavoriteRecipe } from '@/lib/api/user';
 
-const difficultyStyles: Record<RecipeDifficultyEnum, string> = {
-    [RecipeDifficultyEnum.FACIL]: 'text-primary',
-    [RecipeDifficultyEnum.MEDIO]: 'text-amber-500',
-    [RecipeDifficultyEnum.DIFICIL]: 'text-destructive',
+const difficultyStyles: Record<RecipeDifficulty, string> = {
+    1: 'text-primary',
+    2: 'text-primary',
+    3: 'text-amber-500',
+    4: 'text-destructive',
+    5: 'text-destructive',
 };
 
 interface FavoriteRecipeCardProps {
@@ -56,7 +58,9 @@ export function FavoriteRecipeCard({ recipe, onRemove }: FavoriteRecipeCardProps
                         <div className="flex items-center gap-1"><Clock className="h-3 w-3" /> {recipe.time} min</div>
                         <div className="flex items-center gap-1"><Users className="h-3 w-3" /> {recipe.portion} porções</div>
                         {recipe.difficulty && (
-                            <div className={cn("font-medium", difficultyStyles[recipe.difficulty])}>{recipe.difficulty}</div>
+                            <div className={cn("font-medium", difficultyStyles[recipe.difficulty as RecipeDifficulty])}>
+                                {RecipeDifficultyLabels[recipe.difficulty as RecipeDifficulty]}
+                            </div>
                         )}
                     </div>
                 </div>

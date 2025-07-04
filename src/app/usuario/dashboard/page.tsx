@@ -56,7 +56,7 @@ export default function UserDashboardPage() {
         return (
             <div className="text-center">
                 <h2 className="text-xl font-semibold">Não foi possível carregar os dados do usuário.</h2>
-                <p className="text-muted-foreground">Por favor, <Link href="/login" className="text-primary underline">faça o login</Link> novamente.</p>
+                <p className="text-muted-foreground">Por favor, <Link href="/auth/login" className="text-primary underline">faça o login</Link> novamente.</p>
             </div>
         )
     }

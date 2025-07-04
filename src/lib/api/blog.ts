@@ -1,5 +1,5 @@
 import axiosClient from "@/lib/axios";
-import { PaginatedResponse } from "@/types/api";
+import type { PaginatedResponse } from "@/types/api";
 import type { Post, PostCategory, PostTopic } from "@/types/blog";
 
 export interface GetPostsOptions {
@@ -48,9 +48,7 @@ export async function getPostById(id: number): Promise<Post> {
 
 export async function createPost(data: FormData): Promise<Post> {
   const response = await axiosClient.post<{ data: Post }>("/posts", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data.data;
 }
@@ -62,9 +60,7 @@ export async function updatePost(id: number, data: FormData): Promise<Post> {
     `/posts/${id}`,
     data,
     {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     }
   );
   return response.data.data;
@@ -72,68 +68,6 @@ export async function updatePost(id: number, data: FormData): Promise<Post> {
 
 export async function deletePost(id: number): Promise<void> {
   await axiosClient.delete(`/posts/${id}`);
-}
-
-interface GetMyPostsParams {
-  search?: string;
-  categoryId?: string;
-  page?: number;
-  limit?: number;
-}
-
-export async function getMyPosts({
-  search,
-  categoryId,
-  page = 1,
-  limit = 10,
-}: GetMyPostsParams = {}): Promise<PaginatedResponse<Post>> {
-  const params: Record<string, string> = {
-    page: page.toString(),
-    per_page: limit.toString(),
-  };
-
-  if (search) {
-    params.search = search;
-  }
-  if (categoryId) {
-    params.category_id = categoryId;
-  }
-
-  const response = await axiosClient.get<PaginatedResponse<Post>>("/posts/my", {
-    params,
-  });
-  return response.data;
-}
-
-interface GetFavoritePostsParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  categoryId?: string;
-}
-
-export async function getFavoritePosts({
-  page = 1,
-  limit = 10,
-  search,
-  categoryId,
-}: GetFavoritePostsParams = {}): Promise<PaginatedResponse<Post>> {
-  const params: Record<string, string> = {
-    page: page.toString(),
-    per_page: limit.toString(),
-  };
-  if (search) {
-    params.search = search;
-  }
-  if (categoryId) {
-    params.category_id = categoryId;
-  }
-
-  const response = await axiosClient.get<PaginatedResponse<Post>>(
-    "/posts/favorites",
-    { params }
-  );
-  return response.data;
 }
 
 export async function getPostCategories(): Promise<PostCategory[]> {

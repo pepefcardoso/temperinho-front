@@ -80,6 +80,8 @@ export default async function BlogPostPage({ params }: PageProps) {
               <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4 leading-tight">
                 {article.title}
               </h1>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">{article.summary}</p>
+
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center">
                   <User className="h-4 w-4 mr-2" />

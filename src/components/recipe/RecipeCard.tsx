@@ -19,7 +19,7 @@ const StatIcon = ({ icon: Icon, children }: { icon: React.ElementType; children:
 );
 
 const dietaryTagVariants = cva(
-    "inline-block px-2.5 py-1 text-xs font-medium rounded-full border bg-muted text-muted-foreground border-border"
+    "inline-block px-2 py-0.5 text-xs font-medium rounded-md border bg-muted/50 text-muted-foreground border-border"
 );
 
 const difficultyStyles: Record<RecipeDifficulty, string> = {
@@ -60,22 +60,15 @@ export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
             toast.error("Você precisa estar logado para favoritar receitas.");
             return;
         }
-
         setIsLoading(true);
         const originalState = isFavorited;
         setIsFavorited(!originalState);
-
         try {
             await toggleFavoriteRecipe(recipe.id);
-            toast.success(
-                originalState
-                    ? "Receita removida dos favoritos!"
-                    : "Receita adicionada aos favoritos!"
-            );
+            toast.success(originalState ? "Receita removida dos favoritos!" : "Receita adicionada aos favoritos!");
         } catch (error) {
             setIsFavorited(originalState);
             toast.error("Ocorreu um erro. Tente novamente.");
-            console.error(error);
         } finally {
             setIsLoading(false);
         }
@@ -104,50 +97,58 @@ export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
                     aria-label={isFavorited ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                     className={cn(
                         "absolute top-3 right-3 h-9 w-9 grid place-items-center rounded-full bg-card/80 backdrop-blur-sm transition-colors duration-200 hover:bg-card",
-                        isFavorited
-                            ? "text-destructive"
-                            : "text-muted-foreground hover:text-foreground",
+                        isFavorited ? "text-destructive" : "text-muted-foreground hover:text-foreground",
                         isLoading && "cursor-not-allowed"
                     )}
                 >
-                    <Heart
-                        className={cn(
-                            "h-5 w-5 transition-all",
-                            isFavorited && "fill-destructive"
-                        )}
-                    />
+                    <Heart className={cn("h-5 w-5 transition-all", isFavorited && "fill-destructive")} />
                 </button>
             </div>
 
             <div
                 className={cn(
-                    "p-4 flex flex-col space-y-3",
+                    "p-4 flex flex-col",
                     viewMode === 'grid' ? 'flex-grow' : 'flex-1'
                 )}
             >
-                <div className="flex flex-wrap gap-2">
-                    {recipe.diets?.slice(0, viewMode === 'grid' ? 2 : 3).map(diet => (
-                        <span key={diet.id} className={dietaryTagVariants()}>
-                            {diet.name}
-                        </span>
-                    ))}
-                </div>
+
+                {recipe.category && (
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
+                        {recipe.category.name}
+                    </p>
+                )}
+
                 <h3
                     className={cn(
-                        "font-display font-bold text-foreground group-hover:text-primary transition-colors",
-                        viewMode === 'grid'
-                            ? 'text-xl line-clamp-2 flex-grow'
-                            : 'text-lg line-clamp-1'
+                        "font-display font-bold text-foreground group-hover:text-primary transition-colors leading-tight",
+                        viewMode === 'grid' ? 'text-xl line-clamp-2' : 'text-lg line-clamp-1'
                     )}
                 >
                     <Link href={href}>{recipe.title}</Link>
                 </h3>
+
                 {viewMode === 'list' && (
-                    <p className="text-muted-foreground text-sm line-clamp-2">
+                    <p className="text-muted-foreground text-sm line-clamp-2 mt-2">
                         {recipe.description}
                     </p>
                 )}
-                <div className="flex items-center justify-between text-sm pt-3 border-t border-border mt-auto">
+
+                <div className="flex-grow" />
+
+                {recipe.diets && recipe.diets.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-3 mt-3 border-t border-border">
+                        {recipe.diets.map(diet => (
+                            <span key={diet.id} className={dietaryTagVariants()}>
+                                {diet.name}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                <div className={cn(
+                    "flex items-center justify-between text-sm mt-3",
+                    (!recipe.diets || recipe.diets.length === 0) && "pt-3 border-t border-border"
+                )}>
                     <div className="flex items-center space-x-4">
                         <StatIcon icon={Clock}>{recipe.time} min</StatIcon>
                         <StatIcon icon={Users}>{recipe.portion} porções</StatIcon>

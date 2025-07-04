@@ -43,7 +43,6 @@ export function RecipeFilterControls({
             transition={{ duration: 0.5 }}
             className="w-full space-y-6 mb-8"
         >
-            {/* Pesquisa sempre visível */}
             <form onSubmit={(e) => { e.preventDefault(); onSearchSubmit(); }} className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
@@ -56,7 +55,6 @@ export function RecipeFilterControls({
             </form>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Filtros de Categoria e Ordenação */}
                 <Card className="md:col-span-1">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-lg">
@@ -91,7 +89,6 @@ export function RecipeFilterControls({
                     </CardContent>
                 </Card>
 
-                {/* Filtros de Dieta */}
                 <div className="md:col-span-2">
                     <DietaryFilters
                         diets={diets}

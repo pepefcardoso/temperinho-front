@@ -58,7 +58,7 @@ export default function AboutPage() {
                             <Button size="lg" variant="secondary" asChild>
                                 <Link href="/receitas">Explorar Receitas</Link>
                             </Button>
-                            <Button size="lg" variant="outline" className="border-primary-foreground/50 hover:bg-primary-foreground hover:text-primary" asChild>
+                            <Button size="lg" variant="outline" className="bg-transparent text-primary-foreground border-primary-foreground/50 hover:bg-primary-foreground hover:text-primary" asChild>
                                 <Link href="/contato">Entrar em Contato</Link>
                             </Button>
                         </div>

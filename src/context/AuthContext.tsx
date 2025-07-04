@@ -1,90 +1,97 @@
 'use client';
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-  useCallback,
-} from "react";
-import axiosClient from "../lib/axios";
-import { useRouter } from "next/navigation";
-import type { AuthContextType, LoginData, RegisterData } from "@/types/auth";
-import type { User } from "@/types/user";
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import Cookies from 'js-cookie';
+import axiosClient from '@/lib/axios';
+import { User } from '@/types/user';
+import { loginUser } from '@/lib/api/auth';
+import { LoginData } from '@/types/auth';
+
+interface AuthContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  login: (credentials: LoginData) => Promise<void>;
+  csrf: () => Promise<any>;
+  logout: () => void;
+  token: string | null;
+  setToken: (token: string | null) => void;
+  isAuthenticated: boolean;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  const fetchUser = useCallback(async () => {
-    if (!localStorage.getItem("AUTH_TOKEN")) {
-      setLoading(false);
-      return;
+  const [token, _setToken] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('AUTH_TOKEN');
     }
+    return null;
+  });
 
-    try {
-      const response = await axiosClient.get("/users/me");
-      setUser(response.data.data);
-    } catch (error) {
-      localStorage.removeItem("AUTH_TOKEN");
-      setUser(null);
-      console.error("Falha ao buscar usuário, token inválido.", error);
-    } finally {
-      setLoading(false);
+  const setToken = (newToken: string | null) => {
+    _setToken(newToken);
+    if (newToken) {
+      localStorage.setItem('AUTH_TOKEN', newToken);
+      Cookies.set('AUTH_TOKEN', newToken, {
+        expires: 7,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      });
+    } else {
+      localStorage.removeItem('AUTH_TOKEN');
+      Cookies.remove('AUTH_TOKEN', { path: '/' });
     }
-  }, []);
-
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
-
-  const login = async (data: LoginData) => {
-    const response = await axiosClient.post("/auth/login", data);
-    const { data: newUser, token } = response.data;
-    localStorage.setItem("AUTH_TOKEN", token);
-    setUser(newUser);
-    router.push("/usuario/dashboard");
   };
 
-  const register = async (data: RegisterData) => {
-    const response = await axiosClient.post("/users", data);
-    const { data: newUser, token } = response.data;
-    localStorage.setItem("AUTH_TOKEN", token);
-    setUser(newUser);
-    router.push("/usuario/dashboard");
+  const login = async (credentials: LoginData) => {
+    await csrf();
+    const data = await loginUser(credentials);
+    setToken(data.token);
   };
+
+  const csrf = () => axiosClient.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sanctum/csrf-cookie`);
 
   const logout = async () => {
     try {
-      await axiosClient.post("/auth/logout");
+      await axiosClient.post('/logout');
     } catch (error) {
-      console.error("Logout falhou, mas o cliente será deslogado.", error);
+      console.error('Logout failed', error);
     } finally {
-      localStorage.removeItem("AUTH_TOKEN");
       setUser(null);
-      window.location.pathname = '/login';
+      setToken(null);
     }
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (token) {
+        try {
+          const response = await axiosClient.get('/api/user');
+          setUser(response.data);
+        } catch (error) {
+          console.error('Failed to fetch user', error);
+          setToken(null);
+        }
+      }
+    };
+    fetchUser();
+  }, [token]);
+
+  const isAuthenticated = !!token && !!user;
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, login, csrf, logout, token, setToken, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

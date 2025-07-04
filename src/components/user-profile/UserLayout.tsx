@@ -9,14 +9,14 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
-  { icon: Home, label: 'Painel', href: '/usuario/painel' },
+  { icon: Home, label: 'Painel', href: '/usuario/dashboard' },
   { icon: User, label: 'Perfil', href: '/usuario/perfil' },
-  { icon: BookOpen, label: 'Minhas Receitas', href: '/usuario/minhas-receitas' },
+  { icon: BookOpen, label: 'Minhas Receitas', href: '/usuario/receitas' },
   { icon: PlusCircle, label: 'Nova Receita', href: '/usuario/receitas/nova' },
-  { icon: FileText, label: 'Meus Artigos', href: '/usuario/meus-artigos' },
+  { icon: FileText, label: 'Meus Artigos', href: '/usuario/artigos' },
   { icon: PlusCircle, label: 'Novo Artigo', href: '/usuario/artigos/novo' },
-  { icon: Heart, label: 'Receitas Favoritas', href: '/usuario/receitas-favoritas' },
-  { icon: Heart, label: 'Artigos Favoritos', href: '/usuario/artigos-favoritos' },
+  { icon: Heart, label: 'Receitas Favoritas', href: '/usuario/favoritos/receitas' },
+  { icon: Heart, label: 'Artigos Favoritos', href: '/usuario/favoritos/artigos' },
 ];
 
 function NavigationMenu({ onLinkClick }: { onLinkClick?: () => void }) {

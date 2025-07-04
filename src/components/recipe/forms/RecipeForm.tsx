@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Save, Loader2 } from 'lucide-react';
 import axios from 'axios';
-import { Recipe, RecipeDifficultyEnum } from '@/types/recipe';
+import { Recipe } from '@/types/recipe';
 import { Button } from '@/components/ui/button';
 import { createRecipe, updateRecipe } from '@/lib/api/recipe';
 import { RecipeFormBasicInfo } from './RecipeFormBasicInfo';
@@ -22,14 +22,14 @@ const recipeSchema = z.object({
   description: z.string().min(20, "A descrição precisa de pelo menos 20 caracteres."),
   time: z.coerce.number().min(1, "O tempo de preparo é obrigatório."),
   portion: z.coerce.number().min(1, "O número de porções é obrigatório."),
-  difficulty: z.nativeEnum(RecipeDifficultyEnum, { required_error: "Selecione a dificuldade." }),
-  category_id: z.string().min(1, "Selecione uma categoria."),
+  difficulty: z.coerce.number({ required_error: "Selecione a dificuldade." }).min(1, "Selecione a dificuldade."),
+  category_id: z.coerce.number({ required_error: "Selecione uma categoria." }).min(1, "Selecione uma categoria."),
   diets: z.array(z.number()).min(1, "Selecione pelo menos uma dieta."),
   ingredients: z.array(z.object({
     id: z.number().optional(),
     name: z.string().min(2, "O nome do ingrediente é obrigatório."),
     quantity: z.string().min(1, "A quantidade é obrigatória."),
-    unit_id: z.string().min(1, "Selecione uma unidade."),
+    unit_id: z.coerce.number({ required_error: "Selecione uma unidade." }).min(1, "Selecione uma unidade."),
   })).min(1, "Adicione pelo menos um ingrediente."),
   steps: z.array(z.object({
     id: z.number().optional(),
@@ -56,9 +56,14 @@ export function RecipeForm({ initialData, action }: RecipeFormProps) {
       time: initialData?.time || 0,
       portion: initialData?.portion || 1,
       difficulty: initialData?.difficulty,
-      category_id: String(initialData?.category?.id || ''),
+      category_id: initialData?.category?.id,
       diets: initialData?.diets?.map(d => d.id) || [],
-      ingredients: initialData?.ingredients?.map(i => ({ id: i.id, name: i.name, quantity: String(i.quantity), unit_id: String(i.unit_id) })) || [{ name: '', quantity: '', unit_id: '' }],
+      ingredients: initialData?.ingredients?.map(i => ({
+        id: i.id,
+        name: i.name,
+        quantity: String(i.quantity),
+        unit_id: i.unit_id
+      })) || [{ name: '', quantity: '', unit_id: 0 }],
       steps: initialData?.steps?.map(s => ({ id: s.id, description: s.description })) || [{ description: '' }],
     },
   });
@@ -72,14 +77,14 @@ export function RecipeForm({ initialData, action }: RecipeFormProps) {
     formData.append('description', data.description);
     formData.append('time', String(data.time));
     formData.append('portion', String(data.portion));
-    formData.append('difficulty', data.difficulty);
-    formData.append('category_id', data.category_id);
+    formData.append('difficulty', String(data.difficulty));
+    formData.append('category_id', String(data.category_id));
     data.diets.forEach(id => formData.append('diets[]', String(id)));
     data.ingredients.forEach((ing, index) => {
       if (ing.id) formData.append(`ingredients[${index}][id]`, String(ing.id));
       formData.append(`ingredients[${index}][name]`, ing.name);
       formData.append(`ingredients[${index}][quantity]`, ing.quantity);
-      formData.append(`ingredients[${index}][unit_id]`, ing.unit_id);
+      formData.append(`ingredients[${index}][unit_id]`, String(ing.unit_id));
     });
     data.steps.forEach((step, index) => {
       if (step.id) formData.append(`steps[${index}][id]`, String(step.id));

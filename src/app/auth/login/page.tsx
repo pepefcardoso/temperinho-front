@@ -28,6 +28,7 @@ export default function LoginPage() {
             await login({ email, password });
             toast.success('Login realizado com sucesso! Redirecionando...');
         } catch (error: any) {
+            console.error('Erro ao fazer login:', error);
             const errorMessage = error.response?.data?.message || 'Email ou senha inválidos. Tente novamente.';
             toast.error(errorMessage);
         } finally {
@@ -128,7 +129,7 @@ export default function LoginPage() {
                         </div>
 
                         <div className="flex justify-end">
-                            <Link href="/esqueceu-senha" className="text-sm text-sage-600 hover:text-sage-700 underline">
+                            <Link href="/auth/esqueceu-senha" className="text-sm text-sage-600 hover:text-sage-700 underline">
                                 Esqueceu sua senha?
                             </Link>
                         </div>
@@ -142,7 +143,7 @@ export default function LoginPage() {
                     <div className="mt-6 text-center">
                         <p className="text-warm-600">
                             Não tem uma conta?{' '}
-                            <Link href="/criar-conta" className="text-sage-600 hover:text-sage-700 font-medium underline">
+                            <Link href="/auth/criar-conta" className="text-sage-600 hover:text-sage-700 font-medium underline">
                                 Criar conta
                             </Link>
                         </p>

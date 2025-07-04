@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/context/AuthContext';
@@ -35,6 +35,7 @@ export default function CreateAccountPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const {
+        control,
         register,
         handleSubmit,
         formState: { errors, isSubmitting }
@@ -50,7 +51,6 @@ export default function CreateAccountPage() {
             const submissionData = {
                 name: data.name,
                 email: data.email,
-                phone: '',
                 password: data.password,
                 password_confirmation: data.confirmPassword,
             };
@@ -119,16 +119,29 @@ export default function CreateAccountPage() {
                                 {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>}
                             </div>
 
-                            <div className="flex items-center space-x-2">
-                                <Checkbox id="terms" {...register('acceptTerms')} />
-                                <Label htmlFor="terms" className="text-sm text-warm-700">
-                                    Aceito os{' '}
-                                    <Link href="/termos" className="text-sage-600 hover:text-sage-700 underline">termos de uso</Link>{' '}
-                                    e{' '}
-                                    <Link href="/privacidade" className="text-sage-600 hover:text-sage-700 underline">política de privacidade</Link>
-                                </Label>
+                            <div className="flex items-start space-x-2">
+                                <Controller
+                                    name="acceptTerms"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            id="terms"
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                            className="mt-1"
+                                        />
+                                    )}
+                                />
+                                <div className="grid gap-1.5 leading-none">
+                                    <Label htmlFor="terms" className="text-sm text-warm-700 font-medium">
+                                        Aceito os{' '}
+                                        <Link href="/termos" className="text-sage-600 hover:text-sage-700 underline">termos de uso</Link>{' '}
+                                        e{' '}
+                                        <Link href="/privacidade" className="text-sage-600 hover:text-sage-700 underline">política de privacidade</Link>
+                                    </Label>
+                                    {errors.acceptTerms && <p className="text-sm text-destructive">{errors.acceptTerms.message}</p>}
+                                </div>
                             </div>
-                            {errors.acceptTerms && <p className="text-sm text-destructive mt-1">{errors.acceptTerms.message}</p>}
 
                             <Button type="submit" className="w-full" disabled={isSubmitting}>
                                 {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
