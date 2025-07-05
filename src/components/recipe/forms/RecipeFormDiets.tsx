@@ -26,10 +26,19 @@ export function RecipeFormDiets({ control, errors }: DietsProps) {
                 <Controller name="diets" control={control} render={({ field }) => (
                     <div className="flex flex-wrap gap-2">
                         {diets.map(diet => (
-                            <Button key={diet.id} type="button" variant={field.value.includes(diet.id) ? 'default' : 'outline'} onClick={() => {
-                                const newValue = field.value.includes(diet.id) ? field.value.filter(id => id !== diet.id) : [...field.value, diet.id];
-                                field.onChange(newValue);
-                            }}>{diet.name}</Button>
+                            <Button
+                                key={diet.id}
+                                type="button"
+                                variant={field.value.includes(diet.id) ? 'default' : 'outline'}
+                                onClick={() => {
+                                    const newValue = field.value.includes(diet.id)
+                                        ? field.value.filter((id: number) => id !== diet.id)
+                                        : [...field.value, diet.id];
+                                    field.onChange(newValue);
+                                }}
+                            >
+                                {diet.name}
+                            </Button>
                         ))}
                     </div>
                 )} />

@@ -1,16 +1,15 @@
-import type { User } from "@/types/user";
 import axiosClient from "@/lib/axios";
+import type { User } from "@/types/user";
 
 interface ToggleFavoriteResponse {
   attached: number[];
   detached: number[];
 }
 
-export async function getAuthenticatedUserProfile(): Promise<User> {
-  const response = await axiosClient.get("/users/me");
-  return response.data.data;
-}
-
+/**
+ * Adiciona ou remove uma receita dos favoritos do usuário.
+ * Ação executada no cliente.
+ */
 export async function toggleFavoriteRecipe(
   recipeId: number
 ): Promise<ToggleFavoriteResponse> {
@@ -23,6 +22,10 @@ export async function toggleFavoriteRecipe(
   return response.data;
 }
 
+/**
+ * Adiciona ou remove um post dos favoritos do usuário.
+ * Ação executada no cliente.
+ */
 export async function toggleFavoritePost(
   postId: number
 ): Promise<ToggleFavoriteResponse> {
@@ -35,6 +38,10 @@ export async function toggleFavoritePost(
   return response.data;
 }
 
+/**
+ * Atualiza o perfil do usuário.
+ * Ação executada no cliente a partir de um formulário.
+ */
 export async function updateUserProfile(
   userId: number,
   data: FormData

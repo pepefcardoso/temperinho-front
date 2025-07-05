@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Camera, Save, Loader2, Edit, User as UserIcon } from 'lucide-react';
+import { Camera, Save, Loader2, Edit, User as UserIcon, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import type { User } from '@/types/user';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,19 @@ import { updateUserProfile } from '@/lib/api/user';
 const profileSchema = z.object({
     name: z.string().min(3, { message: "O nome precisa ter pelo menos 3 caracteres." }),
     phone: z.string().optional(),
+    password: z.string().optional(),
+    confirmPassword: z.string().optional(),
+}).refine(data => {
+    if (data.password) {
+        if (data.password.length < 8) {
+            return false;
+        }
+        return data.password === data.confirmPassword;
+    }
+    return true;
+}, {
+    message: 'As senhas não coincidem ou a nova senha é muito curta (mínimo 8 caracteres).',
+    path: ['confirmPassword'],
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -30,6 +43,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     const [isEditing, setIsEditing] = React.useState(false);
     const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = React.useState<string | null>(user.image?.url ?? null);
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const {
         register,
@@ -41,6 +55,8 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         defaultValues: {
             name: user.name || '',
             phone: user.phone || '',
+            password: '',
+            confirmPassword: '',
         },
     });
 
@@ -55,17 +71,19 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     const onSubmit = async (data: ProfileFormData) => {
         const formData = new FormData();
         formData.append('name', data.name);
-        if (data.phone) {
-            formData.append('phone', data.phone);
-        }
-        if (avatarFile) {
-            formData.append('image', avatarFile);
+        if (data.phone) formData.append('phone', data.phone);
+        if (avatarFile) formData.append('image', avatarFile);
+
+        if (data.password) {
+            formData.append('password', data.password);
+            formData.append('password_confirmation', data.confirmPassword || '');
         }
 
         try {
             const updatedUser = await updateUserProfile(user.id, formData);
             toast.success("Perfil atualizado com sucesso!");
-            reset({ name: updatedUser.name, phone: updatedUser.phone });
+            reset({ name: updatedUser.name, phone: updatedUser.phone, password: '', confirmPassword: '' });
+            setAvatarPreview(updatedUser.image?.url ?? avatarPreview);
             setAvatarFile(null);
             setIsEditing(false);
         } catch (error) {
@@ -78,7 +96,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     };
 
     const handleCancel = () => {
-        reset({ name: user.name, phone: user.phone });
+        reset({ name: user.name, phone: user.phone, password: '', confirmPassword: '' });
         setAvatarPreview(user.image?.url ?? null);
         setAvatarFile(null);
         setIsEditing(false);
@@ -92,11 +110,22 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                     <p className="text-muted-foreground">Gerencie suas informações pessoais.</p>
                 </div>
                 <div className="flex gap-2">
-                    {isEditing && (<Button type="button" variant="ghost" onClick={handleCancel}>Cancelar</Button>)}
-                    <Button type={isEditing ? 'submit' : 'button'} onClick={() => !isEditing && setIsEditing(true)} disabled={isSubmitting}>
-                        {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : (isEditing ? <Save className="h-4 w-4 mr-2" /> : <Edit className="h-4 w-4 mr-2" />)}
-                        {isEditing ? 'Salvar Alterações' : 'Editar Perfil'}
-                    </Button>
+                    {isEditing ? (
+                        <>
+                            <Button type="button" variant="ghost" onClick={handleCancel} disabled={isSubmitting}>
+                                Cancelar
+                            </Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                                Salvar Alterações
+                            </Button>
+                        </>
+                    ) : (
+                        <Button type="button" onClick={() => setIsEditing(true)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar Perfil
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -147,6 +176,32 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                             </div>
                         </CardContent>
                     </Card>
+
+                    {isEditing && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Alterar Senha</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <Label htmlFor="password">Nova Senha</Label>
+                                        <div className="relative">
+                                            <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password')} className="mt-1 pr-10" placeholder="Mínimo 8 caracteres" />
+                                            <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)}>
+                                                {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+                                        <Input id="confirmPassword" type={showPassword ? 'text' : 'password'} {...register('confirmPassword')} className="mt-1" />
+                                        {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>}
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
         </form>

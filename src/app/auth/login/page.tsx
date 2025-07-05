@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -67,13 +67,16 @@ export default function LoginPage() {
                             onClick={() => handleSocialLogin('google')}
                             disabled={!!isSocialLoading}
                         >
-                            {isSocialLoading === 'google' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <p className="mr-2 font-bold">G</p>}
+                            {isSocialLoading === 'google' ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <FcGoogle className="mr-2 h-5 w-5" />
+                            )}
                             Entrar com Google
                         </Button>
                     </div>
 
                     <div className="relative my-6">
-                        <Separator />
                         <div className="absolute inset-0 flex items-center" aria-hidden="true">
                             <div className="w-full border-t border-border" />
                         </div>

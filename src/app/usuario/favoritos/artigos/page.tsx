@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { BookOpen } from 'lucide-react';
-import { getFavoritePosts } from '@/lib/api/blog';
+import { getFavoritePosts } from '@/lib/api/blog.server';
 import { UserFavoritesArticlesClient } from '@/components/blog/UserFavoritesArticlesClient';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 

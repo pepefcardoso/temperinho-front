@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { getMyPosts } from '@/lib/api/blog';
+import { getMyPosts } from '@/lib/api/blog.server';
 import { Button } from '@/components/ui/button';
 import { UserArticlesClient } from '@/components/blog/UserArticlesClient';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';

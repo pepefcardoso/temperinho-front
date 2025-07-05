@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Heart } from 'lucide-react';
-import { getFavoriteRecipes } from '@/lib/api/recipe';
+import { getFavoriteRecipes } from '@/lib/api/recipe.server';
 import { UserFavoritesRecipesClient } from '@/components/recipe/UserFavoritesRecipesClient';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 

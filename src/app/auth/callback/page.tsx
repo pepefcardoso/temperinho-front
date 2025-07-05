@@ -6,21 +6,19 @@ import { useAuth } from '@/context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
 function AuthCallbackContent() {
+    const { setToken } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { setUser } = useAuth();
 
     useEffect(() => {
         const token = searchParams.get('token');
-
         if (token) {
-            localStorage.setItem('AUTH_TOKEN', token);
-            window.location.href = '/usuario/dashboard';
-
+            setToken(token);
+            router.push('/usuario/dashboard');
         } else {
-            router.push('/login?error=token-missing');
+            router.push('/auth/login?error=token-missing');
         }
-    }, [router, searchParams, setUser]);
+    }, [router, searchParams, setToken]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
@@ -32,7 +30,7 @@ function AuthCallbackContent() {
 
 export default function AuthCallbackPage() {
     return (
-        <Suspense fallback={<div>Carregando...</div>}>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Carregando...</div>}>
             <AuthCallbackContent />
         </Suspense>
     );
