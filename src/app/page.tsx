@@ -12,7 +12,7 @@ const HomePage = async () => {
     const paginatedResponse = await getRecipes({
       sortBy: 'created_at',
       sortDirection: 'desc',
-      limit: 6,
+      limit: 3,
     });
     initialRecipes = paginatedResponse.data;
   } catch (error) {

@@ -10,14 +10,12 @@ export const metadata: Metadata = {
     description: 'Acesse e gerencie seus artigos salvos para leitura e consulta rápida.',
 };
 
-interface PageProps {
-  searchParams: {
+interface LoaderParams {
     search?: string;
     category_id?: string;
-  };
 }
 
-async function FavoritesLoader({ searchParams }: PageProps) {
+async function FavoritesLoader({ searchParams }: { searchParams: LoaderParams }) {
     try {
         const paginatedResponse = await getFavoritePosts({
             search: searchParams.search,
@@ -41,24 +39,30 @@ async function FavoritesLoader({ searchParams }: PageProps) {
             </div>
         );
     } catch (error) {
-        console.error("Falha ao carregar artigos favoritos:", error);
+        console.error('Falha ao carregar artigos favoritos:', error);
         return (
             <div className="text-center py-16">
                 <h2 className="text-xl font-bold text-destructive">Ocorreu um Erro</h2>
-                <p className="text-muted-foreground mt-2">Não foi possível carregar seus artigos favoritos. Tente novamente mais tarde.</p>
+                <p className="text-muted-foreground mt-2">
+                    Não foi possível carregar seus artigos favoritos. Tente novamente mais tarde.
+                </p>
             </div>
         );
     }
 }
 
-export default function UserFavoriteArticlesPage({ searchParams }: PageProps) {
+export default async function UserFavoriteArticlesPage({
+    searchParams,
+}: {
+    searchParams: Promise<LoaderParams>;
+}) {
+    const sp = await searchParams;
+    const suspenseKey = `fav-artigos-${sp.category_id ?? 'todas'}-${sp.search ?? ''}`;
+
     return (
         <div className="container mx-auto py-8">
-            <Suspense
-                key={JSON.stringify(searchParams)}
-                fallback={<PageSkeleton layout="single-column" />}
-            >
-                <FavoritesLoader searchParams={searchParams} />
+            <Suspense key={suspenseKey} fallback={<PageSkeleton layout="single-column" />}>
+                <FavoritesLoader searchParams={sp} />
             </Suspense>
         </div>
     );

@@ -1,5 +1,5 @@
 import UserDashboardLayout from '@/components/user-profile/UserLayout';
-import { AuthGuard } from '@/components/AuthGuard';
+import { AuthGuard } from '@/components/guards/AuthGuard';
 
 export default function Layout({
   children,

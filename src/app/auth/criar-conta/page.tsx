@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,6 +32,7 @@ type CreateAccountFormData = z.infer<typeof createAccountSchema>;
 
 export default function CreateAccountPage() {
     const { register: registerUser } = useAuth();
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -56,6 +58,8 @@ export default function CreateAccountPage() {
             };
             await registerUser(submissionData);
             toast.success('Conta criada com sucesso! Redirecionando...');
+            router.push('/usuario/dashboard');
+
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || 'Não foi possível criar a conta. Tente novamente.';
             toast.error(errorMessage);
@@ -74,7 +78,6 @@ export default function CreateAccountPage() {
                             Preencha os dados abaixo para criar sua conta
                         </p>
                     </CardHeader>
-
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                             <div className="space-y-2">
@@ -85,7 +88,6 @@ export default function CreateAccountPage() {
                                     {errors.name && <p className="text-sm text-destructive mt-1">{errors.name.message}</p>}
                                 </div>
                             </div>
-
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <div className="relative">
@@ -94,7 +96,6 @@ export default function CreateAccountPage() {
                                     {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message}</p>}
                                 </div>
                             </div>
-
                             <div className="space-y-2">
                                 <Label htmlFor="password">Senha</Label>
                                 <div className="relative">
@@ -106,7 +107,6 @@ export default function CreateAccountPage() {
                                 </div>
                                 {errors.password && <p className="text-sm text-destructive mt-1">{errors.password.message}</p>}
                             </div>
-
                             <div className="space-y-2">
                                 <Label htmlFor="confirmPassword">Confirmar senha</Label>
                                 <div className="relative">
@@ -118,7 +118,6 @@ export default function CreateAccountPage() {
                                 </div>
                                 {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>}
                             </div>
-
                             <div className="flex items-start space-x-2">
                                 <Controller
                                     name="acceptTerms"
@@ -142,13 +141,11 @@ export default function CreateAccountPage() {
                                     {errors.acceptTerms && <p className="text-sm text-destructive">{errors.acceptTerms.message}</p>}
                                 </div>
                             </div>
-
                             <Button type="submit" className="w-full" disabled={isSubmitting}>
                                 {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                                 {isSubmitting ? 'Criando conta...' : 'Criar conta'}
                             </Button>
                         </form>
-
                         <div className="mt-6 text-center">
                             <p className="text-warm-600">
                                 Já tem uma conta?{' '}

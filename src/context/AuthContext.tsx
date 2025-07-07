@@ -58,8 +58,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = useCallback(async (data: RegisterData) => {
     await csrf();
-    await registerUser(data);
-  }, [csrf]);
+    const response = await registerUser(data);
+    if (response.token) {
+        setToken(response.token);
+    }
+  }, [csrf, setToken]);
 
   const logout = useCallback(async () => {
     try {

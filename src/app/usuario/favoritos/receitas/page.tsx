@@ -10,14 +10,12 @@ export const metadata: Metadata = {
     description: 'Acesse e gerencie suas receitas salvas para consultar quando quiser.',
 };
 
-interface PageProps {
-    searchParams: {
-        title?: string;
-        category_id?: string;
-    };
+interface LoaderParams {
+    title?: string;
+    category_id?: string;
 }
 
-async function FavoritesLoader({ searchParams }: PageProps) {
+async function FavoritesLoader({ searchParams }: { searchParams: LoaderParams }) {
     try {
         const paginatedResponse = await getFavoriteRecipes({
             title: searchParams.title,
@@ -30,7 +28,9 @@ async function FavoritesLoader({ searchParams }: PageProps) {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold text-foreground mb-1">Receitas Favoritas</h1>
-                        <p className="text-muted-foreground">Suas receitas salvas para consultar quando quiser.</p>
+                        <p className="text-muted-foreground">
+                            Suas receitas salvas para consultar quando quiser.
+                        </p>
                     </div>
                     <div className="flex items-center text-primary font-semibold">
                         <Heart className="h-5 w-5 mr-2 fill-current" />
@@ -41,24 +41,30 @@ async function FavoritesLoader({ searchParams }: PageProps) {
             </div>
         );
     } catch (error) {
-        console.error("Falha ao carregar receitas favoritas:", error);
+        console.error('Falha ao carregar receitas favoritas:', error);
         return (
             <div className="text-center py-16">
                 <h2 className="text-xl font-bold text-destructive">Ocorreu um Erro</h2>
-                <p className="text-muted-foreground mt-2">Não foi possível carregar suas receitas favoritas. Tente novamente.</p>
+                <p className="text-muted-foreground mt-2">
+                    Não foi possível carregar suas receitas favoritas. Tente novamente.
+                </p>
             </div>
         );
     }
 }
 
-export default function UserFavoriteRecipesPage({ searchParams }: PageProps) {
+export default async function UserFavoriteRecipesPage({
+    searchParams,
+}: {
+    searchParams: Promise<LoaderParams>;
+}) {
+    const sp = await searchParams;
+    const suspenseKey = `favoritas-${sp.category_id ?? 'todas'}-${sp.title ?? ''}`;
+
     return (
         <div className="container mx-auto py-8">
-            <Suspense
-                key={JSON.stringify(searchParams)}
-                fallback={<PageSkeleton layout="single-column" />}
-            >
-                <FavoritesLoader searchParams={searchParams} />
+            <Suspense key={suspenseKey} fallback={<PageSkeleton layout="single-column" />}>
+                <FavoritesLoader searchParams={sp} />
             </Suspense>
         </div>
     );

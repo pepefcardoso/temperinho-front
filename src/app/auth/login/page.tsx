@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { getSocialRedirectUrl, Provider } from '@/lib/api/socialAuth';
@@ -14,6 +15,7 @@ import { FcGoogle } from 'react-icons/fc';
 
 export default function LoginPage() {
     const { login } = useAuth();
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +29,7 @@ export default function LoginPage() {
         try {
             await login({ email, password });
             toast.success('Login realizado com sucesso! Redirecionando...');
+            router.push('/usuario/dashboard');
         } catch (error: any) {
             console.error('Erro ao fazer login:', error);
             const errorMessage = error.response?.data?.message || 'Email ou senha inválidos. Tente novamente.';
