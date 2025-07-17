@@ -5,14 +5,13 @@ import type { Metadata } from 'next'
 import AdBanner from '@/components/marketing/AdBanner'
 import { BlogPostHeader } from '@/components/blog/BlogPostHeader'
 
-export async function generateMetadata(
+export const generateMetadata = async (
   { params }: { params: { id: string } }
-): Promise<Metadata> {
+): Promise<Metadata> => {
   const postId = parseInt(params.id, 10)
   if (isNaN(postId)) {
     return { title: 'Artigo não encontrado' }
   }
-
   try {
     const article = await getPostById(postId)
     return {
@@ -36,15 +35,14 @@ export async function generateMetadata(
   }
 }
 
-export default async function BlogPostPage(
+const BlogPostPage = async (
   { params }: { params: { id: string } }
-) {
+) => {
   const postId = parseInt(params.id, 10)
   if (isNaN(postId)) notFound()
 
   try {
     const article = await getPostById(postId)
-
     const wordCount = article.content?.trim().split(/\s+/).length ?? 0
     const readTimeInMinutes = Math.ceil(wordCount / 200)
 
@@ -64,12 +62,7 @@ export default async function BlogPostPage(
                 priority
               />
             </div>
-            <AdBanner
-              href="/marketing"
-              layout="full"
-              size="large"
-              className="mb-8"
-            />
+            <AdBanner href="/marketing" layout="full" size="large" className="mb-8" />
           </div>
         </section>
 
@@ -77,9 +70,7 @@ export default async function BlogPostPage(
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-p:text-muted-foreground prose-strong:text-foreground">
-                <div
-                  dangerouslySetInnerHTML={{ __html: article.content ?? '' }}
-                />
+                <div dangerouslySetInnerHTML={{ __html: article.content ?? '' }} />
               </article>
               <aside className="w-full lg:w-80 lg:sticky top-24 self-start space-y-6">
                 <AdBanner href="/marketing" layout="sidebar" />
@@ -94,3 +85,5 @@ export default async function BlogPostPage(
     notFound()
   }
 }
+
+export default BlogPostPage
