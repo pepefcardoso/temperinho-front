@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Lock, CheckCircle, Loader2 } from 'lucide-react';
+import { isAxiosError } from 'axios';
 
 const resetPasswordSchema = z.object({
   password: z.string().min(8, { message: 'A nova senha deve ter no mínimo 8 caracteres.' }),
@@ -56,8 +57,11 @@ function ResetPasswordContent() {
       });
 
       setPasswordReset(true);
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Não foi possível redefinir a senha. Verifique se o link é válido e tente novamente.';
+    } catch (error) {
+      let errorMessage = 'Não foi possível redefinir a senha.';
+      if (isAxiosError(error) && error.response) {
+        errorMessage = error.response.data.message || errorMessage;
+      }
       toast.error(errorMessage);
     }
   };

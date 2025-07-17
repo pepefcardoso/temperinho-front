@@ -12,6 +12,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
+import { isAxiosError } from 'axios';
+
+interface SocialLoginButtonProps {
+    provider: Provider;
+    isLoading: boolean;
+    onClick: (provider: Provider) => void;
+}
+
+function SocialLoginButton({ provider, isLoading, onClick }: SocialLoginButtonProps) {
+    const Icon = provider === 'google' ? FcGoogle : null; // Expansível para outros provedores
+    const label = `Entrar com ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
+
+    if (!Icon) return null;
+
+    return (
+        <Button variant="outline" onClick={() => onClick(provider)} disabled={isLoading}>
+            {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+                <Icon className="mr-2 h-5 w-5" />
+            )}
+            {label}
+        </Button>
+    );
+}
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -22,6 +47,8 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSocialLoading, setIsSocialLoading] = useState<Provider | null>(null);
 
+    const isAnyLoading = isLoading || !!isSocialLoading;
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -30,9 +57,12 @@ export default function LoginPage() {
             await login({ email, password });
             toast.success('Login realizado com sucesso! Redirecionando...');
             router.push('/usuario/dashboard');
-        } catch (error: any) {
+        } catch (error) {
             console.error('Erro ao fazer login:', error);
-            const errorMessage = error.response?.data?.message || 'Email ou senha inválidos. Tente novamente.';
+            let errorMessage = 'Email ou senha inválidos. Tente novamente.';
+            if (isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.message || errorMessage;
+            }
             toast.error(errorMessage);
         } finally {
             setIsLoading(false);
@@ -65,18 +95,11 @@ export default function LoginPage() {
 
                 <CardContent>
                     <div className="grid grid-cols-1 gap-4">
-                        <Button
-                            variant="outline"
-                            onClick={() => handleSocialLogin('google')}
-                            disabled={!!isSocialLoading}
-                        >
-                            {isSocialLoading === 'google' ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                <FcGoogle className="mr-2 h-5 w-5" />
-                            )}
-                            Entrar com Google
-                        </Button>
+                        <SocialLoginButton
+                            provider="google"
+                            isLoading={isSocialLoading === 'google'}
+                            onClick={handleSocialLogin}
+                        />
                     </div>
 
                     <div className="relative my-6">
@@ -95,16 +118,7 @@ export default function LoginPage() {
                             <Label htmlFor="email">Email</Label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-warm-500 h-4 w-4" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="seu@email.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="pl-10"
-                                    required
-                                    disabled={isLoading || !!isSocialLoading}
-                                />
+                                <Input id="email" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required disabled={isAnyLoading} />
                             </div>
                         </div>
 
@@ -112,23 +126,8 @@ export default function LoginPage() {
                             <Label htmlFor="password">Senha</Label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-warm-500 h-4 w-4" />
-                                <Input
-                                    id="password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="Sua senha"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="pl-10 pr-10"
-                                    required
-                                    disabled={isLoading || !!isSocialLoading}
-                                />
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
+                                <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 pr-10" required disabled={isAnyLoading} />
+                                <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}>
                                     {showPassword ? <EyeOff className="h-4 w-4 text-warm-500" /> : <Eye className="h-4 w-4 text-warm-500" />}
                                 </Button>
                             </div>
@@ -140,7 +139,7 @@ export default function LoginPage() {
                             </Link>
                         </div>
 
-                        <Button type="submit" className="w-full" disabled={isLoading || !!isSocialLoading}>
+                        <Button type="submit" className="w-full" disabled={isAnyLoading}>
                             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Entrar
                         </Button>

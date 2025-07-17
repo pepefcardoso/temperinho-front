@@ -21,7 +21,7 @@ export const recipeSchema = z.object({
         name: z.string().min(2, "O nome do ingrediente é obrigatório."),
         quantity: z.string().min(1, "A quantidade é obrigatória."),
         unit_id: z.coerce
-          .number({ required_error: "Selecione uma unidade." })
+          .string({ required_error: "Selecione uma unidade." })
           .min(1, "Selecione uma unidade."),
       })
     )

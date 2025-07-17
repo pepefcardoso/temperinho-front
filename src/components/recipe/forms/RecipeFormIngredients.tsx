@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useFieldArray, Controller } from 'react-hook-form';
+import { useFieldArray, Controller, Control, UseFormRegister, FieldErrors } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,15 +10,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PlusCircle, Trash2 } from 'lucide-react';
 import type { RecipeUnit } from '@/types/recipe';
 import { getRecipeUnits } from '@/lib/api/recipe';
+import { RecipeFormData } from '@/lib/schemas/recipeSchema';
 
+/**
+ * Propriedades para o componente RecipeFormIngredients.
+ * @param control - O objeto de controle do react-hook-form.
+ * @param register - A função de registro de campos do react-hook-form.
+ * @param errors - O objeto de erros de validação do formulário.
+ */
 interface IngredientsProps {
-    control: any;
-    register: any;
-    errors: any;
+    control: Control<RecipeFormData>;
+    register: UseFormRegister<RecipeFormData>;
+    errors: FieldErrors<RecipeFormData>;
 }
 
 export function RecipeFormIngredients({ control, register, errors }: IngredientsProps) {
-    const { fields, append, remove } = useFieldArray({ control, name: "ingredients" });
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "ingredients",
+    });
+
     const [units, setUnits] = React.useState<RecipeUnit[]>([]);
 
     React.useEffect(() => {
@@ -33,8 +44,6 @@ export function RecipeFormIngredients({ control, register, errors }: Ingredients
         fetchUnits();
     }, []);
 
-    const fieldErrors = errors.ingredients as (Record<string, any> | undefined)[] | undefined;
-
     return (
         <Card>
             <CardHeader>
@@ -42,31 +51,29 @@ export function RecipeFormIngredients({ control, register, errors }: Ingredients
             </CardHeader>
             <CardContent className="space-y-4">
                 {fields.map((field, index) => {
-                    const quantityId = `ingredients-${index}-quantity`;
-                    const unitId = `ingredients-${index}-unit_id`;
-                    const nameId = `ingredients-${index}-name`;
-
+                    const errorForField = errors.ingredients?.[index];
                     return (
                         <div key={field.id} className="flex items-end gap-2 p-3 border rounded-lg bg-background">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1">
                                 <div>
-                                    <Label htmlFor={quantityId}>Quantidade</Label>
+                                    <Label htmlFor={`ingredients-${index}-quantity`}>Quantidade</Label>
                                     <Input
-                                        id={quantityId}
+                                        id={`ingredients-${index}-quantity`}
                                         {...register(`ingredients.${index}.quantity`)}
                                         type="text"
-                                        aria-invalid={!!fieldErrors?.[index]?.quantity}
+                                        aria-invalid={!!errorForField?.quantity}
                                     />
-                                    {fieldErrors?.[index]?.quantity && <p className="text-sm text-destructive mt-1" role="alert">{fieldErrors[index].quantity.message}</p>}
+                                    {errorForField?.quantity && <p className="text-sm text-destructive mt-1" role="alert">{errorForField.quantity.message}</p>}
                                 </div>
+
                                 <div>
-                                    <Label htmlFor={unitId}>Unidade</Label>
+                                    <Label htmlFor={`ingredients-${index}-unit_id`}>Unidade</Label>
                                     <Controller
                                         name={`ingredients.${index}.unit_id`}
                                         control={control}
                                         render={({ field: selectField }) => (
-                                            <Select onValueChange={selectField.onChange} value={selectField.value}>
-                                                <SelectTrigger id={unitId} aria-invalid={!!fieldErrors?.[index]?.unit_id}>
+                                            <Select onValueChange={selectField.onChange} value={String(selectField.value)}>
+                                                <SelectTrigger id={`ingredients-${index}-unit_id`} aria-invalid={!!errorForField?.unit_id}>
                                                     <SelectValue placeholder="Selecione..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -75,16 +82,17 @@ export function RecipeFormIngredients({ control, register, errors }: Ingredients
                                             </Select>
                                         )}
                                     />
-                                    {fieldErrors?.[index]?.unit_id && <p className="text-sm text-destructive mt-1" role="alert">{fieldErrors[index].unit_id.message}</p>}
+                                    {errorForField?.unit_id && <p className="text-sm text-destructive mt-1" role="alert">{errorForField.unit_id.message}</p>}
                                 </div>
+
                                 <div>
-                                    <Label htmlFor={nameId}>Ingrediente</Label>
+                                    <Label htmlFor={`ingredients-${index}-name`}>Ingrediente</Label>
                                     <Input
-                                        id={nameId}
+                                        id={`ingredients-${index}-name`}
                                         {...register(`ingredients.${index}.name`)}
-                                        aria-invalid={!!fieldErrors?.[index]?.name}
+                                        aria-invalid={!!errorForField?.name}
                                     />
-                                    {fieldErrors?.[index]?.name && <p className="text-sm text-destructive mt-1" role="alert">{fieldErrors[index].name.message}</p>}
+                                    {errorForField?.name && <p className="text-sm text-destructive mt-1" role="alert">{errorForField.name.message}</p>}
                                 </div>
                             </div>
                             <Button

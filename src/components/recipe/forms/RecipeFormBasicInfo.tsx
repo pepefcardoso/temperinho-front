@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, Control, UseFormRegister, FieldErrors } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,11 +9,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RecipeDifficultyLabels, type RecipeCategory } from '@/types/recipe';
 import { getRecipeCategories } from '@/lib/api/recipe';
+import { RecipeFormData } from '@/lib/schemas/recipeSchema';
 
+/**
+ * Propriedades para o componente RecipeFormBasicInfo.
+ * @param control - O objeto de controle do react-hook-form.
+ * @param register - A função de registro de campos do react-hook-form.
+ * @param errors - O objeto de erros de validação do formulário.
+ */
 interface BasicInfoProps {
-    control: any;
-    register: any;
-    errors: any;
+    control: Control<RecipeFormData>;
+    register: UseFormRegister<RecipeFormData>;
+    errors: FieldErrors<RecipeFormData>;
 }
 
 export function RecipeFormBasicInfo({ control, register, errors }: BasicInfoProps) {
@@ -41,22 +48,26 @@ export function RecipeFormBasicInfo({ control, register, errors }: BasicInfoProp
                     <Input id="title" {...register('title')} aria-invalid={!!errors.title} />
                     {errors.title && <p className="text-sm text-destructive mt-1" role="alert">{errors.title.message}</p>}
                 </div>
+
                 <div>
                     <Label htmlFor="description">Descrição *</Label>
                     <Textarea id="description" {...register('description')} aria-invalid={!!errors.description} />
                     {errors.description && <p className="text-sm text-destructive mt-1" role="alert">{errors.description.message}</p>}
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <Label htmlFor="time">Tempo (min) *</Label>
                         <Input id="time" type="number" {...register('time', { valueAsNumber: true })} aria-invalid={!!errors.time} />
                         {errors.time && <p className="text-sm text-destructive mt-1" role="alert">{errors.time.message}</p>}
                     </div>
+
                     <div>
                         <Label htmlFor="portion">Porções *</Label>
                         <Input id="portion" type="number" {...register('portion', { valueAsNumber: true })} aria-invalid={!!errors.portion} />
                         {errors.portion && <p className="text-sm text-destructive mt-1" role="alert">{errors.portion.message}</p>}
                     </div>
+
                     <div>
                         <Label htmlFor="difficulty">Dificuldade *</Label>
                         <Controller
@@ -80,6 +91,7 @@ export function RecipeFormBasicInfo({ control, register, errors }: BasicInfoProp
                         />
                         {errors.difficulty && <p className="text-sm text-destructive mt-1" role="alert">{errors.difficulty.message}</p>}
                     </div>
+
                     <div>
                         <Label htmlFor="category_id">Categoria *</Label>
                         <Controller

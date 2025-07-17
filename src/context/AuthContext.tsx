@@ -3,19 +3,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import axiosClient from '@/lib/axios';
+import { isAxiosError } from 'axios';
 import { User } from '@/types/user';
 import { loginUser, registerUser } from '@/lib/api/auth';
 import { LoginData, RegisterData } from '@/types/auth';
 
 interface AuthContextType {
   user: User | null;
-  setUser: (user: User | null) => void;
   login: (credentials: LoginData) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
-  csrf: () => Promise<any>;
-  logout: () => void;
-  token: string | null;
-  setToken: (token: string | null) => void;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
   loading: boolean;
 }
@@ -26,18 +23,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [token, _setToken] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('AUTH_TOKEN');
+    if (typeof window === 'undefined') {
+      return null;
     }
-    return null;
+    return localStorage.getItem('AUTH_TOKEN');
   });
 
+  /**
+   * Função centralizada para definir o token de autenticação.
+   * Sincroniza o estado do React, o localStorage e os Cookies.
+   */
   const setToken = useCallback((newToken: string | null) => {
     _setToken(newToken);
     if (newToken) {
       localStorage.setItem('AUTH_TOKEN', newToken);
       Cookies.set('AUTH_TOKEN', newToken, {
-        expires: 7,
+        expires: 7, // 7 dias
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -48,7 +49,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const csrf = useCallback(() => axiosClient.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sanctum/csrf-cookie`), []);
+  const csrf = useCallback((): Promise<void> => {
+    return axiosClient.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sanctum/csrf-cookie`);
+  }, []);
 
   const login = useCallback(async (credentials: LoginData) => {
     await csrf();
@@ -59,16 +62,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = useCallback(async (data: RegisterData) => {
     await csrf();
     const response = await registerUser(data);
-    if (response.token) {
-        setToken(response.token);
-    }
+    setToken(response.token);
   }, [csrf, setToken]);
 
+  /**
+   * Efetua o logout do usuário. A chamada à API é feita, mas o estado do
+   * cliente é limpo independentemente do sucesso da chamada, garantindo que
+   * o usuário seja deslogado da aplicação.
+   */
   const logout = useCallback(async () => {
     try {
       await axiosClient.post('/logout');
     } catch (error) {
-      console.error('Logout failed', error);
+      console.error('API de logout falhou, mas o usuário será deslogado do cliente.', error);
     } finally {
       setUser(null);
       setToken(null);
@@ -82,8 +88,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const response = await axiosClient.get('/users/me');
           setUser(response.data.data);
         } catch (error) {
-          console.error('Failed to fetch user on client', error);
-          setToken(null);
+          console.error('Falha ao buscar usuário, limpando token.', error);
+          if (isAxiosError(error) && error.response?.status === 401) {
+            setToken(null);
+          }
         } finally {
           setLoading(false);
         }
@@ -94,20 +102,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchUser();
   }, [token, setToken]);
 
-  const isAuthenticated = useMemo(() => !!token && !!user, [token, user]);
+  const isAuthenticated = useMemo(() => !!user, [user]);
 
   const value = useMemo(() => ({
     user,
-    setUser,
     login,
     register,
-    csrf,
     logout,
-    token,
-    setToken,
     isAuthenticated,
     loading,
-  }), [user, login, register, csrf, logout, token, setToken, isAuthenticated, loading]);
+  }), [user, login, register, logout, isAuthenticated, loading]);
 
   return (
     <AuthContext.Provider value={value}>
@@ -119,7 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
   return context;
 };

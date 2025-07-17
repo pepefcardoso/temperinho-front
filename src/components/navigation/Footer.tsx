@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
 import { subscribeToNewsletter } from '@/lib/api/customer';
+import { isAxiosError } from 'axios';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -14,6 +15,16 @@ export default function Footer() {
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
 
+    useEffect(() => {
+        if (status === 'success' || status === 'error') {
+            const timer = setTimeout(() => {
+                setStatus('idle');
+                setMessage('');
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [status]);
 
     const handleNewsletterSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,13 +36,17 @@ export default function Footer() {
         try {
             const response = await subscribeToNewsletter(email);
             setStatus('success');
-            setMessage(response ? 'Inscrição bem-sucedida!' : 'Você já está inscrito!');
+            setMessage('Inscrição realizada com sucesso!');
             setEmail('');
-        } catch (error: any) {
+        } catch (error) {
             setStatus('error');
-            setMessage(error.response?.data?.message || 'Ocorreu um erro.');
-        } finally {
-            setTimeout(() => setStatus('idle'), 3000);
+            if (isAxiosError(error) && error.response) {
+                setMessage(error.response.data.message || 'Ocorreu um erro ao se inscrever.');
+            } else if (error instanceof Error) {
+                setMessage(error.message);
+            } else {
+                setMessage('Um erro inesperado ocorreu.');
+            }
         }
     };
 
@@ -82,12 +97,14 @@ export default function Footer() {
                                 {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
                             </Button>
                         </form>
-                        {status === 'success' && (
-                            <p className="mt-2 text-sm text-green-400 flex items-center">
-                                <CheckCircle className="h-4 w-4 mr-2" /> {message}
-                            </p>
-                        )}
-                        {status === 'error' && <p className="mt-2 text-sm text-red-400">{message}</p>}
+                        <div aria-live="polite" className="mt-2 text-sm h-5">
+                            {status === 'success' && (
+                                <p className="text-green-400 flex items-center">
+                                    <CheckCircle className="h-4 w-4 mr-2" /> {message}
+                                </p>
+                            )}
+                            {status === 'error' && <p className="text-red-400">{message}</p>}
+                        </div>
                     </div>
                 </div>
             </div>
