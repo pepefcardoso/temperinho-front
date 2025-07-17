@@ -1,51 +1,50 @@
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import { getPostById } from '@/lib/api/blog';
-import type { Metadata } from 'next';
-import AdBanner from '@/components/marketing/AdBanner';
-import { BlogPostHeader } from '@/components/blog/BlogPostHeader';
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import { getPostById } from '@/lib/api/blog'
+import type { Metadata } from 'next'
+import AdBanner from '@/components/marketing/AdBanner'
+import { BlogPostHeader } from '@/components/blog/BlogPostHeader'
 
-interface PageProps {
-  params: { id: string };
-}
+type Params = { params: { id: string } }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const postId = parseInt(params.id, 10);
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const postId = parseInt(params.id, 10)
   if (isNaN(postId)) {
-    return { title: 'Artigo não encontrado' };
+    return { title: 'Artigo não encontrado' }
   }
+
   try {
-    const article = await getPostById(postId);
+    const article = await getPostById(postId)
     return {
       title: `${article.title} | Leve Sabor`,
       description: article.summary,
       openGraph: {
         title: article.title,
         description: article.summary,
-        images: [{
-          url: article.image?.url ?? '/images/og-image.png',
-          width: 1200,
-          height: 630,
-        }],
+        images: [
+          {
+            url: article.image?.url ?? '/images/og-image.png',
+            width: 1200,
+            height: 630,
+          },
+        ],
       },
-    };
+    }
   } catch (error) {
-    console.error("Erro ao buscar artigo para metadados:", error);
-    return { title: 'Artigo não encontrado' };
+    console.error('Erro ao buscar artigo para metadados:', error)
+    return { title: 'Artigo não encontrado' }
   }
 }
 
-export default async function BlogPostPage({ params }: PageProps) {
-  const postId = parseInt(params.id, 10);
-  if (isNaN(postId)) {
-    notFound();
-  }
+export default async function BlogPostPage({ params }: Params) {
+  const postId = parseInt(params.id, 10)
+  if (isNaN(postId)) notFound()
 
   try {
-    const article = await getPostById(postId);
+    const article = await getPostById(postId)
 
-    const wordCount = article.content?.trim().split(/\s+/).length ?? 0;
-    const readTimeInMinutes = Math.ceil(wordCount / 200);
+    const wordCount = article.content?.trim().split(/\s+/).length ?? 0
+    const readTimeInMinutes = Math.ceil(wordCount / 200)
 
     return (
       <main>
@@ -63,7 +62,12 @@ export default async function BlogPostPage({ params }: PageProps) {
                 priority
               />
             </div>
-            <AdBanner href="/marketing" layout="full" size="large" className="mb-8" />
+            <AdBanner
+              href="/marketing"
+              layout="full"
+              size="large"
+              className="mb-8"
+            />
           </div>
         </section>
 
@@ -71,7 +75,9 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-p:text-muted-foreground prose-strong:text-foreground">
-                <div dangerouslySetInnerHTML={{ __html: article.content ?? '' }} />
+                <div
+                  dangerouslySetInnerHTML={{ __html: article.content ?? '' }}
+                />
               </article>
               <aside className="w-full lg:w-80 lg:sticky top-24 self-start space-y-6">
                 <AdBanner href="/marketing" layout="sidebar" />
@@ -80,9 +86,9 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
         </section>
       </main>
-    );
+    )
   } catch (error) {
-    console.error("Falha ao buscar o artigo:", error);
-    notFound();
+    console.error('Falha ao buscar o artigo:', error)
+    notFound()
   }
 }
