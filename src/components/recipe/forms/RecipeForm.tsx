@@ -43,8 +43,8 @@ export function RecipeForm({ initialData, action }: RecipeFormProps) {
         id: i.id,
         name: i.name,
         quantity: String(i.quantity),
-        unit_id: i.unit_id
-      })) || [{ name: '', quantity: '', unit_id: 0 }],
+        unit_id: String(i.unit_id),
+      })) || [{ name: '', quantity: '', unit_id: '' }],
       steps: initialData?.steps?.map(s => ({ id: s.id, description: s.description })) || [{ description: '' }],
     },
   });

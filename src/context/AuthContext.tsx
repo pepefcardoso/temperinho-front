@@ -15,6 +15,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   loading: boolean;
+  setToken: (newToken: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,16 +30,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return localStorage.getItem('AUTH_TOKEN');
   });
 
-  /**
-   * Função centralizada para definir o token de autenticação.
-   * Sincroniza o estado do React, o localStorage e os Cookies.
-   */
   const setToken = useCallback((newToken: string | null) => {
     _setToken(newToken);
     if (newToken) {
       localStorage.setItem('AUTH_TOKEN', newToken);
       Cookies.set('AUTH_TOKEN', newToken, {
-        expires: 7, // 7 dias
+        expires: 7,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -65,11 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(response.token);
   }, [csrf, setToken]);
 
-  /**
-   * Efetua o logout do usuário. A chamada à API é feita, mas o estado do
-   * cliente é limpo independentemente do sucesso da chamada, garantindo que
-   * o usuário seja deslogado da aplicação.
-   */
   const logout = useCallback(async () => {
     try {
       await axiosClient.post('/logout');
@@ -111,7 +103,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
     isAuthenticated,
     loading,
-  }), [user, login, register, logout, isAuthenticated, loading]);
+    setToken,
+  }), [user, login, register, logout, isAuthenticated, loading, setToken]);
 
   return (
     <AuthContext.Provider value={value}>
