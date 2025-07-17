@@ -7,13 +7,8 @@ export const metadata: Metadata = {
     title: 'Editar Artigo | Leve Sabor',
 };
 
-type EditArticlePageProps = {
-    params: {
-        id: string;
-    };
-};
-
-export default async function EditArticlePage({ params }: EditArticlePageProps) {
+export default async function EditArticlePage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const postId = parseInt(params.id, 10);
 
     if (isNaN(postId)) {

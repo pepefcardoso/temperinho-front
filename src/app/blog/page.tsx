@@ -5,13 +5,6 @@ import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
 import { BlogFilterControls } from '@/components/blog/BlogFIlterControls'
 
-interface BlogPageProps {
-  searchParams: Promise<{
-    category_id?: string
-    title?: string
-  }>
-}
-
 const PostListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
@@ -59,10 +52,13 @@ async function PostList({
   }
 }
 
-export default async function BlogPage({
-  searchParams,
-}: BlogPageProps) {
-  const sp = await searchParams
+export default async function BlogPage(props: {
+  searchParams: Promise<{
+    category_id?: string
+    title?: string
+  }>
+}) {
+  const sp = await props.searchParams
   const { category_id, title } = sp
   const currentCategoryId = category_id ? parseInt(category_id, 10) : undefined
   const currentTitleFilter = title

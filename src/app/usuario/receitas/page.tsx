@@ -10,14 +10,13 @@ export const metadata: Metadata = {
     description: 'Gerencie, edite e crie suas próprias receitas deliciosas na plataforma Leve Sabor.',
 };
 
-type PageProps = {
-    searchParams: {
+export default async function UserMyRecipesPage(props: {
+    searchParams: Promise<{
         title?: string;
         category_id?: string;
-    };
-}
-
-export default async function UserMyRecipesPage({ searchParams }: PageProps) {
+    }>;
+}) {
+    const searchParams = await props.searchParams;
     let paginated;
 
     try {

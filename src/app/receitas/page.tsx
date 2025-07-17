@@ -1,23 +1,14 @@
-import { Suspense } from 'react'
-import type { Metadata } from 'next'
-import { getRecipes } from '@/lib/api/recipe'
-import { RecipesPageClient } from '@/components/recipe/RecipePageClient'
-import { PageSkeleton } from '@/components/skeletons/PageSkeleton'
+import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { getRecipes } from '@/lib/api/recipe';
+import { RecipesPageClient } from '@/components/recipe/RecipePageClient';
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 import { Recipe } from '@/types/recipe';
 
 export const metadata: Metadata = {
   title: 'Receitas | Leve Sabor',
   description: 'Explore centenas de receitas deliciosas e inclusivas.',
-}
-
-type RecipesPageProps = {
-  searchParams: Promise<{
-    title?: string
-    category_id?: string
-    sortBy?: 'created_at' | 'time' | 'difficulty'
-    diets?: string
-  }>
-}
+};
 
 async function RecipesList({
   searchParams,
@@ -31,7 +22,7 @@ async function RecipesList({
 }) {
   const dietFilters = searchParams.diets
     ? searchParams.diets.split(',').map(Number).filter(id => !isNaN(id))
-    : []
+    : [];
 
   let paginatedResponse: {
     data: Array<Recipe>
@@ -41,7 +32,7 @@ async function RecipesList({
       current_page: number
       last_page: number
     }
-  }
+  };
 
   try {
     paginatedResponse = await getRecipes({
@@ -55,7 +46,7 @@ async function RecipesList({
       },
       page: 1,
       limit: 9,
-    })
+    });
   } catch {
     paginatedResponse = {
       data: [],
@@ -65,7 +56,7 @@ async function RecipesList({
         current_page: 1,
         last_page: 1,
       },
-    }
+    };
   }
 
   return (
@@ -73,13 +64,18 @@ async function RecipesList({
       initialRecipes={paginatedResponse.data}
       initialMeta={paginatedResponse.meta}
     />
-  )
+  );
 }
 
-export default async function RecipesPage({
-  searchParams,
-}: RecipesPageProps) {
-  const params = await searchParams
+export default async function RecipesPage(props: {
+  searchParams: Promise<{
+    title?: string
+    category_id?: string
+    sortBy?: 'created_at' | 'time' | 'difficulty'
+    diets?: string
+  }>
+}) {
+  const params = await props.searchParams;
 
   return (
     <main>
@@ -106,5 +102,5 @@ export default async function RecipesPage({
         <RecipesList searchParams={params} />
       </Suspense>
     </main>
-  )
+  );
 }
