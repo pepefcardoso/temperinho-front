@@ -76,7 +76,7 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                     <div className="relative w-full aspect-video lg:aspect-square rounded-xl overflow-hidden shadow-lg">
                         <Image
-                            src={recipe.image?.url ?? '/images/placeholder.svg'}
+                            src={recipe.image?.url ?? '/images/placeholder.png'}
                             alt={recipe.title}
                             fill
                             className="object-cover"

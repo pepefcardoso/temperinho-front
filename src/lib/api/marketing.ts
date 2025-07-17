@@ -1,5 +1,5 @@
-import { marketingStats, pricingPackages } from "@/lib/data/marketing";
-import type { MarketingStat, PricingPackage } from "@/types/marketing";
+import { marketingStats, pricingPackages } from '@/lib/data/marketing';
+import type { MarketingStat, PricingPackage } from '@/types/marketing';
 
 export function getMarketingData(): {
   stats: MarketingStat[];
@@ -9,6 +9,6 @@ export function getMarketingData(): {
   return {
     stats: marketingStats,
     packages: pricingPackages,
-    heroImageUrl: "/images/marketing-hero.jpg",
+    heroImageUrl: '/images/marketing-hero.jpg',
   };
 }

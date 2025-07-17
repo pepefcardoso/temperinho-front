@@ -89,7 +89,7 @@ export default function RecipeCard({ recipe, viewMode = 'grid' }: RecipeCardProp
             >
                 <Link href={href} aria-label={`Ver receita ${recipe.title}`}>
                     <Image
-                        src={recipe.image?.url ?? '/images/placeholder.svg'}
+                        src={recipe.image?.url ?? '/images/placeholder.png'}
                         alt={recipe.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"

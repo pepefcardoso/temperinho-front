@@ -44,7 +44,7 @@ export function FavoriteRecipeCard({ recipe, onRemove }: FavoriteRecipeCardProps
             <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
                 <div className="relative w-full sm:w-48 h-40 sm:h-auto flex-shrink-0 rounded-lg overflow-hidden">
                     <Image
-                        src={recipe.image?.url ?? '/images/placeholder.svg'}
+                        src={recipe.image?.url ?? '/images/placeholder.png'}
                         alt={recipe.title}
                         fill
                         sizes="(max-width: 640px) 100vw, 192px"
