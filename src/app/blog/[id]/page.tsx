@@ -5,9 +5,9 @@ import type { Metadata } from 'next'
 import AdBanner from '@/components/marketing/AdBanner'
 import { BlogPostHeader } from '@/components/blog/BlogPostHeader'
 
-type Params = { params: { id: string } }
-
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
   const postId = parseInt(params.id, 10)
   if (isNaN(postId)) {
     return { title: 'Artigo não encontrado' }
@@ -36,7 +36,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   }
 }
 
-export default async function BlogPostPage({ params }: Params) {
+export default async function BlogPostPage(
+  { params }: { params: { id: string } }
+) {
   const postId = parseInt(params.id, 10)
   if (isNaN(postId)) notFound()
 
