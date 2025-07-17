@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
 import { isAxiosError } from 'axios';
+import { subscribeToNewsletter } from '@/lib/api/customer';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -33,6 +34,8 @@ export default function Footer() {
         setMessage('');
 
         try {
+            await subscribeToNewsletter(email);
+
             setStatus('success');
             setMessage('Inscrição realizada com sucesso!');
             setEmail('');

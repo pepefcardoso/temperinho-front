@@ -5,13 +5,15 @@ import type { Metadata } from 'next'
 import AdBanner from '@/components/marketing/AdBanner'
 import { BlogPostHeader } from '@/components/blog/BlogPostHeader'
 
-export const generateMetadata = async (
-  { params }: { params: { id: string } }
-): Promise<Metadata> => {
-  const postId = parseInt(params.id, 10)
+export async function generateMetadata(
+  { params }: { params: Promise<{ id: string }> }
+): Promise<Metadata> {
+  const { id } = await params
+  const postId = parseInt(id, 10)
   if (isNaN(postId)) {
     return { title: 'Artigo não encontrado' }
   }
+
   try {
     const article = await getPostById(postId)
     return {
@@ -36,9 +38,10 @@ export const generateMetadata = async (
 }
 
 const BlogPostPage = async (
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
-  const postId = parseInt(params.id, 10)
+  const { id } = await params
+  const postId = parseInt(id, 10)
   if (isNaN(postId)) notFound()
 
   try {

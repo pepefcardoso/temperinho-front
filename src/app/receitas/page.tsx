@@ -1,48 +1,85 @@
-import { Suspense } from 'react';
-import type { Metadata } from 'next';
-import { getRecipes } from '@/lib/api/recipe';
-import { RecipesPageClient } from '@/components/recipe/RecipePageClient';
-import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
+import { Suspense } from 'react'
+import type { Metadata } from 'next'
+import { getRecipes } from '@/lib/api/recipe'
+import { RecipesPageClient } from '@/components/recipe/RecipePageClient'
+import { PageSkeleton } from '@/components/skeletons/PageSkeleton'
 
 export const metadata: Metadata = {
   title: 'Receitas | Leve Sabor',
   description: 'Explore centenas de receitas deliciosas e inclusivas.',
-};
+}
 
 type RecipesPageProps = {
-  searchParams: {
-    title?: string;
-    category_id?: string;
-    sortBy?: 'created_at' | 'time' | 'difficulty';
-    diets?: string;
-  };
-};
+  searchParams: Promise<{
+    title?: string
+    category_id?: string
+    sortBy?: 'created_at' | 'time' | 'difficulty'
+    diets?: string
+  }>
+}
 
-async function RecipesList({ searchParams }: RecipesPageProps) {
+async function RecipesList({
+  searchParams,
+}: {
+  searchParams: {
+    title?: string
+    category_id?: string
+    sortBy?: 'created_at' | 'time' | 'difficulty'
+    diets?: string
+  }
+}) {
   const dietFilters = searchParams.diets
     ? searchParams.diets.split(',').map(Number).filter(id => !isNaN(id))
-    : [];
+    : []
 
-  const paginatedResponse = await getRecipes({
-    sortBy: searchParams.sortBy,
-    filters: {
-      title: searchParams.title,
-      category_id: searchParams.category_id ? Number(searchParams.category_id) : undefined,
-      diets: dietFilters,
-    },
-    page: 1,
-    limit: 9,
-  });
+  let paginatedResponse: {
+    data: Array<any>
+    meta: {
+      total: number
+      per_page: number
+      current_page: number
+      last_page: number
+    }
+  }
+
+  try {
+    paginatedResponse = await getRecipes({
+      sortBy: searchParams.sortBy,
+      filters: {
+        title: searchParams.title,
+        category_id: searchParams.category_id
+          ? Number(searchParams.category_id)
+          : undefined,
+        diets: dietFilters,
+      },
+      page: 1,
+      limit: 9,
+    })
+  } catch (error) {
+    paginatedResponse = {
+      data: [],
+      meta: {
+        total: 0,
+        per_page: 9,
+        current_page: 1,
+        last_page: 1,
+      },
+    }
+  }
 
   return (
     <RecipesPageClient
       initialRecipes={paginatedResponse.data}
       initialMeta={paginatedResponse.meta}
     />
-  );
+  )
 }
 
-export default function RecipesPage({ searchParams }: RecipesPageProps) {
+export default async function RecipesPage({
+  searchParams,
+}: RecipesPageProps) {
+  const params = await searchParams
+
   return (
     <main>
       <section className="bg-muted/50 py-12">
@@ -57,11 +94,16 @@ export default function RecipesPage({ searchParams }: RecipesPageProps) {
       </section>
 
       <Suspense
-        key={JSON.stringify(searchParams)}
-        fallback={<PageSkeleton layout="content-sidebar" sidebarPosition="right" />}
+        key={JSON.stringify(params)}
+        fallback={
+          <PageSkeleton
+            layout="content-sidebar"
+            sidebarPosition="right"
+          />
+        }
       >
-        <RecipesList searchParams={searchParams} />
+        <RecipesList searchParams={params} />
       </Suspense>
     </main>
-  );
+  )
 }

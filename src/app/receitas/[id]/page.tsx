@@ -1,22 +1,25 @@
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
-import { getRecipeById } from '@/lib/api/recipe';
-import { RecipeHeader } from '@/components/recipe/RecipeHeader';
-import { RecipeContent } from '@/components/recipe/RecipeContent';
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import { getRecipeById } from '@/lib/api/recipe'
+import { RecipeHeader } from '@/components/recipe/RecipeHeader'
+import { RecipeContent } from '@/components/recipe/RecipeContent'
 
 type PageProps = {
-  params: { id: string };
-};
+  params: Promise<{ id: string }>
+}
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const recipeId = parseInt(params.id, 10);
+export async function generateMetadata(
+  { params }: PageProps
+): Promise<Metadata> {
+  const { id } = await params
+  const recipeId = parseInt(id, 10)
 
   if (isNaN(recipeId)) {
-    return { title: 'Receita não encontrada' };
+    return { title: 'Receita não encontrada' }
   }
 
   try {
-    const recipe = await getRecipeById(recipeId);
+    const recipe = await getRecipeById(recipeId)
     return {
       title: `${recipe.title} | Leve Sabor`,
       description: recipe.description,
@@ -31,23 +34,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           },
         ],
       },
-    };
+    }
   } catch (error) {
-    console.error("Erro ao buscar receita para metadata:", error);
-    return { title: 'Receita não encontrada' };
+    console.error('Erro ao buscar receita para metadata:', error)
+    return { title: 'Receita não encontrada' }
   }
 }
 
-export default async function RecipeDetailPage({ params }: PageProps) {
-  const recipeId = parseInt(params.id, 10);
+export default async function RecipeDetailPage(
+  { params }: PageProps
+) {
+  const { id } = await params
+  const recipeId = parseInt(id, 10)
 
   if (isNaN(recipeId)) {
-    notFound();
+    notFound()
   }
 
   try {
-    const recipe = await getRecipeById(recipeId);
-
+    const recipe = await getRecipeById(recipeId)
     return (
       <div className="bg-background">
         <main>
@@ -55,9 +60,9 @@ export default async function RecipeDetailPage({ params }: PageProps) {
           <RecipeContent recipe={recipe} />
         </main>
       </div>
-    );
+    )
   } catch (error) {
-    console.error("Falha ao buscar a receita:", error);
-    notFound();
+    console.error('Falha ao buscar a receita:', error)
+    notFound()
   }
 }

@@ -1,37 +1,43 @@
-import { Suspense } from 'react';
-import { getPosts, getPostCategories } from '@/lib/api/blog';
-import type { Post } from '@/types/blog';
-import { BlogPostCard } from '@/components/blog/BlogPostCard';
-import { CardSkeleton } from '@/components/skeletons/CardSkeleton';
-import { BlogFilterControls } from '@/components/blog/BlogFIlterControls';
+import { Suspense } from 'react'
+import { getPosts, getPostCategories } from '@/lib/api/blog'
+import type { Post, PostCategory } from '@/types/blog'
+import { BlogPostCard } from '@/components/blog/BlogPostCard'
+import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
+import { BlogFilterControls } from '@/components/blog/BlogFIlterControls'
 
 interface BlogPageProps {
   searchParams: Promise<{
-    category_id?: string;
-    title?: string;
-  }>;
+    category_id?: string
+    title?: string
+  }>
 }
 
 const PostListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
   </div>
-);
+)
 
-async function PostList({ categoryId, title }: { categoryId?: number; title?: string }) {
+async function PostList({
+  categoryId,
+  title,
+}: {
+  categoryId?: number
+  title?: string
+}) {
   try {
     const paginatedResponse = await getPosts({
       filters: { category_id: categoryId, title },
       limit: 100,
-    });
-    const allPosts = paginatedResponse.data;
+    })
+    const allPosts = paginatedResponse.data
 
     if (allPosts.length === 0) {
       return (
         <p className="text-center text-muted-foreground py-12">
           Nenhum artigo encontrado com os filtros selecionados.
         </p>
-      );
+      )
     }
 
     return (
@@ -42,24 +48,33 @@ async function PostList({ categoryId, title }: { categoryId?: number; title?: st
           ))}
         </div>
       </section>
-    );
+    )
   } catch (error) {
-    console.error("Falha ao carregar posts:", error);
+    console.error('Falha ao carregar posts:', error)
     return (
       <p className="text-center text-destructive py-12">
         Ocorreu um erro ao carregar os artigos. Tente novamente.
       </p>
-    );
+    )
   }
 }
 
-export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const sp = await searchParams;
-  const { category_id, title } = sp;
-  const currentCategoryId = category_id ? parseInt(category_id, 10) : undefined;
-  const currentTitleFilter = title;
-  const categories = await getPostCategories();
-  const suspenseKey = `posts-${category_id ?? 'todas'}-${title ?? 'tudo'}`;
+export default async function BlogPage({
+  searchParams,
+}: BlogPageProps) {
+  const sp = await searchParams
+  const { category_id, title } = sp
+  const currentCategoryId = category_id ? parseInt(category_id, 10) : undefined
+  const currentTitleFilter = title
+
+  let categories: PostCategory[] = []
+  try {
+    categories = await getPostCategories()
+  } catch (error) {
+    console.error('Falha ao carregar categorias de post:', error)
+  }
+
+  const suspenseKey = `posts-${category_id ?? 'todas'}-${title ?? 'tudo'}`
 
   return (
     <div className="bg-background">
@@ -95,5 +110,5 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         </section>
       </main>
     </div>
-  );
+  )
 }
