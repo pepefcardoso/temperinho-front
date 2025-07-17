@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Heart, ChefHat, Clock, Users, Star, Printer, Share2, Bookmark } from 'lucide-react';
+import { ChefHat, Clock, Users, Star, Printer, Share2, Bookmark } from 'lucide-react';
 import { toast } from 'sonner';
 import { type Recipe, RecipeDifficultyLabels, type RecipeDifficulty } from '@/types/recipe';
 import { useAuth } from '@/context/AuthContext';
@@ -12,9 +12,9 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import AdBanner from '../marketing/AdBanner';
 
-const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value: string | number, label: string }) => (
-    <div className="text-center p-3 bg-muted rounded-lg">
-        <Icon className="h-5 w-5 mx-auto mb-2 text-muted-foreground" />
+const StatItem = ({ icon: Icon, value, label, iconClassName }: { icon: React.ElementType, value: string | number, label: string, iconClassName?: string }) => (
+    <div className="text-center p-3 bg-muted rounded-lg flex flex-col items-center justify-center">
+        <Icon className={cn("h-5 w-5 mb-2 text-muted-foreground", iconClassName)} />
         <div className="text-sm font-bold text-foreground">{value}</div>
         <div className="text-xs text-muted-foreground">{label}</div>
     </div>
@@ -72,15 +72,17 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
 
     return (
         <section className="py-8 bg-card border-b border-border">
-            <div className="container mx-auto px-4 max-w-4xl">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <div className="relative">
-                        <div className="relative w-full h-80 lg:h-96 rounded-xl overflow-hidden shadow-lg">
-                            <Image src={recipe.image?.url ?? '/images/placeholder.png'} alt={recipe.title} fill className="object-cover" />
-                        </div>
-                        <Button variant="ghost" size="icon" onClick={handleFavoriteClick} disabled={isLoading} className={cn('absolute top-4 right-4 rounded-full bg-card/80 backdrop-blur-sm hover:bg-card transition-all duration-200', isFavorited ? 'text-destructive' : 'text-muted-foreground')}>
-                            <Heart className={cn('h-5 w-5', isFavorited && 'fill-destructive')} />
-                        </Button>
+            <div className="container mx-auto px-4 max-w-5xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                    <div className="relative w-full aspect-video lg:aspect-square rounded-xl overflow-hidden shadow-lg">
+                        <Image
+                            src={recipe.image?.url ?? '/images/placeholder.svg'}
+                            alt={recipe.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            priority
+                        />
                     </div>
 
                     <div className="space-y-6">
@@ -93,7 +95,6 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <StatItem icon={Clock} value={`${recipe.time} min`} label="Total" />
                             <StatItem icon={Users} value={`${recipe.portion} porções`} label="Serve" />
-
                             {recipe.difficulty && (
                                 <StatItem
                                     icon={ChefHat}
@@ -101,29 +102,36 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                                     label="Nível"
                                 />
                             )}
-
-                            <div className="text-center p-3 bg-muted rounded-lg">
-                                <Star className="h-5 w-5 mx-auto mb-2 text-amber-400 fill-amber-400" />
-                                <div className="text-sm font-bold text-foreground">{(recipe.average_rating ?? 0).toFixed(1)}</div>
-                                <div className="text-xs text-muted-foreground">{recipe.ratings_count ?? 0} avaliações</div>
-                            </div>
+                            <StatItem
+                                icon={Star}
+                                value={(recipe.average_rating ?? 0).toFixed(1)}
+                                label={`${recipe.ratings_count ?? 0} avaliações`}
+                                iconClassName="text-amber-400 fill-amber-400"
+                            />
                         </div>
 
                         {recipe.user && (
                             <div className="flex items-center space-x-4 p-4 bg-muted rounded-lg">
                                 <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                                    <Image src={recipe.user.image?.url ?? '/images/avatar-placeholder.png'} alt={recipe.user.name} fill className="object-cover" />
+                                    <Image
+                                        src={recipe.user.image?.url ?? '/images/avatar-placeholder.png'}
+                                        alt={recipe.user.name}
+                                        fill
+                                        className="object-cover"
+                                        sizes="48px"
+                                    />
                                 </div>
                                 <div>
+                                    <div className="text-xs text-muted-foreground">Criado por</div>
                                     <h3 className="font-semibold text-foreground">{recipe.user.name}</h3>
                                 </div>
                             </div>
                         )}
 
-                        <div className="flex flex-wrap gap-3">
-                            <Button onClick={handleFavoriteClick} variant={isFavorited ? "default" : "outline"} disabled={isLoading}>
+                        <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
+                            <Button onClick={handleFavoriteClick} variant={isFavorited ? "default" : "outline"} disabled={isLoading} className="flex-1 min-w-[140px]">
                                 <Bookmark className={cn("h-4 w-4 mr-2", isFavorited && "fill-current")} />
-                                {isFavorited ? 'Salvo' : 'Salvar Receita'}
+                                {isFavorited ? 'Salvo nos Favoritos' : 'Salvar Receita'}
                             </Button>
                             <Button variant="outline" onClick={handleShare}><Share2 className="h-4 w-4 mr-2" />Compartilhar</Button>
                             <Button variant="outline" onClick={handlePrint}><Printer className="h-4 w-4 mr-2" />Imprimir</Button>

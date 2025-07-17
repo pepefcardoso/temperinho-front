@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Edit, Trash2, Calendar, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -35,38 +36,51 @@ export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
     }
 
     return (
-        <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
-                <div className="flex-1">
-                    <div className="flex items-center flex-wrap gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-foreground">{article.title}</h3>
-                        {article.category && (
-                            <Badge variant="secondary">{article.category.name}</Badge>
-                        )}
-                    </div>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{article.summary}</p>
-                    <div className="flex items-center flex-wrap text-xs text-muted-foreground gap-x-4 gap-y-1">
-                        <div className="flex items-center gap-1">
-                            <Star className="h-3 w-3 text-amber-500" />
-                            {(article.average_rating ?? 0).toFixed(1)} ({article.ratings_count ?? 0} avaliações)
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            Criado em {format(new Date(article.created_at), "dd/MM/yyyy", { locale: ptBR })}
-                        </div>
-                    </div>
+        <Card className="group overflow-hidden transition-shadow hover:shadow-md">
+            <div className="flex flex-col sm:flex-row">
+                <div className="relative h-48 w-full sm:h-auto sm:w-48 flex-shrink-0">
+                    <Image
+                        src={article.image?.url || '/images/placeholder.svg'}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 192px"
+                        className="object-cover"
+                    />
                 </div>
-                <div className="flex flex-row sm:flex-col lg:flex-row gap-2 self-start pt-2 sm:pt-0">
-                    <Button variant="outline" size="icon" asChild title="Editar artigo">
-                        <Link href={`/usuario/artigos/editar/${article.id}`}>
-                            <Edit className="h-4 w-4" />
-                        </Link>
-                    </Button>
-                    <Button variant="destructive-outline" size="icon" onClick={handleDelete} title="Deletar artigo">
-                        <Trash2 className="h-4 w-4" />
-                    </Button>
-                </div>
-            </CardContent>
+
+                <CardContent className="p-4 flex flex-1 flex-col justify-between">
+                    <div>
+                        <div className="flex items-center flex-wrap gap-3 mb-2">
+                            <h3 className="text-lg font-semibold text-foreground">{article.title}</h3>
+                            {article.category && (
+                                <Badge variant="secondary">{article.category.name}</Badge>
+                            )}
+                        </div>
+                        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{article.summary}</p>
+                        <div className="flex items-center flex-wrap text-xs text-muted-foreground gap-x-4 gap-y-1">
+                            <div className="flex items-center gap-1">
+                                <Star className="h-3 w-3 text-amber-500" />
+                                {(article.average_rating ?? 0).toFixed(1)} ({article.ratings_count ?? 0} avaliações)
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                Criado em {format(new Date(article.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-2 self-end mt-4">
+                        <Button variant="outline" size="icon" asChild aria-label="Editar artigo">
+                            <Link href={`/usuario/artigos/editar/${article.id}`}>
+                                <Edit className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                        <Button variant="destructive-outline" size="icon" onClick={handleDelete} aria-label="Deletar artigo">
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </CardContent>
+            </div>
         </Card>
     );
 }

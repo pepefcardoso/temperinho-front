@@ -47,7 +47,7 @@ interface RecipeCardProps extends VariantProps<typeof cardVariants> {
     recipe: Recipe;
 }
 
-export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
+export default function RecipeCard({ recipe, viewMode = 'grid' }: RecipeCardProps) {
     const { user } = useAuth();
     const [isFavorited, setIsFavorited] = useState(recipe.is_favorited ?? false);
     const [isLoading, setIsLoading] = useState(false);
@@ -74,21 +74,25 @@ export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
         }
     };
 
+    const imageSizes = viewMode === 'grid'
+        ? '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+        : '(max-width: 576px) 33vw, 192px';
+
     return (
         <div className={cn(cardVariants({ viewMode }))}>
             <div
                 className={cn(
                     "relative overflow-hidden flex-shrink-0",
-                    viewMode === 'grid' ? 'w-full h-48' : 'w-1/3 h-full max-w-48'
+                    viewMode === 'grid' ? 'w-full aspect-video' : 'w-1/3 h-full max-w-48'
                 )}
             >
                 <Link href={href} aria-label={`Ver receita ${recipe.title}`}>
                     <Image
-                        src={recipe.image?.url ?? '/images/placeholder.png'}
+                        src={recipe.image?.url ?? '/images/placeholder.svg'}
                         alt={recipe.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        sizes={imageSizes}
                     />
                 </Link>
                 <button
@@ -105,48 +109,31 @@ export default function RecipeCard({ recipe, viewMode }: RecipeCardProps) {
                 </button>
             </div>
 
-            <div
-                className={cn(
-                    "p-4 flex flex-col",
-                    viewMode === 'grid' ? 'flex-grow' : 'flex-1'
-                )}
-            >
-
+            <div className={cn("p-4 flex flex-col", viewMode === 'grid' ? 'flex-grow' : 'flex-1')}>
                 {recipe.category && (
                     <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
                         {recipe.category.name}
                     </p>
                 )}
-
-                <h3
-                    className={cn(
-                        "font-display font-bold text-foreground group-hover:text-primary transition-colors leading-tight",
-                        viewMode === 'grid' ? 'text-xl line-clamp-2' : 'text-lg line-clamp-1'
-                    )}
-                >
+                <h3 className={cn("font-display font-bold text-foreground group-hover:text-primary transition-colors leading-tight",
+                    viewMode === 'grid' ? 'text-xl line-clamp-2' : 'text-lg line-clamp-1'
+                )}>
                     <Link href={href}>{recipe.title}</Link>
                 </h3>
-
                 {viewMode === 'list' && (
                     <p className="text-muted-foreground text-sm line-clamp-2 mt-2">
                         {recipe.description}
                     </p>
                 )}
-
                 <div className="flex-grow" />
-
                 {recipe.diets && recipe.diets.length > 0 && (
                     <div className="flex flex-wrap gap-2 pt-3 mt-3 border-t border-border">
                         {recipe.diets.map(diet => (
-                            <span key={diet.id} className={dietaryTagVariants()}>
-                                {diet.name}
-                            </span>
+                            <span key={diet.id} className={dietaryTagVariants()}>{diet.name}</span>
                         ))}
                     </div>
                 )}
-
-                <div className={cn(
-                    "flex items-center justify-between text-sm mt-3",
+                <div className={cn("flex items-center justify-between text-sm mt-3",
                     (!recipe.diets || recipe.diets.length === 0) && "pt-3 border-t border-border"
                 )}>
                     <div className="flex items-center space-x-4">

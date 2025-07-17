@@ -40,21 +40,24 @@ export function FavoriteRecipeCard({ recipe, onRemove }: FavoriteRecipeCardProps
     }
 
     return (
-        <Card className="hover:shadow-md transition-shadow">
+        <Card className="group overflow-hidden transition-shadow hover:shadow-md">
             <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
                 <div className="relative w-full sm:w-48 h-40 sm:h-auto flex-shrink-0 rounded-lg overflow-hidden">
                     <Image
-                        src={recipe.image?.url ?? '/images/placeholder.png'}
+                        src={recipe.image?.url ?? '/images/placeholder.svg'}
                         alt={recipe.title}
                         fill
-                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, 192px"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                 </div>
-                <div className="flex-1">
-                    <Badge variant="secondary" className="mb-2">{recipe.category?.name ?? 'Receita'}</Badge>
-                    <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">{recipe.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{recipe.description}</p>
-                    <div className="flex items-center flex-wrap text-xs text-muted-foreground gap-x-4 gap-y-1">
+                <div className="flex-1 flex flex-col">
+                    <div>
+                        <Badge variant="secondary" className="mb-2">{recipe.category?.name ?? 'Receita'}</Badge>
+                        <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">{recipe.title}</h3>
+                        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{recipe.description}</p>
+                    </div>
+                    <div className="flex items-center flex-wrap text-xs text-muted-foreground gap-x-4 gap-y-2 mt-auto pt-3 border-t">
                         <div className="flex items-center gap-1"><Clock className="h-3 w-3" /> {recipe.time} min</div>
                         <div className="flex items-center gap-1"><Users className="h-3 w-3" /> {recipe.portion} porções</div>
                         {recipe.difficulty && (
@@ -64,7 +67,7 @@ export function FavoriteRecipeCard({ recipe, onRemove }: FavoriteRecipeCardProps
                         )}
                     </div>
                 </div>
-                <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto self-start pt-2 sm:pt-0">
+                <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto self-start sm:self-center">
                     <Button variant="default" size="sm" asChild className="w-full">
                         <Link href={`/receitas/${recipe.id}`}>Ver Receita</Link>
                     </Button>

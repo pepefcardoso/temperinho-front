@@ -1,24 +1,40 @@
 'use client';
 
-import Script from 'next/script';
+import { useEffect } from 'react';
 
-const GoogleAd = () => (
-  <div className="ad-container">
-    <Script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-      strategy="afterInteractive"
-    />
-    <ins className="adsbygoogle"
-      style={{ display: 'block' }}
-      data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
-      data-ad-slot="1234567890"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-    <Script id="init-ads" strategy="afterInteractive">
-      {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-    </Script>
-  </div>
-);
+interface GoogleAdProps {
+  slot: string;
+  adFormat?: string;
+  responsive?: boolean;
+}
+
+declare global {
+  interface Window {
+    adsbygoogle?: any[];
+  }
+}
+
+const GoogleAd = ({ slot, adFormat = "auto", responsive = true }: GoogleAdProps) => {
+  useEffect(() => {
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (err) {
+      console.error("Erro ao carregar anúncio do Google:", err);
+    }
+  }, []);
+
+  return (
+    <div className="ad-container" style={{ overflow: 'hidden', textAlign: 'center' }}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-client={process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format={adFormat}
+        data-full-width-responsive={responsive.toString()}
+      ></ins>
+    </div>
+  );
+};
 
 export default GoogleAd;

@@ -1,10 +1,12 @@
+'use client';
+
 import { Image as ImageIcon } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 const adBannerVariants = cva(
-    "flex items-center justify-center rounded-xl transition-all duration-300 group",
+    "relative flex items-center justify-center rounded-xl transition-all duration-300 group",
     {
         variants: {
             variant: {
@@ -37,7 +39,7 @@ export interface AdBannerProps extends Omit<VariantProps<typeof adBannerVariants
 }
 
 const PlaceholderContent = () => (
-    <div className="text-center">
+    <div className="text-center p-4">
         <ImageIcon className="h-6 w-6 mx-auto mb-2 transition-colors group-hover:text-primary" />
         <p className="text-sm font-medium transition-colors group-hover:text-primary">
             Espaço Publicitário
@@ -58,6 +60,10 @@ const AdBanner = ({
     const hasImage = imageUrl && href;
     const finalVariant = hasImage ? 'image' : 'placeholder';
 
+    const imageSizes = layout === 'sidebar'
+        ? '(max-width: 320px) 100vw, 320px'
+        : '100vw';
+
     return (
         <a
             href={href}
@@ -70,8 +76,8 @@ const AdBanner = ({
                 <Image
                     src={imageUrl}
                     alt={altText}
-                    width={layout === 'sidebar' ? 320 : 1024}
-                    height={size === 'small' ? 90 : (size === 'medium' ? 150 : 250)}
+                    fill
+                    sizes={imageSizes}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
             ) : (
