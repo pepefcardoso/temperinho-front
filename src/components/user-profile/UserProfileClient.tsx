@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
 import { UserProfileForm } from '@/components/user-profile/UserProfileForm';
 import type { User } from '@/types/user';
 

@@ -87,7 +87,7 @@ export default function CreateAccountPage() {
 
     const onSubmit = async (data: CreateAccountFormData) => {
         try {
-            const { confirmPassword, acceptTerms, ...submissionData } = data;
+            const { confirmPassword, ...submissionData } = data;
             await registerUser({
                 ...submissionData,
                 password_confirmation: confirmPassword,

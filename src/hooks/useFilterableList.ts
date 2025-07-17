@@ -1,18 +1,18 @@
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState, useTransition } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState, useTransition } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface Category {
   id: string | number;
   name: string;
 }
 
-interface UseFilterableListProps<T> {
+interface UseFilterableListProps<T extends { id: string | number }> {
   initialItems: T[];
   fetchCategories: () => Promise<Category[]>;
 }
 
-export const useFilterableList = <T>({
+export const useFilterableList = <T extends { id: string | number }>({
   initialItems,
   fetchCategories,
 }: UseFilterableListProps<T>) => {
@@ -28,10 +28,10 @@ export const useFilterableList = <T>({
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const fetchedCategories = await fetchCategories();
-        setCategories(fetchedCategories);
+        const fetched = await fetchCategories();
+        setCategories(fetched);
       } catch (error) {
-        console.error("Failed to fetch categories:", error);
+        console.error('Failed to fetch categories:', error);
       } finally {
         setIsLoadingCategories(false);
       }
@@ -47,7 +47,6 @@ export const useFilterableList = <T>({
       } else {
         params.delete(key);
       }
-
       startTransition(() => {
         replace(`${pathname}?${params.toString()}`);
       });
@@ -56,17 +55,12 @@ export const useFilterableList = <T>({
   );
 
   const debouncedSearch = useDebouncedCallback((term: string) => {
-    handleFilterChange("title", term);
+    handleFilterChange('title', term);
   }, 500);
 
-  const removeItemById = useCallback(
-    (id: string | number, idKey: keyof T = "id" as keyof T) => {
-      setItems((currentItems) =>
-        currentItems.filter((item) => (item as any)[idKey] !== id)
-      );
-    },
-    []
-  );
+  const removeItemById = useCallback((id: T['id']) => {
+    setItems((current) => current.filter((item) => item.id !== id));
+  }, []);
 
   return {
     items,

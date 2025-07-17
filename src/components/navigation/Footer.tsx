@@ -6,7 +6,6 @@ import { Heart, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SITE_NAV_LINKS, SOCIAL_LINKS, LEGAL_LINKS, SocialLink, NavItem } from '@/lib/config/site';
-import { subscribeToNewsletter } from '@/lib/api/customer';
 import { isAxiosError } from 'axios';
 
 export default function Footer() {

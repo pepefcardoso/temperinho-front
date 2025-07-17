@@ -92,8 +92,7 @@ export function UserRecipeCard({ recipe, onDelete }: UserRecipeCardProps) {
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Essa ação não pode ser desfeita. Isso irá deletar permanentemente a receita
-                                            "{recipe.title}" dos nossos servidores.
+                                            Essa ação não pode ser desfeita. Isso irá deletar permanentemente a receita {`"${recipe.title}"`} dos nossos servidores.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>

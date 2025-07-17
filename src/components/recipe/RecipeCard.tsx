@@ -67,6 +67,7 @@ export default function RecipeCard({ recipe, viewMode = 'grid' }: RecipeCardProp
             await toggleFavoriteRecipe(recipe.id);
             toast.success(originalState ? "Receita removida dos favoritos!" : "Receita adicionada aos favoritos!");
         } catch (error) {
+            console.error("Erro ao atualizar favorito:", error);
             setIsFavorited(originalState);
             toast.error("Ocorreu um erro. Tente novamente.");
         } finally {
