@@ -10,21 +10,20 @@ export const metadata: Metadata = {
     description: 'Gerencie, edite e crie suas próprias receitas deliciosas na plataforma Leve Sabor.',
 };
 
-interface PageProps {
-    searchParams: Promise<{
+type PageProps = {
+    searchParams: {
         title?: string;
         category_id?: string;
-    }>;
+    };
 }
 
 export default async function UserMyRecipesPage({ searchParams }: PageProps) {
-    const { title, category_id } = await searchParams;
     let paginated;
 
     try {
         paginated = await getMyRecipes({
-            title,
-            categoryId: category_id,
+            title: searchParams.title,
+            categoryId: searchParams.category_id,
         });
     } catch (error) {
         console.error('Falha ao carregar as receitas do usuário:', error);

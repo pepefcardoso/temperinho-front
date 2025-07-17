@@ -9,35 +9,40 @@ export const metadata: Metadata = {
   description: 'Explore centenas de receitas deliciosas e inclusivas.',
 };
 
-interface PageProps {
-  searchParams: Promise<{
+type RecipesPageProps = {
+  searchParams: {
     title?: string;
     category_id?: string;
     sortBy?: 'created_at' | 'time' | 'difficulty';
     diets?: string;
-  }>;
-}
+  };
+};
 
-async function RecipesLoader({
-  searchParams,
-}: PageProps) {
-  const sp = await searchParams;
-
-  const dietFilters = sp.diets
-    ? sp.diets.split(',').map(Number).filter(id => !isNaN(id))
+async function RecipesList({ searchParams }: RecipesPageProps) {
+  const dietFilters = searchParams.diets
+    ? searchParams.diets.split(',').map(Number).filter(id => !isNaN(id))
     : [];
 
   const paginatedResponse = await getRecipes({
-    sortBy: sp.sortBy,
+    sortBy: searchParams.sortBy,
     filters: {
-      title: sp.title,
-      category_id: sp.category_id ? Number(sp.category_id) : undefined,
+      title: searchParams.title,
+      category_id: searchParams.category_id ? Number(searchParams.category_id) : undefined,
       diets: dietFilters,
     },
     page: 1,
     limit: 9,
   });
 
+  return (
+    <RecipesPageClient
+      initialRecipes={paginatedResponse.data}
+      initialMeta={paginatedResponse.meta}
+    />
+  );
+}
+
+export default function RecipesPage({ searchParams }: RecipesPageProps) {
   return (
     <main>
       <section className="bg-muted/50 py-12">
@@ -50,25 +55,13 @@ async function RecipesLoader({
           </p>
         </div>
       </section>
-      <RecipesPageClient
-        initialRecipes={paginatedResponse.data}
-        initialMeta={paginatedResponse.meta}
-      />
-    </main>
-  );
-}
 
-export default async function RecipesPage({ searchParams }: PageProps) {
-  const sp = await searchParams;
-
-  return (
-    <div className="bg-background">
       <Suspense
-        key={JSON.stringify(sp)}
+        key={JSON.stringify(searchParams)}
         fallback={<PageSkeleton layout="content-sidebar" sidebarPosition="right" />}
       >
-        <RecipesLoader searchParams={Promise.resolve(sp)} />
+        <RecipesList searchParams={searchParams} />
       </Suspense>
-    </div>
+    </main>
   );
 }

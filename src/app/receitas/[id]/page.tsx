@@ -4,13 +4,12 @@ import { getRecipeById } from '@/lib/api/recipe';
 import { RecipeHeader } from '@/components/recipe/RecipeHeader';
 import { RecipeContent } from '@/components/recipe/RecipeContent';
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
+type PageProps = {
+  params: { id: string };
+};
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const recipeId = parseInt(id, 10);
+  const recipeId = parseInt(params.id, 10);
 
   if (isNaN(recipeId)) {
     return { title: 'Receita não encontrada' };
@@ -40,8 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function RecipeDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const recipeId = parseInt(id, 10);
+  const recipeId = parseInt(params.id, 10);
 
   if (isNaN(recipeId)) {
     notFound();
