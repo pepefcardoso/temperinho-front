@@ -18,20 +18,18 @@ import { updateUserProfile } from '@/lib/api/user';
 const profileSchema = z.object({
     name: z.string().min(3, { message: "O nome precisa ter pelo menos 3 caracteres." }),
     phone: z.string().optional(),
-    password: z.string().optional(),
+    password: z.string().min(8, { message: "A senha deve ter no mínimo 8 caracteres." }).optional().or(z.literal('')),
     confirmPassword: z.string().optional(),
 }).refine(data => {
-    if (data.password) {
-        if (data.password.length < 8) {
-            return false;
-        }
+    if (data.password && data.password.length >= 8) {
         return data.password === data.confirmPassword;
     }
     return true;
 }, {
-    message: 'As senhas não coincidem ou a nova senha é muito curta (mínimo 8 caracteres).',
+    message: 'As senhas não coincidem.',
     path: ['confirmPassword'],
 });
+
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
@@ -45,6 +43,8 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     const [avatarPreview, setAvatarPreview] = React.useState<string | null>(user.image?.url ?? null);
     const [showPassword, setShowPassword] = React.useState(false);
 
+    const editButtonRef = React.useRef<HTMLButtonElement>(null);
+
     const {
         register,
         handleSubmit,
@@ -52,12 +52,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         reset
     } = useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
-        defaultValues: {
-            name: user.name || '',
-            phone: user.phone || '',
-            password: '',
-            confirmPassword: '',
-        },
+        defaultValues: { name: user.name || '', phone: user.phone || '', password: '', confirmPassword: '' },
     });
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +68,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         formData.append('name', data.name);
         if (data.phone) formData.append('phone', data.phone);
         if (avatarFile) formData.append('image', avatarFile);
-
         if (data.password) {
             formData.append('password', data.password);
             formData.append('password_confirmation', data.confirmPassword || '');
@@ -86,6 +80,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
             setAvatarPreview(updatedUser.image?.url ?? avatarPreview);
             setAvatarFile(null);
             setIsEditing(false);
+            editButtonRef.current?.focus();
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 toast.error(error.response.data.message || "Falha ao atualizar o perfil.");
@@ -100,6 +95,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         setAvatarPreview(user.image?.url ?? null);
         setAvatarFile(null);
         setIsEditing(false);
+        editButtonRef.current?.focus();
     };
 
     return (
@@ -112,16 +108,14 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                 <div className="flex gap-2">
                     {isEditing ? (
                         <>
-                            <Button type="button" variant="ghost" onClick={handleCancel} disabled={isSubmitting}>
-                                Cancelar
-                            </Button>
+                            <Button type="button" variant="ghost" onClick={handleCancel} disabled={isSubmitting}>Cancelar</Button>
                             <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
                                 Salvar Alterações
                             </Button>
                         </>
                     ) : (
-                        <Button type="button" onClick={() => setIsEditing(true)}>
+                        <Button type="button" onClick={() => setIsEditing(true)} ref={editButtonRef}>
                             <Edit className="h-4 w-4 mr-2" />
                             Editar Perfil
                         </Button>
@@ -140,7 +134,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                                     <AvatarFallback className="text-4xl"><UserIcon /></AvatarFallback>
                                 </Avatar>
                                 {isEditing && (
-                                    <Label htmlFor="avatar-upload" className="absolute bottom-1 right-1 cursor-pointer">
+                                    <Label htmlFor="avatar-upload" className="absolute bottom-1 right-1 cursor-pointer" aria-label="Alterar foto do perfil">
                                         <div className="grid place-items-center h-9 w-9 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"><Camera className="h-4 w-4" /></div>
                                         <Input id="avatar-upload" type="file" className="sr-only" accept="image/*" onChange={handleAvatarChange} />
                                     </Label>
@@ -161,8 +155,8 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="name">Nome Completo</Label>
-                                    <Input id="name" {...register('name')} disabled={!isEditing} className="mt-1" />
-                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name.message}</p>}
+                                    <Input id="name" {...register('name')} disabled={!isEditing} className="mt-1" aria-invalid={!!errors.name} />
+                                    {errors.name && <p className="text-sm text-destructive mt-1" role="alert">{errors.name.message}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="email">Email</Label>
@@ -171,32 +165,31 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                             </div>
                             <div>
                                 <Label htmlFor="phone">Telefone</Label>
-                                <Input id="phone" {...register('phone')} disabled={!isEditing} className="mt-1" placeholder="(XX) XXXXX-XXXX" />
-                                {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>}
+                                <Input id="phone" {...register('phone')} disabled={!isEditing} className="mt-1" placeholder="(XX) XXXXX-XXXX" aria-invalid={!!errors.phone} />
+                                {errors.phone && <p className="text-sm text-destructive mt-1" role="alert">{errors.phone.message}</p>}
                             </div>
                         </CardContent>
                     </Card>
 
                     {isEditing && (
                         <Card>
-                            <CardHeader>
-                                <CardTitle>Alterar Senha</CardTitle>
-                            </CardHeader>
+                            <CardHeader><CardTitle>Alterar Senha</CardTitle></CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <Label htmlFor="password">Nova Senha</Label>
                                         <div className="relative">
-                                            <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password')} className="mt-1 pr-10" placeholder="Mínimo 8 caracteres" />
-                                            <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)}>
+                                            <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password')} className="mt-1 pr-10" placeholder="Mínimo 8 caracteres" aria-invalid={!!errors.password} />
+                                            <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}>
                                                 {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                                             </Button>
                                         </div>
+                                        {errors.password && <p className="text-sm text-destructive mt-1" role="alert">{errors.password.message}</p>}
                                     </div>
                                     <div>
                                         <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
-                                        <Input id="confirmPassword" type={showPassword ? 'text' : 'password'} {...register('confirmPassword')} className="mt-1" />
-                                        {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>}
+                                        <Input id="confirmPassword" type={showPassword ? 'text' : 'password'} {...register('confirmPassword')} className="mt-1" aria-invalid={!!errors.confirmPassword} />
+                                        {errors.confirmPassword && <p className="text-sm text-destructive mt-1" role="alert">{errors.confirmPassword.message}</p>}
                                     </div>
                                 </div>
                             </CardContent>

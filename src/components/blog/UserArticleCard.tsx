@@ -6,11 +6,21 @@ import { Edit, Trash2, Calendar, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
 import type { Post } from '@/types/blog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { deletePost } from '@/lib/api/blog';
 
 interface UserArticleCardProps {
@@ -20,20 +30,18 @@ interface UserArticleCardProps {
 
 export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
     const handleDelete = async () => {
-        if (window.confirm(`Tem certeza que deseja deletar o artigo "${article.title}"?`)) {
-            toast.loading("Deletando artigo...");
-            try {
-                await deletePost(article.id);
-                toast.dismiss();
-                toast.success("Artigo deletado com sucesso!");
-                onDelete(article.id);
-            } catch (error) {
-                toast.dismiss();
-                toast.error("Falha ao deletar o artigo. Tente novamente.");
-                console.error("Erro ao deletar post:", error);
-            }
+        toast.loading("Deletando artigo...");
+        try {
+            await deletePost(article.id);
+            toast.dismiss();
+            toast.success("Artigo deletado com sucesso!");
+            onDelete(article.id);
+        } catch (error) {
+            toast.dismiss();
+            toast.error("Falha ao deletar o artigo. Tente novamente.");
+            console.error("Erro ao deletar post:", error);
         }
-    }
+    };
 
     return (
         <Card className="group overflow-hidden transition-shadow hover:shadow-md">
@@ -64,7 +72,7 @@ export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
                             </div>
                             <div className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                Criado em {format(new Date(article.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                                Criado em {format(new Date(article.created_at), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                             </div>
                         </div>
                     </div>
@@ -75,9 +83,29 @@ export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
                                 <Edit className="h-4 w-4" />
                             </Link>
                         </Button>
-                        <Button variant="destructive-outline" size="icon" onClick={handleDelete} aria-label="Deletar artigo">
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
+
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive-outline" size="icon" aria-label="Deletar artigo">
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Essa ação não pode ser desfeita. Isso irá deletar permanentemente o artigo
+                                        "{article.title}".
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleDelete}>
+                                        Sim, deletar artigo
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </CardContent>
             </div>

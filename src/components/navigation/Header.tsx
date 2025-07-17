@@ -26,9 +26,13 @@ function GlobalSearch() {
 
     return (
         <form onSubmit={handleSearch} className="relative w-full">
+            <label htmlFor="global-search" className="sr-only">
+                Buscar por receitas
+            </label>
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 pointer-events-none" />
             <Input
                 type="text"
+                id="global-search"
                 placeholder="Buscar receitas..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

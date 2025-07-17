@@ -8,6 +8,17 @@ import type { Recipe } from '@/types/recipe';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { deleteRecipe } from '@/lib/api/recipe';
 
 interface UserRecipeCardProps {
@@ -17,18 +28,16 @@ interface UserRecipeCardProps {
 
 export function UserRecipeCard({ recipe, onDelete }: UserRecipeCardProps) {
     const handleDelete = async () => {
-        if (window.confirm(`Tem certeza que deseja deletar a receita "${recipe.title}"?`)) {
-            toast.loading("Deletando receita...");
-            try {
-                await deleteRecipe(recipe.id);
-                toast.dismiss();
-                toast.success("Receita deletada com sucesso!");
-                onDelete(recipe.id);
-            } catch (error) {
-                toast.dismiss();
-                toast.error("Falha ao deletar a receita. Tente novamente.");
-                console.error("Erro ao deletar receita:", error);
-            }
+        toast.loading("Deletando receita...");
+        try {
+            await deleteRecipe(recipe.id);
+            toast.dismiss();
+            toast.success("Receita deletada com sucesso!");
+            onDelete(recipe.id);
+        } catch (error) {
+            toast.dismiss();
+            toast.error("Falha ao deletar a receita. Tente novamente.");
+            console.error("Erro ao deletar receita:", error);
         }
     };
 
@@ -72,9 +81,30 @@ export function UserRecipeCard({ recipe, onDelete }: UserRecipeCardProps) {
                                     <Edit className="h-4 w-4" />
                                 </Link>
                             </Button>
-                            <Button variant="destructive-outline" size="icon" onClick={handleDelete} aria-label="Deletar receita">
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
+
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive-outline" size="icon" aria-label="Deletar receita">
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Essa ação não pode ser desfeita. Isso irá deletar permanentemente a receita
+                                            "{recipe.title}" dos nossos servidores.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleDelete}>
+                                            Sim, deletar receita
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            {/* Fim da refatoração */}
                         </div>
                     </div>
                 </div>

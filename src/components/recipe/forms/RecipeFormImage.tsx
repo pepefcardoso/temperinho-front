@@ -17,6 +17,7 @@ interface ImageProps {
 export function RecipeFormImage({ initialImage, onFileChange }: ImageProps) {
     const [imagePreview, setImagePreview] = React.useState<string | null>(initialImage?.url || null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const uploadAreaRef = React.useRef<HTMLLabelElement>(null);
 
     React.useEffect(() => {
         return () => {
@@ -40,6 +41,8 @@ export function RecipeFormImage({ initialImage, onFileChange }: ImageProps) {
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
+
+        uploadAreaRef.current?.focus();
     };
 
     return (
@@ -47,14 +50,19 @@ export function RecipeFormImage({ initialImage, onFileChange }: ImageProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Imagem de Capa</CardTitle>
                 {imagePreview && (
-                    <Button variant="ghost" size="sm" onClick={handleRemoveImage} aria-label="Remover imagem">
+                    <Button variant="ghost" size="sm" onClick={handleRemoveImage}>
                         <X className="h-4 w-4 mr-2" />
                         Remover
                     </Button>
                 )}
             </CardHeader>
             <CardContent>
-                <Label htmlFor="image-upload" className="cursor-pointer group">
+                <Label
+                    htmlFor="image-upload"
+                    className="cursor-pointer group focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg"
+                    ref={uploadAreaRef}
+                    tabIndex={0}
+                >
                     <div className="relative border-2 border-dashed border-border rounded-lg p-4 text-center text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-muted/50">
                         {imagePreview ? (
                             <div className="relative w-full aspect-video mx-auto">
