@@ -34,7 +34,6 @@ export default function Footer() {
         setMessage('');
 
         try {
-            const response = await subscribeToNewsletter(email);
             setStatus('success');
             setMessage('Inscrição realizada com sucesso!');
             setEmail('');

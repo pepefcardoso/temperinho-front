@@ -94,8 +94,7 @@ export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Essa ação não pode ser desfeita. Isso irá deletar permanentemente o artigo
-                                        "{article.title}".
+                                        Essa ação não pode ser desfeita. Isso irá deletar permanentemente o artigo &quot;{article.title}&quot;.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>

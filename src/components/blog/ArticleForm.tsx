@@ -10,7 +10,6 @@ import Image from 'next/image';
 import { Save, Loader2, Upload, X } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 import axios from 'axios';
-
 import type { Post, PostCategory, PostTopic } from '@/types/blog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +20,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { getPostCategories, getPostTopics, createPost, updatePost } from '@/lib/api/blog';
 
-// --- Esquema de Validação ---
 const articleSchema = z.object({
     title: z.string().min(10, "O título precisa ter pelo menos 10 caracteres."),
     summary: z.string().min(20, "O resumo precisa de pelo menos 20 caracteres.").max(255, "Resumo não pode exceder 255 caracteres."),
@@ -31,8 +29,6 @@ const articleSchema = z.object({
 });
 
 type ArticleFormData = z.infer<typeof articleSchema>;
-
-// --- Componentes Filhos do Formulário ---
 
 function ArticleMetadataSection({ form, categories }: { form: UseFormReturn<ArticleFormData>, categories: PostCategory[] }) {
     const { register, control, formState: { errors } } = form;
@@ -146,6 +142,7 @@ export function ArticleForm({ initialData, action }: ArticleFormProps) {
                 setCategories(cats);
                 setTopics(tops);
             } catch (error) {
+                console.error("Erro ao carregar categorias e tópicos:", error);
                 toast.error("Falha ao carregar dados do formulário.");
             }
         };
