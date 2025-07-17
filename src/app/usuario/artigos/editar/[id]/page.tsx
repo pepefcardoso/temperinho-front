@@ -7,7 +7,13 @@ export const metadata: Metadata = {
     title: 'Editar Artigo | Leve Sabor',
 };
 
-export default async function EditArticlePage({ params }: { params: { id: string } }) {
+type EditArticlePageProps = {
+    params: {
+        id: string;
+    };
+};
+
+export default async function EditArticlePage({ params }: EditArticlePageProps) {
     const postId = parseInt(params.id, 10);
 
     if (isNaN(postId)) {

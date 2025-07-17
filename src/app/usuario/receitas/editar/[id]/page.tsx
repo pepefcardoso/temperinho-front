@@ -5,7 +5,13 @@ import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = { title: 'Editar Receita | Leve Sabor' };
 
-export default async function EditRecipePage({ params }: { params: { id: string } }) {
+type EditRecipePageProps = {
+    params: {
+        id: string;
+    };
+};
+
+export default async function EditRecipePage({ params }: EditRecipePageProps) {
     const recipeId = parseInt(params.id, 10);
 
     if (isNaN(recipeId)) {
