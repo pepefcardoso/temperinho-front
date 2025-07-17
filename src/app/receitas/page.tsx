@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { getRecipes } from '@/lib/api/recipe'
 import { RecipesPageClient } from '@/components/recipe/RecipePageClient'
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton'
+import { Recipe } from '@/types/recipe';
 
 export const metadata: Metadata = {
   title: 'Receitas | Leve Sabor',
@@ -33,7 +34,7 @@ async function RecipesList({
     : []
 
   let paginatedResponse: {
-    data: Array<any>
+    data: Array<Recipe>
     meta: {
       total: number
       per_page: number
@@ -55,7 +56,7 @@ async function RecipesList({
       page: 1,
       limit: 9,
     })
-  } catch (error) {
+  } catch {
     paginatedResponse = {
       data: [],
       meta: {
