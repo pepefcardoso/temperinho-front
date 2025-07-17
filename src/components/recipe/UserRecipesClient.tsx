@@ -1,64 +1,44 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useDebouncedCallback } from 'use-debounce';
-import Link from 'next/link';
-import { Search, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { UserRecipeCard } from './UserRecipeCard';
-import type { Recipe, RecipeCategory } from '@/types/recipe';
-import { getRecipeCategories } from '@/lib/api/recipe';
+import Link from 'next/link'
+import { Search, Plus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { UserRecipeCard } from './UserRecipeCard'
+import type { Recipe } from '@/types/recipe'
+import { getRecipeCategories } from '@/lib/api/recipe'
+import { useFilterableList } from '@/hooks/useFilterableList'
 
 interface UserRecipesClientProps {
-    initialRecipes: Recipe[];
+    initialRecipes: Recipe[]
 }
 
 export function UserRecipesClient({ initialRecipes }: UserRecipesClientProps) {
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const { replace } = useRouter();
-
-    const [recipes, setRecipes] = useState<Recipe[]>(initialRecipes);
-    const [categories, setCategories] = useState<RecipeCategory[]>([]);
-    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            setIsLoadingCategories(true);
-            try {
-                const fetchedCategories = await getRecipeCategories();
-                setCategories(fetchedCategories);
-            } catch (error) {
-                console.error("Falha ao buscar categorias de receita:", error);
-            } finally {
-                setIsLoadingCategories(false);
-            }
-        };
-        fetchCategories();
-    }, []);
-
-    const handleFilterChange = (key: 'title' | 'category_id', value: string) => {
-        const params = new URLSearchParams(searchParams);
-        if (value && value !== 'todas') {
-            params.set(key, value);
-        } else {
-            params.delete(key);
-        }
-        replace(`${pathname}?${params.toString()}`);
-    };
-
-    const debouncedSearch = useDebouncedCallback(value => {
-        handleFilterChange('title', value);
-    }, 500);
+    const {
+        items: recipes,
+        categories,
+        isLoadingCategories,
+        searchParams,
+        debouncedSearch,
+        handleFilterChange,
+        removeItemById,
+    } = useFilterableList<Recipe>({
+        initialItems: initialRecipes,
+        fetchCategories: getRecipeCategories,
+    })
 
     const handleRecipeDelete = (deletedRecipeId: number) => {
-        setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== deletedRecipeId));
-    };
+        removeItemById(deletedRecipeId)
+    }
 
     return (
         <>
@@ -74,19 +54,30 @@ export function UserRecipesClient({ initialRecipes }: UserRecipesClientProps) {
                                 className="pl-10"
                             />
                         </div>
+
                         <div className="sm:w-48">
                             {isLoadingCategories ? (
                                 <Skeleton className="h-10 w-full" />
                             ) : (
                                 <Select
                                     defaultValue={searchParams.get('category_id') || 'todas'}
-                                    onValueChange={(value) => handleFilterChange('category_id', value)}
+                                    onValueChange={(value) =>
+                                        handleFilterChange(
+                                            'category_id',
+                                            value === 'todas' ? null : value,
+                                        )
+                                    }
                                 >
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="todas">Todas as Categorias</SelectItem>
-                                        {categories.map(category => (
-                                            <SelectItem key={category.id} value={String(category.id)}>
+                                        {categories.map((category) => (
+                                            <SelectItem
+                                                key={category.id}
+                                                value={String(category.id)}
+                                            >
                                                 {category.name}
                                             </SelectItem>
                                         ))}
@@ -104,17 +95,26 @@ export function UserRecipesClient({ initialRecipes }: UserRecipesClientProps) {
                         <UserRecipeCard
                             key={recipe.id}
                             recipe={recipe}
-                            onDelete={handleRecipeDelete}
+                            onDelete={() => handleRecipeDelete(recipe.id)}
                         />
                     ))
                 ) : (
                     <div className="text-center py-16 border-2 border-dashed rounded-lg">
-                        <h3 className="text-lg font-medium text-foreground">Nenhuma receita encontrada</h3>
-                        <p className="text-muted-foreground mt-2 mb-6">Tente ajustar seus filtros ou crie uma nova receita.</p>
-                        <Button asChild><Link href="/usuario/receitas/nova"><Plus className="h-4 w-4 mr-2" />Criar Receita</Link></Button>
+                        <h3 className="text-lg font-medium text-foreground">
+                            Nenhuma receita encontrada
+                        </h3>
+                        <p className="text-muted-foreground mt-2 mb-6">
+                            Tente ajustar seus filtros ou crie uma nova receita.
+                        </p>
+                        <Button asChild>
+                            <Link href="/usuario/receitas/nova">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Criar Receita
+                            </Link>
+                        </Button>
                     </div>
                 )}
             </div>
         </>
-    );
+    )
 }
