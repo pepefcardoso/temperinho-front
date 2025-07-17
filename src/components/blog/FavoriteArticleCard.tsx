@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { Heart, Calendar, Star } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import type { Post } from '@/types/blog';
+import { formatDate } from '@/lib/dateUtils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,7 +44,7 @@ export function FavoriteArticleCard({ article, onRemove }: FavoriteArticleCardPr
                         </div>
                         <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            Publicado em {format(new Date(article.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                            Publicado em {formatDate(article.created_at, "dd/MM/yyyy")}
                         </div>
                     </div>
                 </div>

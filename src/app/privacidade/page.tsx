@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { formatDate, LAST_UPDATE_DATE } from '@/lib/dateUtils';
 
 export const metadata: Metadata = {
     title: 'Política de Privacidade | Leve Sabor',
@@ -6,6 +7,8 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
+    const lastUpdated = formatDate(LAST_UPDATE_DATE, "d 'de' MMMM 'de' yyyy");
+
     return (
         <div className="min-h-screen bg-warm-50">
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -16,7 +19,7 @@ export default function PrivacyPage() {
 
                     <article className="prose prose-warm max-w-none">
                         <p className="text-warm-600 text-lg mb-8">
-                            Última atualização: 2 de Julho de 2025
+                            Última atualização: {lastUpdated}
                         </p>
 
                         <section className="mb-8">

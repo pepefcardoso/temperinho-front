@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { Calendar, User, Clock, Star } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { Post } from '@/types/blog';
+import type { Post } from '@/types/blog';
+import { formatDate } from '@/lib/dateUtils';
 import { PostActions } from '@/components/blog/PostActions';
 
 interface BlogPostHeaderProps {
@@ -34,7 +33,9 @@ export function BlogPostHeader({ article, readTime }: BlogPostHeaderProps) {
                 <p className="text-lg text-muted-foreground mb-6 leading-relaxed">{article.summary}</p>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-6">
                     <MetaItem icon={User}>{article.author?.name ?? 'Autor'}</MetaItem>
-                    <MetaItem icon={Calendar}>{format(new Date(article.created_at), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}</MetaItem>
+                    <MetaItem icon={Calendar}>
+                        {formatDate(article.created_at, "dd 'de' MMMM 'de' yyyy")}
+                    </MetaItem>
                     <MetaItem icon={Clock}>{readTime} min de leitura</MetaItem>
                     <MetaItem icon={Star}>
                         {(article.average_rating ?? 0).toFixed(1)} ({article.ratings_count ?? 0} avaliações)

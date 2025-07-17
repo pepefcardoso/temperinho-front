@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { formatDate, LAST_UPDATE_DATE } from '@/lib/dateUtils';
 
 export const metadata: Metadata = {
     title: 'Termos de Uso | Leve Sabor',
@@ -6,6 +7,8 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
+    const lastUpdated = formatDate(LAST_UPDATE_DATE, "d 'de' MMMM 'de' yyyy");
+
     return (
         <div className="min-h-screen bg-warm-50">
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -16,7 +19,7 @@ export default function TermsPage() {
 
                     <article className="prose prose-warm max-w-none">
                         <p className="text-warm-600 text-lg mb-8">
-                            Última atualização: 2 de Julho de 2025
+                            Última atualização: {lastUpdated}
                         </p>
 
                         <section className="mb-8">
@@ -75,7 +78,7 @@ export default function TermsPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-warm-800 mb-4">6. Propriedade Intelectual</h2>
                             <p className="text-warm-700 leading-relaxed mb-4">
-                                Todo o conteúdo da plataforma, incluindo textos, imagens, logos и design, é protegido por direitos autorais
+                                Todo o conteúdo da plataforma, incluindo textos, imagens, logos e design, é protegido por direitos autorais
                                 e outras leis de propriedade intelectual.
                             </p>
                         </section>
