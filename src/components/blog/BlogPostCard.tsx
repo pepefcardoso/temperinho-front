@@ -49,7 +49,7 @@ export function BlogPostCard({ post, variant = "default", className }: BlogPostC
             <Link href={href} className="block w-full h-full" aria-label={`Ler o artigo ${post.title}`}>
                 <div className={cn("relative w-full overflow-hidden", variant === 'featured' ? 'h-full' : 'aspect-video')}>
                     <Image
-                        src={post.image?.url ?? '/images/placeholder.svg'}
+                        src={post.image?.url ?? '/images/placeholder.png'}
                         alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"

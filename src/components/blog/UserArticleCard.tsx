@@ -48,7 +48,7 @@ export function UserArticleCard({ article, onDelete }: UserArticleCardProps) {
             <div className="flex flex-col sm:flex-row">
                 <div className="relative h-48 w-full sm:h-auto sm:w-48 flex-shrink-0">
                     <Image
-                        src={article.image?.url || '/images/placeholder.svg'}
+                        src={article.image?.url || '/images/placeholder.png'}
                         alt={article.title}
                         fill
                         sizes="(max-width: 640px) 100vw, 192px"

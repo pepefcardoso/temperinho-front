@@ -34,7 +34,7 @@ export async function generateMetadata(
         description: article.summary,
         images: [
           {
-            url: article.image?.url ?? '/images/og-image.png',
+            url: article.image?.url ?? '/images/placeholder.png',
             width: 1200,
             height: 630,
           },
@@ -73,7 +73,7 @@ export default async function BlogPostPage(
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="relative w-full aspect-video mb-8">
               <Image
-                src={article.image?.url ?? '/images/placeholder.svg'}
+                src={article.image?.url ?? '/images/placeholder.png'}
                 alt={article.title}
                 fill
                 className="object-cover rounded-xl shadow-lg"
