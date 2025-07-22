@@ -4,12 +4,16 @@ import { getPostById } from '@/lib/api/blog'
 import type { Metadata } from 'next'
 import AdBanner from '@/components/marketing/AdBanner'
 import { BlogPostHeader } from '@/components/blog/BlogPostHeader'
+import { CommentsSection } from '@/components/comments/CommentsSection'
+
+type PageProps = {
+  params: { id: string }
+}
 
 export async function generateMetadata(
-  { params }: { params: Promise<{ id: string }> }
+  { params }: PageProps
 ): Promise<Metadata> {
-  const { id } = await params
-  const postId = parseInt(id, 10)
+  const postId = parseInt(params.id, 10)
   if (isNaN(postId)) {
     return { title: 'Artigo não encontrado' }
   }
@@ -38,10 +42,9 @@ export async function generateMetadata(
 }
 
 const BlogPostPage = async (
-  { params }: { params: Promise<{ id: string }> }
+  { params }: PageProps
 ) => {
-  const { id } = await params
-  const postId = parseInt(id, 10)
+  const postId = parseInt(params.id, 10)
   if (isNaN(postId)) notFound()
 
   try {
@@ -81,6 +84,8 @@ const BlogPostPage = async (
             </div>
           </div>
         </section>
+
+        <CommentsSection type="posts" id={postId} />
       </main>
     )
   } catch (error) {

@@ -3,16 +3,16 @@ import type { Metadata } from 'next'
 import { getRecipeById } from '@/lib/api/recipe'
 import { RecipeHeader } from '@/components/recipe/RecipeHeader'
 import { RecipeContent } from '@/components/recipe/RecipeContent'
+import { CommentsSection } from '@/components/comments/CommentsSection'
 
 type PageProps = {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }
 
 export async function generateMetadata(
   { params }: PageProps
 ): Promise<Metadata> {
-  const { id } = await params
-  const recipeId = parseInt(id, 10)
+  const recipeId = parseInt(params.id, 10)
 
   if (isNaN(recipeId)) {
     return { title: 'Receita não encontrada' }
@@ -44,8 +44,7 @@ export async function generateMetadata(
 export default async function RecipeDetailPage(
   { params }: PageProps
 ) {
-  const { id } = await params
-  const recipeId = parseInt(id, 10)
+  const recipeId = parseInt(params.id, 10)
 
   if (isNaN(recipeId)) {
     notFound()
@@ -58,6 +57,7 @@ export default async function RecipeDetailPage(
         <main>
           <RecipeHeader recipe={recipe} />
           <RecipeContent recipe={recipe} />
+          <CommentsSection type="recipes" id={recipeId} />
         </main>
       </div>
     )
