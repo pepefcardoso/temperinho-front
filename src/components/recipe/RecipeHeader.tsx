@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ChefHat, Clock, Users, Star, Printer, Share2, Bookmark } from 'lucide-react';
 import { toast } from 'sonner';
 import { type Recipe, RecipeDifficultyLabels, type RecipeDifficulty } from '@/types/recipe';
 import { useAuth } from '@/context/AuthContext';
 import { toggleFavoriteRecipe } from '@/lib/api/user';
+import { createOrUpdateRating, getUserRating } from '@/lib/api/interactions.server';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { StarRating } from '@/components/ui/StarRating';
 import { cn } from '@/lib/utils';
 import AdBanner from '../marketing/AdBanner';
 
@@ -27,14 +29,40 @@ interface RecipeHeaderProps {
 export function RecipeHeader({ recipe }: RecipeHeaderProps) {
     const { user } = useAuth();
     const [isFavorited, setIsFavorited] = useState(recipe.is_favorited ?? false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+    const [userRating, setUserRating] = useState<number | null>(null);
+    const [isRatingLoading, setIsRatingLoading] = useState(true);
+
+
+    useEffect(() => {
+        if (!user) {
+            setIsRatingLoading(false);
+            return;
+        }
+
+        const fetchUserRating = async () => {
+            try {
+                const rating = await getUserRating('recipes', recipe.id);
+                if (rating) {
+                    setUserRating(rating.rating);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar a avaliação do usuário:", error);
+            } finally {
+                setIsRatingLoading(false);
+            }
+        };
+
+        fetchUserRating();
+    }, [user, recipe.id]);
+
 
     const handleFavoriteClick = async () => {
         if (!user) {
             toast.error("Você precisa estar logado para favoritar receitas.");
             return;
         }
-        setIsLoading(true);
+        setIsFavoriteLoading(true);
         const originalState = isFavorited;
         setIsFavorited(!originalState);
 
@@ -46,9 +74,25 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
             console.error("Erro ao favoritar receita:", error);
             toast.error("Ocorreu um erro. Tente novamente.");
         } finally {
-            setIsLoading(false);
+            setIsFavoriteLoading(false);
         }
     };
+
+    const handleRatingChange = async (rating: number) => {
+        if (!user) {
+            toast.error("Você precisa estar logado para avaliar receitas.");
+            return;
+        }
+        try {
+            const updatedRating = await createOrUpdateRating('recipes', recipe.id, rating);
+            setUserRating(updatedRating.rating);
+            toast.success("Sua avaliação foi registrada com sucesso!");
+        } catch (error) {
+            console.error("Erro ao registrar avaliação:", error);
+            toast.error("Ocorreu um erro ao registrar sua avaliação. Tente novamente.");
+        }
+    };
+
 
     const handlePrint = () => window.print();
 
@@ -110,6 +154,23 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                             />
                         </div>
 
+                        {user && (
+                            <div className="p-4 bg-muted rounded-lg space-y-3">
+                                <p className="text-sm font-semibold text-center text-foreground">Sua Avaliação</p>
+                                {isRatingLoading ? (
+                                    <div className="text-center text-sm text-muted-foreground">Carregando sua avaliação...</div>
+                                ) : (
+                                    <div className="flex justify-center">
+                                        <StarRating
+                                            key={userRating}
+                                            initialRating={userRating ?? 0}
+                                            onRating={handleRatingChange}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {recipe.user && (
                             <div className="flex items-center space-x-4 p-4 bg-muted rounded-lg">
                                 <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
@@ -129,7 +190,7 @@ export function RecipeHeader({ recipe }: RecipeHeaderProps) {
                         )}
 
                         <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
-                            <Button onClick={handleFavoriteClick} variant={isFavorited ? "default" : "outline"} disabled={isLoading} className="flex-1 min-w-[140px]">
+                            <Button onClick={handleFavoriteClick} variant={isFavorited ? "default" : "outline"} disabled={isFavoriteLoading} className="flex-1 min-w-[140px]">
                                 <Bookmark className={cn("h-4 w-4 mr-2", isFavorited && "fill-current")} />
                                 {isFavorited ? 'Salvo nos Favoritos' : 'Salvar Receita'}
                             </Button>

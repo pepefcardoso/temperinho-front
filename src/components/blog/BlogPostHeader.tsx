@@ -1,8 +1,15 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Calendar, User, Clock, Star } from 'lucide-react';
+import { toast } from 'sonner';
 import type { Post } from '@/types/blog';
+import { useAuth } from '@/context/AuthContext';
+import { createOrUpdateRating, getUserRating } from '@/lib/api/interactions.server';
 import { formatDate } from '@/lib/dateUtils';
 import { PostActions } from '@/components/blog/PostActions';
+import { StarRating } from '@/components/ui/StarRating';
 
 interface BlogPostHeaderProps {
     article: Post;
@@ -17,6 +24,48 @@ const MetaItem = ({ icon: Icon, children }: { icon: React.ElementType, children:
 );
 
 export function BlogPostHeader({ article, readTime }: BlogPostHeaderProps) {
+    const { user } = useAuth();
+    const [userRating, setUserRating] = useState<number | null>(null);
+    const [isRatingLoading, setIsRatingLoading] = useState(true);
+
+    useEffect(() => {
+        if (!user) {
+            setIsRatingLoading(false);
+            return;
+        }
+
+        const fetchUserRating = async () => {
+            try {
+                const rating = await getUserRating('posts', article.id);
+                if (rating) {
+                    setUserRating(rating.rating);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar a avaliação do usuário:", error);
+            } finally {
+                setIsRatingLoading(false);
+            }
+        };
+
+        fetchUserRating();
+    }, [user, article.id]);
+
+    const handleRatingChange = async (rating: number) => {
+        if (!user) {
+            toast.error("Você precisa estar logado para avaliar posts.");
+            return;
+        }
+        try {
+            const updatedRating = await createOrUpdateRating('posts', article.id, rating);
+            setUserRating(updatedRating.rating);
+            toast.success("Sua avaliação foi registrada com sucesso!");
+        } catch (error) {
+            console.error("Erro ao registrar avaliação:", error);
+            toast.error("Ocorreu um erro ao registrar sua avaliação. Tente novamente.");
+        }
+    };
+
+
     return (
         <div className="container mx-auto px-4 max-w-4xl">
             <nav className="mb-6">
@@ -41,6 +90,24 @@ export function BlogPostHeader({ article, readTime }: BlogPostHeaderProps) {
                         {(article.average_rating ?? 0).toFixed(1)} ({article.ratings_count ?? 0} avaliações)
                     </MetaItem>
                 </div>
+
+                {user && (
+                    <div className="p-4 bg-muted rounded-lg space-y-2 my-6">
+                        <p className="text-sm font-semibold text-center text-foreground">Sua Avaliação</p>
+                        {isRatingLoading ? (
+                            <div className="text-center text-sm text-muted-foreground">Carregando sua avaliação...</div>
+                        ) : (
+                            <div className="flex justify-center">
+                                <StarRating
+                                    key={userRating}
+                                    initialRating={userRating ?? 0}
+                                    onRating={handleRatingChange}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <PostActions post={article} />
             </div>
         </div>
