@@ -6,7 +6,7 @@ import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 import { Recipe } from '@/types/recipe';
 
 export const metadata: Metadata = {
-  title: 'Receitas | Leve Sabor',
+  title: 'Receitas | Temperinho',
   description: 'Explore centenas de receitas deliciosas e inclusivas.',
 };
 

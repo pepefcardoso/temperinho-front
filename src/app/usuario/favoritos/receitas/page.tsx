@@ -6,7 +6,7 @@ import { UserFavoritesRecipesClient } from '@/components/recipe/UserFavoritesRec
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export const metadata: Metadata = {
-    title: 'Receitas Favoritas | Leve Sabor',
+    title: 'Receitas Favoritas | Temperinho',
     description: 'Acesse e gerencie suas receitas salvas para consultar quando quiser.',
 };
 

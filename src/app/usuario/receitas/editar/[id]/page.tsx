@@ -3,7 +3,7 @@ import { getRecipeById } from '@/lib/api/recipe';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-export const metadata: Metadata = { title: 'Editar Receita | Leve Sabor' };
+export const metadata: Metadata = { title: 'Editar Receita | Temperinho' };
 
 export default async function EditRecipePage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;

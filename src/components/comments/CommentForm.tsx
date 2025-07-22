@@ -1,4 +1,3 @@
-// src/components/comments/CommentForm.tsx
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -8,16 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { createComment } from '@/lib/api/interactions';
+import { createComment } from '@/lib/api/interactions.server';
+import { Comment } from '@/types/actions';
 
 interface CommentFormProps {
     type: 'posts' | 'recipes';
     id: number;
-    onCommentAdded: (newComment: any) => void;
+    onCommentAdded: (newComment: Comment) => void;
 }
 
 export function CommentForm({ type, id, onCommentAdded }: CommentFormProps) {
-    const { user, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const router = useRouter();
     const [content, setContent] = useState('');
     const [isPending, startTransition] = useTransition();
@@ -41,6 +41,7 @@ export function CommentForm({ type, id, onCommentAdded }: CommentFormProps) {
                 setContent('');
                 onCommentAdded(newComment);
             } catch (error) {
+                console.error('Erro ao adicionar comentário:', error);
                 toast.error('Falha ao adicionar comentário.');
             }
         });

@@ -6,8 +6,8 @@ import { UserRecipesClient } from '@/components/recipe/UserRecipesClient';
 import { getMyRecipes } from '@/lib/api/recipe.server';
 
 export const metadata: Metadata = {
-    title: 'Minhas Receitas | Leve Sabor',
-    description: 'Gerencie, edite e crie suas próprias receitas deliciosas na plataforma Leve Sabor.',
+    title: 'Minhas Receitas | Temperinho',
+    description: 'Gerencie, edite e crie suas próprias receitas deliciosas na plataforma Temperinho.',
 };
 
 export default async function UserMyRecipesPage(props: {

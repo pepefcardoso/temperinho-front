@@ -7,7 +7,7 @@ import { MissionSection } from '@/components/about/MissionSection';
 import { getAboutPageData } from '@/lib/api/about';
 
 export const metadata: Metadata = {
-    title: 'Sobre Nós | Leve Sabor',
+    title: 'Sobre Nós | Temperinho',
     description: 'Conheça nossa história, missão e a equipe apaixonada por trás da culinária verdadeiramente inclusiva.',
 };
 

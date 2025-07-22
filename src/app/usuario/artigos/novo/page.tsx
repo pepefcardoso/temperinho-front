@@ -2,7 +2,7 @@ import { ArticleForm } from '@/components/blog/ArticleForm';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Novo Artigo | Leve Sabor',
+    title: 'Novo Artigo | Temperinho',
 };
 
 export default function NewArticlePage() {

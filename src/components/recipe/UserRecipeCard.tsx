@@ -103,7 +103,6 @@ export function UserRecipeCard({ recipe, onDelete }: UserRecipeCardProps) {
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                            {/* Fim da refatoração */}
                         </div>
                     </div>
                 </div>

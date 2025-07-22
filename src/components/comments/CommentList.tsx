@@ -1,9 +1,7 @@
-// src/components/comments/CommentList.tsx
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getComments, updateComment, deleteComment, InteractableType } from '@/lib/api/interactions';
 import { Comment } from '@/types/actions';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -18,7 +16,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
+import { getComments, InteractableType } from '@/lib/api/interactions';
+import { deleteComment, updateComment } from '@/lib/api/interactions.server';
+import { AxiosError } from 'axios';
 interface CommentListProps {
     type: InteractableType;
     id: number;
@@ -30,7 +30,7 @@ export function CommentList({ type, id }: CommentListProps) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [meta, setMeta] = useState<{ current_page: number; last_page: number; total: number } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<any>(null);
+    const [error, setError] = useState<Error | AxiosError | null>(null);
     const [page, setPage] = useState(1);
 
     const [isPending, startTransition] = useTransition();
@@ -46,7 +46,7 @@ export function CommentList({ type, id }: CommentListProps) {
                 setComments(commentPage.data);
                 setMeta(commentPage.meta);
             } catch (err) {
-                setError(err);
+                setError(err as Error | AxiosError);
                 toast.error('Não foi possível carregar os comentários.');
             } finally {
                 setIsLoading(false);
@@ -81,6 +81,7 @@ export function CommentList({ type, id }: CommentListProps) {
                 toast.success('Comentário atualizado!');
                 handleCancelEdit();
             } catch (err) {
+                console.error(err);
                 toast.error('Falha ao atualizar o comentário.');
             }
         });
@@ -93,6 +94,7 @@ export function CommentList({ type, id }: CommentListProps) {
                 setComments(currentComments => currentComments.filter(c => c.id !== commentId));
                 toast.success('Comentário deletado!');
             } catch (err) {
+                console.error(err);
                 toast.error('Falha ao deletar o comentário.');
             }
         });

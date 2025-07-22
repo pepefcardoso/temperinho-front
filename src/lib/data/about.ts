@@ -6,7 +6,7 @@ export const teamMembers: TeamMember[] = [
     id: 1,
     name: "Ana Silva",
     role: "Chef e Fundadora",
-    bio: "Apaixonada por criar pratos que unem sabor e saúde, Ana fundou o Leve Sabor para compartilhar sua paixão por uma culinária inclusiva e deliciosa.",
+    bio: "Apaixonada por criar pratos que unem sabor e saúde, Ana fundou o Temperinho para compartilhar sua paixão por uma culinária inclusiva e deliciosa.",
     image: "/images/team/ana-silva.jpg",
   },
   {

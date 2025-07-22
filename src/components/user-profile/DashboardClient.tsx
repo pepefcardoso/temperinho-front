@@ -20,7 +20,7 @@ interface DashboardClientProps {
 export function DashboardClient({ user, recentRecipes, recentPosts }: DashboardClientProps) {
 
     useEffect(() => {
-        document.title = 'Dashboard | Leve Sabor';
+        document.title = 'Dashboard | Temperinho';
     }, []);
 
     if (!user) {

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { formatDate, LAST_UPDATE_DATE } from '@/lib/dateUtils';
 
 export const metadata: Metadata = {
-    title: 'Termos de Uso | Leve Sabor',
-    description: 'Leia os nossos Termos de Uso para entender as regras e diretrizes da plataforma Leve Sabor.',
+    title: 'Termos de Uso | Temperinho',
+    description: 'Leia os nossos Termos de Uso para entender as regras e diretrizes da plataforma Temperinho.',
 };
 
 export default function TermsPage() {
@@ -25,7 +25,7 @@ export default function TermsPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-warm-800 mb-4">1. Aceitação dos Termos</h2>
                             <p className="text-warm-700 leading-relaxed mb-4">
-                                Ao acessar e usar o Leve Sabor, você concorda em cumprir e estar vinculado a estes Termos de Uso.
+                                Ao acessar e usar o Temperinho, você concorda em cumprir e estar vinculado a estes Termos de Uso.
                                 Se você não concordar com qualquer parte destes termos, não deve usar nosso serviço.
                             </p>
                         </section>
@@ -33,7 +33,7 @@ export default function TermsPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-warm-800 mb-4">2. Descrição do Serviço</h2>
                             <p className="text-warm-700 leading-relaxed mb-4">
-                                O Leve Sabor é uma plataforma online que oferece receitas e conteúdo culinário voltado para
+                                O Temperinho é uma plataforma online que oferece receitas e conteúdo culinário voltado para
                                 pessoas com restrições alimentares, incluindo dietas veganas, sem glúten, sem lactose, entre outras.
                             </p>
                         </section>
@@ -86,7 +86,7 @@ export default function TermsPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-warm-800 mb-4">7. Limitação de Responsabilidade</h2>
                             <p className="text-warm-700 leading-relaxed mb-4">
-                                O Leve Sabor não se responsabiliza por danos diretos, indiretos, incidentais ou consequenciais
+                                O Temperinho não se responsabiliza por danos diretos, indiretos, incidentais ou consequenciais
                                 resultantes do uso da plataforma. As receitas são fornecidas apenas para fins informativos.
                             </p>
                         </section>
@@ -103,7 +103,7 @@ export default function TermsPage() {
                             <h2 className="text-2xl font-semibold text-warm-800 mb-4">9. Contato</h2>
                             <p className="text-warm-700 leading-relaxed">
                                 Para dúvidas sobre estes Termos de Uso, entre em contato conosco através da página de contato
-                                ou pelo email: contato@levesabor.com.br
+                                ou pelo email: contato@temperinho.com.br
                             </p>
                         </section>
                     </article>

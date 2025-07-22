@@ -21,7 +21,7 @@ export async function generateMetadata(
   try {
     const article = await getPostById(postId)
     return {
-      title: `${article.title} | Leve Sabor`,
+      title: `${article.title} | Temperinho`,
       description: article.summary,
       openGraph: {
         title: article.title,

@@ -21,7 +21,7 @@ interface SocialLoginButtonProps {
 }
 
 function SocialLoginButton({ provider, isLoading, onClick }: SocialLoginButtonProps) {
-    const Icon = provider === 'google' ? FcGoogle : null; // Expansível para outros provedores
+    const Icon = provider === 'google' ? FcGoogle : null;
     const label = `Entrar com ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
 
     if (!Icon) return null;

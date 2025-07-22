@@ -8,8 +8,8 @@ import { UserArticlesClient } from '@/components/blog/UserArticlesClient'
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton'
 
 export const metadata: Metadata = {
-    title: 'Meus Artigos | Leve Sabor',
-    description: 'Gerencie, edite e crie seus artigos e posts para a comunidade Leve Sabor.',
+    title: 'Meus Artigos | Temperinho',
+    description: 'Gerencie, edite e crie seus artigos e posts para a comunidade Temperinho.',
 }
 
 interface LoaderParams {

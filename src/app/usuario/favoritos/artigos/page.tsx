@@ -6,7 +6,7 @@ import { UserFavoritesArticlesClient } from '@/components/blog/UserFavoritesArti
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 
 export const metadata: Metadata = {
-    title: 'Artigos Favoritos | Leve Sabor',
+    title: 'Artigos Favoritos | Temperinho',
     description: 'Acesse e gerencie seus artigos salvos para leitura e consulta rápida.',
 };
 

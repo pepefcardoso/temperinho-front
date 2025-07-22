@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
-    title: 'Editar Artigo | Leve Sabor',
+    title: 'Editar Artigo | Temperinho',
 };
 
 export default async function EditArticlePage(props: { params: Promise<{ id: string }> }) {

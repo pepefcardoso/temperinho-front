@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, Menu, User, Heart, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -100,7 +101,14 @@ export default function Header() {
                 <div className="flex items-center justify-between h-16">
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-2xl font-display font-bold text-primary hover:text-primary/90 transition-colors">
-                            Leve Sabor
+                            <Image
+                                src="/images/logo.png"
+                                alt="Logo Temperinho"
+                                width={150}
+                                height={40}
+                                priority
+                                className="h-auto w-auto"
+                            />
                         </Link>
                     </div>
 

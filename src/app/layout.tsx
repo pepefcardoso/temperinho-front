@@ -22,8 +22,8 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: {
-    default: 'Leve Sabor | Culinária Inclusiva',
-    template: '%s | Leve Sabor',
+    default: 'Temperinho | Culinária Inclusiva',
+    template: '%s | Temperinho',
   },
   description: "Descubra receitas deliciosas para todos os gostos e restrições.",
 };

@@ -16,6 +16,8 @@ export function CommentsSection({ type, id }: CommentsSectionProps) {
     const router = useRouter();
 
     const handleCommentAdded = (_newComment: Comment) => {
+        // This function can be used to handle any additional logic after a comment is added
+        console.log('New comment added:', _newComment);
         router.refresh();
     };
 

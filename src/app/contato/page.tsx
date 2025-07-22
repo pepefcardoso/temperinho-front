@@ -4,12 +4,12 @@ import { ContactForm } from '@/components/marketing/ContactForm';
 import AdBanner from '@/components/marketing/AdBanner';
 
 export const metadata: Metadata = {
-  title: 'Contato | Leve Sabor',
+  title: 'Contato | Temperinho',
   description: 'Tire suas dúvidas, envie sugestões ou compartilhe sua experiência com a nossa comunidade de culinária inclusiva.',
 };
 
 const contactInfo = [
-  { icon: Mail, title: 'Email', description: 'contato@levesabor.com.br', details: 'Respondemos em até 24 horas' },
+  { icon: Mail, title: 'Email', description: 'contato@temperinho.com.br', details: 'Respondemos em até 24 horas' },
   { icon: Phone, title: 'Telefone', description: '(11) 1234-5678', details: 'Segunda a sexta, 9h às 18h' },
   { icon: MapPin, title: 'Endereço', description: 'São Paulo, SP', details: 'Atendimento e operações virtuais' },
   { icon: Clock, title: 'Horário de Atendimento', description: 'Segunda a sexta: 9h às 18h', details: 'Sábados: 9h às 14h' }

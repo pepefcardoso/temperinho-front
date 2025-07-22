@@ -21,7 +21,7 @@ export async function generateMetadata(
   try {
     const recipe = await getRecipeById(recipeId)
     return {
-      title: `${recipe.title} | Leve Sabor`,
+      title: `${recipe.title} | Temperinho`,
       description: recipe.description,
       openGraph: {
         title: recipe.title,

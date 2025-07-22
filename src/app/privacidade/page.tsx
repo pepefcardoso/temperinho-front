@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { formatDate, LAST_UPDATE_DATE } from '@/lib/dateUtils';
 
 export const metadata: Metadata = {
-    title: 'Política de Privacidade | Leve Sabor',
-    description: 'Entenda como coletamos, usamos e protegemos suas informações na plataforma Leve Sabor.',
+    title: 'Política de Privacidade | Temperinho',
+    description: 'Entenda como coletamos, usamos e protegemos suas informações na plataforma Temperinho.',
 };
 
 export default function PrivacyPage() {
@@ -145,7 +145,7 @@ export default function PrivacyPage() {
                             </p>
                             <div className="mt-4 p-4 bg-warm-50 rounded-lg">
                                 <p className="text-warm-700">
-                                    <strong>Email:</strong> privacidade@levesabor.com.br<br />
+                                    <strong>Email:</strong> privacidade@temperinho.com.br<br />
                                 </p>
                             </div>
                         </section>

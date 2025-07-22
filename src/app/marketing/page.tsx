@@ -12,7 +12,7 @@ import Link from 'next/link';
 import type { MarketingStat, PricingPackage } from '@/types/marketing';
 
 export const metadata: Metadata = {
-    title: 'Anuncie Conosco | Leve Sabor',
+    title: 'Anuncie Conosco | Temperinho',
     description: 'Conecte sua marca com milhares de pessoas apaixonadas por culinária inclusiva e alimentação saudável.',
 };
 

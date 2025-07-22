@@ -11,7 +11,7 @@ interface UserProfileClientProps {
 
 export function UserProfileClient({ user }: UserProfileClientProps) {
     useEffect(() => {
-        document.title = 'Meu Perfil | Leve Sabor';
+        document.title = 'Meu Perfil | Temperinho';
     }, []);
 
     if (!user) {

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Heart, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -58,7 +59,13 @@ export default function Footer() {
 
                     <div className="lg:col-span-1">
                         <Link href="/" className="inline-block">
-                            <h3 className="text-2xl font-display font-bold text-background mb-4">Leve Sabor</h3>
+                            <Image
+                                src="/images/logo.png"
+                                alt="Logo Temperinho"
+                                width={150}
+                                height={40}
+                                className="h-auto w-auto"
+                            />
                         </Link>
                         <p className="text-muted-foreground mb-6 leading-relaxed">Conectando pessoas através da culinária inclusiva.</p>
                         <div className="flex space-x-2">
@@ -113,7 +120,18 @@ export default function Footer() {
             <div className="border-t border-background/20 mt-8">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
                     <p className="text-muted-foreground text-sm mb-4 md:mb-0">
-                        © {currentYear} Leve Sabor. Todos os direitos reservados.
+                        © {currentYear} Temperinho. Todos os direitos reservados.
+                    </p>
+                    <p className="text-muted-foreground text-sm mb-4 md:mb-0">
+                        Desenvolvido por{' '}
+                        <Link
+                            href="https://wa.me/55DDSEUNUMERO?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os%20da%20Pedro%20Sistemas."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-background transition-colors font-semibold"
+                        >
+                            Pedro Sistemas
+                        </Link>
                     </p>
                     <div className="flex items-center text-muted-foreground text-sm mb-4 md:mb-0">
                         <span>Feito com</span>
