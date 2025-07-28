@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,6 +36,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={cn(
         "min-h-screen bg-background font-sans antialiased",
         inter.variable,

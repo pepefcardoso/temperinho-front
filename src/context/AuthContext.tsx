@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const csrf = useCallback((): Promise<void> => {
-    return axiosClient.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sanctum/csrf-cookie`);
+    return axiosClient.get(`${process.env.NEXT_PUBLIC_API_URL}/sanctum/csrf-cookie`);
   }, []);
 
   const login = useCallback(async (credentials: LoginData) => {

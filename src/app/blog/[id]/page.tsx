@@ -6,16 +6,22 @@ import AdBanner from '@/components/marketing/AdBanner'
 import { BlogPostHeader } from '@/components/blog/BlogPostHeader'
 import { CommentsSection } from '@/components/comments/CommentsSection'
 
-type PageProps = {
-  params: { id: string }
+type BlogPostPageProps = {
+  params: Promise<{ id: string }>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata(
-  { params }: PageProps
+  props: BlogPostPageProps
 ): Promise<Metadata> {
-  const postId = parseInt(params.id, 10)
-  if (isNaN(postId)) {
-    return { title: 'Artigo não encontrado' }
+  const { id } = await props.params
+  const postId = parseInt(id, 10)
+
+  if (isNaN(postId) || postId <= 0) {
+    return {
+      title: 'Artigo não encontrado | Temperinho',
+      description: 'O artigo solicitado não foi encontrado',
+    }
   }
 
   try {
@@ -36,16 +42,23 @@ export async function generateMetadata(
       },
     }
   } catch (error) {
-    console.error('Erro ao buscar artigo para metadados:', error)
-    return { title: 'Artigo não encontrado' }
+    console.error(`Erro ao gerar metadados para ID ${postId}:`, error)
+    return {
+      title: 'Artigo não encontrado | Temperinho',
+      description: 'O artigo solicitado não foi encontrado',
+    }
   }
 }
 
-const BlogPostPage = async (
-  { params }: PageProps
-) => {
-  const postId = parseInt(params.id, 10)
-  if (isNaN(postId)) notFound()
+export default async function BlogPostPage(
+  props: BlogPostPageProps
+) {
+  const { id } = await props.params
+  const postId = parseInt(id, 10)
+
+  if (isNaN(postId) || postId <= 0) {
+    notFound()
+  }
 
   try {
     const article = await getPostById(postId)
@@ -68,7 +81,12 @@ const BlogPostPage = async (
                 priority
               />
             </div>
-            <AdBanner href="/marketing" layout="full" size="large" className="mb-8" />
+            <AdBanner
+              href="/marketing"
+              layout="full"
+              size="large"
+              className="mb-8"
+            />
           </div>
         </section>
 
@@ -76,7 +94,9 @@ const BlogPostPage = async (
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-p:text-muted-foreground prose-strong:text-foreground">
-                <div dangerouslySetInnerHTML={{ __html: article.content ?? '' }} />
+                <div
+                  dangerouslySetInnerHTML={{ __html: article.content ?? '' }}
+                />
               </article>
               <aside className="w-full lg:w-80 lg:sticky top-24 self-start space-y-6">
                 <AdBanner href="/marketing" layout="sidebar" />
@@ -89,9 +109,7 @@ const BlogPostPage = async (
       </main>
     )
   } catch (error) {
-    console.error('Falha ao buscar o artigo:', error)
+    console.error(`Falha ao buscar artigo ID ${postId}:`, error)
     notFound()
   }
 }
-
-export default BlogPostPage

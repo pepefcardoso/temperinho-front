@@ -5,16 +5,17 @@ import { RecipeHeader } from '@/components/recipe/RecipeHeader'
 import { RecipeContent } from '@/components/recipe/RecipeContent'
 import { CommentsSection } from '@/components/comments/CommentsSection'
 
-type PageProps = {
-  params: { id: string }
+type RecipePageProps = {
+  params: Promise<{ id: string }>
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
 export async function generateMetadata(
-  { params }: PageProps
+  props: RecipePageProps
 ): Promise<Metadata> {
-  const recipeId = parseInt(params.id, 10)
-
-  if (isNaN(recipeId)) {
+  const { id } = await props.params
+  const recipeId = parseInt(id, 10)
+  if (isNaN(recipeId) || recipeId <= 0) {
     return { title: 'Receita não encontrada' }
   }
 
@@ -42,13 +43,11 @@ export async function generateMetadata(
 }
 
 export default async function RecipeDetailPage(
-  { params }: PageProps
+  props: RecipePageProps
 ) {
-  const recipeId = parseInt(params.id, 10)
-
-  if (isNaN(recipeId)) {
-    notFound()
-  }
+  const { id } = await props.params
+  const recipeId = parseInt(id, 10)
+  if (isNaN(recipeId) || recipeId <= 0) notFound()
 
   try {
     const recipe = await getRecipeById(recipeId)
