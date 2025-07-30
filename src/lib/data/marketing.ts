@@ -33,50 +33,49 @@ export const marketingStats: MarketingStat[] = [
 
 export const pricingPackages: PricingPackage[] = [
   {
-    name: 'Básico',
-    price: 'R$ 99',
+    name: 'Primeiro Sabor',
+    price: 'R$ 49',
     period: '/mês',
     description:
-      'Ideal para pequenas marcas e influenciadores que querem começar.',
+      'A porta de entrada para pequenos produtores e negócios locais que querem ser vistos pela nossa comunidade.',
     features: [
-      '1 Post Patrocinado por mês',
-      'Destaque na Newsletter semanal',
-      'Relatório de desempenho básico',
-      'Suporte por email',
+      '1 Artigo Patrocinado no Blog por mês',
+      'Divulgação do artigo nas nossas Redes Sociais',
+      'Inclusão da sua marca na seção de Apoiadores',
     ],
     isPopular: false,
+    badge: 'Para Começar 🌱',
   },
   {
-    name: 'Profissional',
-    price: 'R$ 249',
+    name: 'Marca em Destaque',
+    price: 'R$ 129',
     period: '/mês',
     description:
-      'O mais popular. Perfeito para marcas em crescimento que buscam mais alcance.',
+      'Ideal para marcas que procuram um destaque consistente e um maior envolvimento com o nosso público.',
     features: [
-      '3 Posts Patrocinados por mês',
-      'Destaque na Newsletter semanal',
-      'Banner no topo da página de receitas',
-      'Relatório de desempenho detalhado',
-      'Suporte prioritário por email',
+      '3 Artigos Patrocinados no Blog por mês',
+      'Divulgação dedicada nas Redes Sociais',
+      'Banner Fixo na barra lateral das receitas',
+      'Destaque na nossa Newsletter semanal',
     ],
     isPopular: true,
-    badge: 'Mais Popular',
+    badge: 'Mais Popular 🚀',
   },
   {
-    name: 'Empresarial',
+    name: 'Parceria Estratégica',
     price: 'Custom',
     period: '',
     description:
-      'Soluções sob medida para grandes marcas com necessidades específicas.',
+      'Uma solução completa e sob medida para marcas que desejam criar um impacto duradouro e integrado.',
     features: [
-      'Pacote de Posts Patrocinados',
+      'Pacote customizável de Posts Patrocinados',
       'Campanhas de email marketing dedicadas',
-      'Banners em todo o site',
+      'Banners em todas as áreas estratégicas do site',
       'Consultoria de estratégia de conteúdo',
       'Gerente de conta dedicado',
     ],
     isPopular: false,
-    badge: 'Personalizado',
+    badge: 'Sob Medida 🤝',
   },
 ];
 

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getMarketingData } from '@/lib/api/marketing';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 import { MarketingHero } from '@/components/marketing/MarketingHero';
-import { StatsCounter } from '@/components/marketing/StatsCounter';
+// import { StatsCounter } from '@/components/marketing/StatsCounter';
 import { PricingCard } from '@/components/marketing/PricingCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -32,19 +32,19 @@ function PricingSection({ packages }: { packages: PricingPackage[] }) {
     );
 }
 
-function StatsSection({ stats }: { stats: MarketingStat[] }) {
-    return (
-        <section className="py-16 bg-card">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl font-display font-bold text-foreground mb-4">Números que Impressionam</h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto">Nossa audiência engajada cresce constantemente, oferecendo excelentes oportunidades.</p>
-                </div>
-                <StatsCounter stats={stats} />
-            </div>
-        </section>
-    );
-}
+// function StatsSection({ stats }: { stats: MarketingStat[] }) {
+//     return (
+//         <section className="py-16 bg-card">
+//             <div className="container mx-auto px-4">
+//                 <div className="text-center mb-12">
+//                     <h2 className="text-3xl font-display font-bold text-foreground mb-4">Números que Impressionam</h2>
+//                     <p className="text-muted-foreground max-w-2xl mx-auto">Nossa audiência engajada cresce constantemente, oferecendo excelentes oportunidades.</p>
+//                 </div>
+//                 <StatsCounter stats={stats} />
+//             </div>
+//         </section>
+//     );
+// }
 
 function CtaSection() {
     return (
@@ -66,7 +66,7 @@ async function MarketingContent() {
         return (
             <>
                 <MarketingHero imageUrl={heroImageUrl} />
-                <StatsSection stats={stats} />
+                {/* <StatsSection stats={stats} /> */}
                 <PricingSection packages={packages} />
                 <CtaSection />
             </>
