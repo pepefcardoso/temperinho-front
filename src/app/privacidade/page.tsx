@@ -76,19 +76,37 @@ export default function PrivacyPage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-semibold text-warm-800 mb-4">5. Cookies e Tecnologias de Terceiros</h2>
-                            <p className="text-warm-700 leading-relaxed mb-4">
-                                Ao visitar nosso site pela primeira vez, você será informado sobre o uso de cookies através de um banner. Você terá a opção de aceitar todos, recusar cookies não essenciais (como de marketing e análise) ou gerenciar suas preferências.
+                            <h2 className="text-2xl font-semibold text-warm-800 dark:text-warm-200 mb-4">
+                                5. Cookies e Tecnologias de Rastreamento
+                            </h2>
+                            <p className="text-warm-700 dark:text-warm-300 leading-relaxed mb-4">
+                                Nosso site utiliza cookies e tecnologias similares para melhorar sua experiência, analisar nosso tráfego e personalizar conteúdo e anúncios. Para garantir seu controle total sobre seus dados, usamos uma Plataforma de Gerenciamento de Consentimento (CMP).
                             </p>
-                            <p className="text-warm-700 leading-relaxed mb-4">
-                                Nossos principais parceiros que podem coletar dados através de cookies incluem:
+                            <p className="text-warm-700 dark:text-warm-300 leading-relaxed mt-4">
+                                Para garantir a gestão transparente e segura do seu consentimento, utilizamos a plataforma de conformidade CookieYes.
                             </p>
-                            <ul className="list-disc pl-6 text-warm-700 space-y-2">
-                                <li><strong>Google Analytics:</strong> para entender como os usuários interagem com o site.</li>
-                                <li><strong>Google AdSense:</strong> para veicular anúncios personalizados.</li>
+                            <p className="text-warm-700 dark:text-warm-300 leading-relaxed mb-4">
+                                Ao visitar nosso site pela primeira vez, um banner de consentimento será exibido, permitindo que você aceite todos os cookies, rejeite os não essenciais ou gerencie suas preferências por categoria:
+                            </p>
+                            <ul className="list-disc pl-6 text-warm-700 dark:text-warm-300 space-y-3 mb-4">
+                                <li>
+                                    <strong>Cookies Estritamente Necessários:</strong> Essenciais para o funcionamento do site, como manter sua sessão de login. Eles não podem ser desativados e não requerem consentimento.
+                                </li>
+                                <li>
+                                    <strong>Cookies de Análise (ou Desempenho):</strong> Nos ajudam a entender como os visitantes interagem com o site, coletando informações de forma anônima. Utilizamos o <strong>Google Analytics</strong> para analisar padrões de uso e melhorar nossa plataforma.
+                                </li>
+                                <li>
+                                    <strong>Cookies de Publicidade (ou Marketing):</strong> Usados para rastrear visitantes através de websites com a intenção de exibir anúncios que são relevantes e atraentes. Nosso parceiro para isso é o <strong>Google AdSense</strong>.
+                                </li>
                             </ul>
-                            <p className="text-warm-700 leading-relaxed mt-4">
-                                Você pode alterar suas preferências a qualquer momento através do link de gerenciamento de cookies em nosso rodapé ou nas configurações do seu navegador.
+                            <h3 className="text-xl font-semibold text-warm-800 dark:text-warm-200 mt-6 mb-3">
+                                Como Gerenciar Suas Preferências
+                            </h3>
+                            <p className="text-warm-700 dark:text-warm-300 leading-relaxed mb-4">
+                                Cookies de análise e publicidade só serão ativados com o seu consentimento explícito. Você pode alterar ou retirar seu consentimento a qualquer momento. Para fazer isso, clique no link &quot;Gerenciar Cookies&quot; em nosso rodapé ou procure pelo ícone flutuante de cookie em sua tela.
+                            </p>
+                            <p className="text-warm-700 dark:text-warm-300 leading-relaxed">
+                                Para saber mais sobre como nossos parceiros usam seus dados, você pode consultar a <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline">política de privacidade e os termos do Google</a>.
                             </p>
                         </section>
 

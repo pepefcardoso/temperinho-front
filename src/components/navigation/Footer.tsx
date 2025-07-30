@@ -136,6 +136,12 @@ export default function Footer() {
                         {LEGAL_LINKS.map((link: NavItem) => (
                             <Link key={link.href} href={link.href} className="hover:text-background transition-colors">{link.label}</Link>
                         ))}
+                        <a
+                            href="#"
+                            className="cky-banner-revisit hover:text-background transition-colors"
+                        >
+                            Gerenciar Cookies
+                        </a>
                     </div>
                 </div>
             </div>
