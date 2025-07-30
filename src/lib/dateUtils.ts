@@ -47,4 +47,4 @@ export const formatDate = (
  * em um único lugar. No futuro, essa data poderia vir de variáveis de ambiente
  * ou de um CMS para maior flexibilidade.
  */
-export const LAST_UPDATE_DATE = new Date("2025-07-02T00:00:00");
+export const LAST_UPDATE_DATE = new Date("2025-07-30T00:00:00");
