@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Search, Menu, User, Heart, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { SITE_NAV_LINKS } from '@/lib/config/site';
 import { useAuth } from '@/context/AuthContext';
-import { ThemeToggle } from '../theme/ThemeToggle';
+// import { ThemeToggle } from '../theme/ThemeToggle';
 
 function GlobalSearch() {
     const [query, setQuery] = useState('');
@@ -101,14 +100,7 @@ export default function Header() {
                 <div className="flex items-center justify-between h-16">
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-2xl font-display font-bold text-primary hover:text-primary/90 transition-colors">
-                            <Image
-                                src="/images/logo.png"
-                                alt="Logo Temperinho"
-                                width={150}
-                                height={40}
-                                priority
-                                className="h-auto w-auto"
-                            />
+                            Temperinho
                         </Link>
                     </div>
 
@@ -134,7 +126,7 @@ export default function Header() {
                     </div>
 
                     <div className="flex items-center gap-1 sm:gap-2">
-                        <ThemeToggle />
+                        {/* <ThemeToggle /> */}
 
                         {loading ? (
                             <div className="h-10 w-10 bg-muted rounded-full animate-pulse"></div>

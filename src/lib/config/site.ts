@@ -19,9 +19,9 @@ export const SITE_NAV_LINKS: NavItem[] = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: 'Instagram', href: '#', icon: FaInstagram },
-  { label: 'Facebook', href: '#', icon: FaFacebook },
-  { label: 'Youtube', href: '#', icon: FaYoutube },
+  { label: 'Instagram', href: 'https://www.instagram.com/temperinho', icon: FaInstagram },
+  { label: 'Facebook', href: 'https://www.facebook.com/temperinho', icon: FaFacebook },
+  // { label: 'Youtube', href: 'https://www.youtube.com/temperinho', icon: FaYoutube },
 ];
 
 export const LEGAL_LINKS: NavItem[] = [

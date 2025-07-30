@@ -12,7 +12,7 @@ interface FeaturedRecipesProps {
 }
 
 const FeaturedRecipes = ({ recipes, isLoading = false }: FeaturedRecipesProps) => {
-    const renderContent = () => {
+    const renderMainContent = () => {
         if (isLoading) {
             return (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -27,29 +27,21 @@ const FeaturedRecipes = ({ recipes, isLoading = false }: FeaturedRecipesProps) =
             return (
                 <div className="text-center py-10 border-2 border-dashed border-border rounded-lg">
                     <p className="text-muted-foreground">Nenhuma receita em destaque no momento.</p>
-                    <p className="text-sm text-muted-foreground/80 mt-2">Volte em breve para conferir as novidades!</p>
+                    <p className="text-sm text-muted-foreground/80 mt-2">Explore todas as nossas receitas abaixo!</p>
                 </div>
             );
         }
 
         return (
-            <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {recipes.map((recipe) => (
-                        <RecipeCard
-                            key={recipe.id}
-                            recipe={recipe}
-                            viewMode="grid"
-                        />
-                    ))}
-                </div>
-
-                <div className="text-center mt-12">
-                    <Button size="lg" asChild>
-                        <Link href="/receitas">Ver Todas as Receitas</Link>
-                    </Button>
-                </div>
-            </>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {recipes.map((recipe) => (
+                    <RecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        viewMode="grid"
+                    />
+                ))}
+            </div>
         );
     };
 
@@ -61,11 +53,19 @@ const FeaturedRecipes = ({ recipes, isLoading = false }: FeaturedRecipesProps) =
                         Receitas em Destaque
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Explore nossas receitas mais amadas pela comunidade, todas testadas e aprovadas.
+                        Explore as nossas receitas mais amadas pela comunidade, todas testadas e aprovadas.
                     </p>
                 </div>
 
-                {renderContent()}
+                {renderMainContent()}
+
+                {!isLoading && (
+                    <div className="text-center mt-12">
+                        <Button size="lg" asChild>
+                            <Link href="/receitas">Ver Todas as Receitas</Link>
+                        </Button>
+                    </div>
+                )}
             </div>
         </section>
     );

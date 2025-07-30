@@ -1,9 +1,44 @@
-import { getMarketingData } from '@/lib/api/marketing';
-import { StatsCounter } from '../marketing/StatsCounter';
-import { HeroSearchForm } from './HeroSearchForm';
+'use client';
 
-const HeroSection = async () => {
-    const { stats } = await getMarketingData();
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { Button } from '@/components/ui/button';
+import { HeroSearchForm } from './HeroSearchForm';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Testimonials } from './Testimonials';
+
+const HeroSection = () => {
+    const { isAuthenticated, loading } = useAuth();
+
+    const renderAuthButtons = () => {
+        if (loading) {
+            return (
+                <div className='flex justify-center gap-4'>
+                    <Skeleton className='h-12 w-40 rounded-lg' />
+                    <Skeleton className='h-12 w-40 rounded-lg' />
+                </div>
+            );
+        }
+
+        if (isAuthenticated) {
+            return (
+                <Button size='lg' asChild>
+                    <Link href='/usuario/dashboard'>Acessar meu painel</Link>
+                </Button>
+            );
+        }
+
+        return (
+            <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
+                <Button size='lg' asChild>
+                    <Link href='/auth/criar-conta'>Criar Conta Grátis</Link>
+                </Button>
+                <Button size='lg' variant='outline' asChild className='bg-card/80'>
+                    <Link href='/receitas'>Explorar Receitas</Link>
+                </Button>
+            </div>
+        );
+    };
 
     return (
         <section className="relative bg-gradient-to-br from-warm-50 via-sage-50 to-sunset-50 dark:from-warm-900/20 dark:via-sage-900/20 dark:to-sunset-900/20 py-20 md:py-28 overflow-hidden">
@@ -14,7 +49,7 @@ const HeroSection = async () => {
             </div>
 
             <div className="relative container mx-auto px-4 text-center space-y-8 md:space-y-12">
-                <div className="space-y-6 mb-12">
+                <div className="space-y-6">
                     <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-tight">
                         Culinária para
                         <span className="block text-primary">todos os gostos</span>
@@ -27,7 +62,11 @@ const HeroSection = async () => {
 
                 <HeroSearchForm />
 
-                <StatsCounter stats={stats} />
+                <Testimonials />
+
+                <div>
+                    {renderAuthButtons()}
+                </div>
             </div>
         </section>
     );

@@ -14,3 +14,10 @@ export interface MarketingStat {
   iconName: keyof typeof import("lucide-react");
   growth?: string;
 }
+
+export interface Testimonial {
+  quote: string;
+  author: string;
+  role: string;
+  avatarUrl: string;
+}

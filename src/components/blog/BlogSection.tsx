@@ -13,6 +13,14 @@ const PostsSkeleton = () => (
   </>
 );
 
+const EmptyState = () => (
+  <div className="col-span-1 md:col-span-3 text-center py-10 border-2 border-dashed border-border rounded-lg">
+    <p className="text-muted-foreground">Nenhum artigo em destaque no momento.</p>
+    <p className="text-sm text-muted-foreground/80 mt-2">Volte em breve para conferir as novidades!</p>
+  </div>
+);
+
+
 async function LatestPosts() {
   try {
     const paginatedResponse = await getPosts({
@@ -24,11 +32,7 @@ async function LatestPosts() {
     const posts = paginatedResponse.data;
 
     if (!posts || posts.length === 0) {
-      return (
-        <div className="col-span-3 text-center text-muted-foreground py-8">
-          <p>Nenhum artigo encontrado no momento.</p>
-        </div>
-      );
+      return <EmptyState />;
     }
 
     return posts.map((post) => (
@@ -37,11 +41,7 @@ async function LatestPosts() {
 
   } catch (error) {
     console.error("Falha ao buscar posts para a seção do blog:", error);
-    return (
-      <div className="col-span-3 text-center text-destructive-foreground bg-destructive p-4 rounded-md">
-        <p>Ocorreu um erro ao carregar os artigos. Por favor, tente novamente mais tarde.</p>
-      </div>
-    );
+    return <EmptyState />;
   }
 }
 

@@ -59,13 +59,7 @@ export default function Footer() {
 
                     <div className="lg:col-span-1">
                         <Link href="/" className="inline-block">
-                            <Image
-                                src="/images/logo.png"
-                                alt="Logo Temperinho"
-                                width={150}
-                                height={40}
-                                className="h-auto w-auto"
-                            />
+                            <h3 className="text-2xl font-display font-bold text-background mb-4">Temperinho</h3>
                         </Link>
                         <p className="text-muted-foreground mb-6 leading-relaxed">Conectando pessoas através da culinária inclusiva.</p>
                         <div className="flex space-x-2">
@@ -125,7 +119,7 @@ export default function Footer() {
                     <p className="text-muted-foreground text-sm mb-4 md:mb-0">
                         Desenvolvido por{' '}
                         <Link
-                            href="https://wa.me/55DDSEUNUMERO?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os%20da%20Pedro%20Sistemas."
+                            href="https://wa.me/5548991155026?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os%20da%20Pedro%20Sistemas."
                             target="_blank"
                             rel="noopener noreferrer"
                             className="hover:text-background transition-colors font-semibold"
