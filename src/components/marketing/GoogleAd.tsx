@@ -1,11 +1,14 @@
 'use client';
 
 import { JSX, useEffect } from 'react';
+import Script from 'next/script';
 
 interface GoogleAdProps {
+  adClient: string;
   slot: string;
   adFormat?: string;
   responsive?: boolean;
+  className?: string;
 }
 
 declare global {
@@ -15,15 +18,15 @@ declare global {
 }
 
 const GoogleAd = ({
+  adClient,
   slot,
   adFormat = "auto",
-  responsive = true
+  responsive = true,
+  className,
 }: GoogleAdProps): JSX.Element => {
-  const adClient = process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT;
-
   useEffect(() => {
     if (!adClient) {
-      console.error("NEXT_PUBLIC_GOOGLE_AD_CLIENT não está definido, pulando AdSense.");
+      console.error("Google AdSense client ID (adClient) não está definido, pulando AdSense.");
       return;
     }
 
@@ -43,16 +46,24 @@ const GoogleAd = ({
   }
 
   return (
-    <div className="ad-container" style={{ overflow: 'hidden', textAlign: 'center' }}>
-      <ins
-        className="adsbygoogle"
-        style={{ display: 'block' }}
-        data-ad-client={adClient}
-        data-ad-slot={slot}
-        data-ad-format={adFormat}
-        data-full-width-responsive={responsive.toString()}
-      ></ins>
-    </div>
+    <>
+      <Script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`}
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+      <div className={className} style={{ overflow: 'hidden', textAlign: 'center' }}>
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client={adClient}
+          data-ad-slot={slot}
+          data-ad-format={adFormat}
+          data-full-width-responsive={responsive.toString()}
+        ></ins>
+      </div>
+    </>
   );
 };
 

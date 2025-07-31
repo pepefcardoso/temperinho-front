@@ -4,6 +4,7 @@ import { Image as ImageIcon } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const adBannerVariants = cva(
     "relative flex items-center justify-center rounded-xl transition-all duration-300 group",
@@ -65,7 +66,7 @@ const AdBanner = ({
         : '100vw';
 
     return (
-        <a
+        <Link
             href={href}
             target="_blank"
             rel="noopener noreferrer sponsored"
@@ -83,7 +84,7 @@ const AdBanner = ({
             ) : (
                 <PlaceholderContent />
             )}
-        </a>
+        </Link>
     );
 };
 

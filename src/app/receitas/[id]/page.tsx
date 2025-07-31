@@ -4,6 +4,7 @@ import { getRecipeById } from '@/lib/api/recipe'
 import { RecipeHeader } from '@/components/recipe/RecipeHeader'
 import { RecipeContent } from '@/components/recipe/RecipeContent'
 import { CommentsSection } from '@/components/comments/CommentsSection'
+import MarketingSection from '@/components/marketing/MarketingSection'
 
 type RecipePageProps = {
   params: Promise<{ id: string }>
@@ -57,6 +58,12 @@ export default async function RecipeDetailPage(
           <RecipeHeader recipe={recipe} />
           <RecipeContent recipe={recipe} />
           <CommentsSection type="recipes" id={recipeId} />
+          <MarketingSection
+            adBannerHref="/marketing"
+            adBannerImageUrl=""
+            adBannerAltText="Anuncie conosco e conecte-se com nossa comunidade"
+            googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT_RECIPE_DETAIL || ''}
+          />
         </main>
       </div>
     )

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Recipe } from '@/types/recipe';
 import { cn } from '@/lib/utils';
-import AdBanner from '@/components/marketing/AdBanner';
 
 interface RecipeContentProps {
     recipe: Recipe;
@@ -69,9 +68,6 @@ export function RecipeContent({ recipe }: RecipeContentProps) {
                         </TabsContent>
                     )}
                 </Tabs>
-                <div className="my-12">
-                    <AdBanner href="/marketing" layout="full" />
-                </div>
             </div>
         </section>
     );

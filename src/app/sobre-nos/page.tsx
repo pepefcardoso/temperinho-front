@@ -5,6 +5,7 @@ import { ValuesSection } from '@/components/about/ValuesSection';
 import { TeamSection } from '@/components/about/TeamSection';
 import { MissionSection } from '@/components/about/MissionSection';
 import { getAboutPageData } from '@/lib/api/about';
+import MarketingSection from '@/components/marketing/MarketingSection';
 
 export const metadata: Metadata = {
     title: 'Sobre Nós | Temperinho',
@@ -51,6 +52,12 @@ export default async function AboutPage() {
                 />
                 <ValuesSection values={values} />
                 <TeamSection teamMembers={team} />
+                <MarketingSection
+                    adBannerHref="/marketing"
+                    adBannerImageUrl=""
+                    adBannerAltText="Anuncie conosco e conecte-se com nossa comunidade"
+                    googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT_ABOUT_US || ''}
+                />
                 <CtaSection title={pageContent.ctaTitle} subtitle={pageContent.ctaSubtitle} />
             </main>
         </div>

@@ -4,6 +4,7 @@ import { getRecipes } from '@/lib/api/recipe';
 import { RecipesPageClient } from '@/components/recipe/RecipePageClient';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 import { Recipe } from '@/types/recipe';
+import MarketingSection from '@/components/marketing/MarketingSection';
 
 export const metadata: Metadata = {
   title: 'Receitas | Temperinho',
@@ -101,6 +102,13 @@ export default async function RecipesPage(props: {
       >
         <RecipesList searchParams={params} />
       </Suspense>
+
+      <MarketingSection
+        adBannerHref="/marketing"
+        adBannerImageUrl=""
+        adBannerAltText="Anuncie conosco e conecte-se com nossa comunidade"
+        googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT_RECIPES_LEADERBOARD || ''}
+      />
     </main>
   );
 }

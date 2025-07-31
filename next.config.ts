@@ -26,7 +26,6 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     remotePatterns: [
       {
@@ -41,16 +40,9 @@ const nextConfig = {
       },
     ],
   },
-  sentry: {
-    hideSourceMaps: process.env.NODE_ENV === 'development',
-    // tunnelRoute: "/monitoring",
-  },
-
-  // 2. Adição da função `headers` para aplicar os cabeçalhos
   async headers() {
     return [
       {
-        // Aplica estes cabeçalhos a todas as rotas do seu aplicativo
         source: '/:path*',
         headers: securityHeaders,
       },
@@ -59,8 +51,8 @@ const nextConfig = {
 };
 
 const sentryWebpackPluginOptions = {
+  hideSourceMaps: process.env.NODE_ENV === 'development',
   silent: true,
 };
 
-// 3. Sua configuração, agora incluindo os headers, é passada para o Sentry normalmente
 export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

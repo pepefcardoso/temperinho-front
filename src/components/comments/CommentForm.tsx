@@ -9,9 +9,10 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { createComment } from '@/lib/api/interactions.server';
 import { Comment } from '@/types/actions';
+import { InteractableType } from '@/lib/api/interactions';
 
 interface CommentFormProps {
-    type: 'posts' | 'recipes';
+    type: InteractableType;
     id: number;
     onCommentAdded: (newComment: Comment) => void;
 }

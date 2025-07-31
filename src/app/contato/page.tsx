@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ContactForm } from '@/components/marketing/ContactForm';
-import AdBanner from '@/components/marketing/AdBanner';
 import { contactInfo } from '@/lib/data/contact';
+import MarketingSection from '@/components/marketing/MarketingSection';
 
 export const metadata: Metadata = {
   title: 'Contato | Temperinho',
@@ -49,7 +49,12 @@ export default function ContactPage() {
                     ))}
                   </div>
                 </div>
-                <AdBanner href="/marketing" layout="full" />
+                <MarketingSection
+                  adBannerHref="/marketing"
+                  adBannerImageUrl=""
+                  adBannerAltText="Anuncie conosco e conecte-se com nossa comunidade"
+                  googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT_CONTACT_US || ''}
+                />
               </div>
             </div>
           </div>

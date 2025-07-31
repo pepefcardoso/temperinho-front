@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import AdBanner from '@/components/marketing/AdBanner';
 import { BlogPostHeader } from '@/components/blog/BlogPostHeader';
 import { CommentsSection } from '@/components/comments/CommentsSection';
+import MarketingSection from '@/components/marketing/MarketingSection';
 
 type BlogPostPageProps = {
   params: Promise<{ id: string }>;
@@ -102,6 +103,13 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
         </section>
 
         <CommentsSection type='posts' id={postId} />
+
+        <MarketingSection
+          adBannerHref="/marketing"
+          adBannerImageUrl=""
+          adBannerAltText="Anuncie conosco e conecte-se com nossa comunidade"
+          googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT_BLOG_DETAILS || ''}
+        />
       </main>
     );
   } catch (error) {

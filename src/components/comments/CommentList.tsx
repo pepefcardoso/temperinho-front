@@ -112,7 +112,7 @@ export function CommentList({ type, id }: CommentListProps) {
             {comments.map((comment) => (
                 <div key={comment.id} className="flex space-x-4">
                     <Avatar>
-                        <AvatarImage src={comment.author.image?.url ?? '/default-avatar.png'} alt={comment.author.name} />
+                        <AvatarImage src={comment.author.image?.url ?? '/images/avatar-placeholder.png'} alt={comment.author.name} />
                         <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">

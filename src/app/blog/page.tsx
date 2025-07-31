@@ -4,6 +4,7 @@ import type { Post, PostCategory } from '@/types/blog'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
 import { BlogFilterControls } from '@/components/blog/BlogFIlterControls'
+import MarketingSection from '@/components/marketing/MarketingSection'
 
 const PostListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -25,7 +26,7 @@ async function PostList({
     })
     const allPosts = paginatedResponse.data
 
-    if (allPosts.length === 0) {
+    if (!allPosts || allPosts.length === 0) {
       return (
         <p className="text-center text-muted-foreground py-12">
           Nenhum artigo encontrado com os filtros selecionados.
@@ -45,8 +46,8 @@ async function PostList({
   } catch (error) {
     console.error('Falha ao carregar posts:', error)
     return (
-      <p className="text-center text-destructive py-12">
-        Ocorreu um erro ao carregar os artigos. Tente novamente.
+      <p className="text-center text-muted-foreground py-12">
+        Não foi possível carregar os artigos. Tente novamente mais tarde.
       </p>
     )
   }
@@ -104,6 +105,13 @@ export default async function BlogPage(props: {
             </Suspense>
           </div>
         </section>
+
+        <MarketingSection
+          adBannerHref="/marketing"
+          adBannerImageUrl=""
+          adBannerAltText="Anuncie conosco e conecte-se com nossa comunidade"
+          googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT_BLOG_LEADERBOARD || ''}
+        />
       </main>
     </div>
   )
