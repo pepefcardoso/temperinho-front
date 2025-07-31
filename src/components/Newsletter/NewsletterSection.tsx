@@ -9,10 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { subscribeToNewsletter } from '@/lib/api/customer';
 import axios from 'axios';
-
-const newsletterSchema = z.object({
-  email: z.string().email({ message: "Por favor, insira um email válido." }),
-});
+import { newsletterSchema } from '@/lib/schemas/marketing';
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>;
 
