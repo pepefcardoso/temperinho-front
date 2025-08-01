@@ -1,6 +1,8 @@
 import { getAuthenticatedUserProfile } from '@/lib/api/user.server';
 import { UserProfileClient } from '@/components/user-profile/UserProfileClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UserProfilePage() {
     try {
         const userProfileData = await getAuthenticatedUserProfile();

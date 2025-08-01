@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
+import { Eye, EyeOff, Mail, Lock, Loader2, AtSign } from 'lucide-react';
 import { isAxiosError } from 'axios';
 
 interface SocialLoginButtonProps {
@@ -21,7 +20,7 @@ interface SocialLoginButtonProps {
 }
 
 function SocialLoginButton({ provider, isLoading, onClick }: SocialLoginButtonProps) {
-    const Icon = provider === 'google' ? FcGoogle : null;
+    const Icon = provider === 'google' ? AtSign : null;
     const label = `Entrar com ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
 
     if (!Icon) return null;

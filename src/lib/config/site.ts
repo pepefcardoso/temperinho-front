@@ -1,5 +1,5 @@
+import { Facebook, Instagram } from 'lucide-react';
 import type { ElementType } from 'react';
-import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 
 export interface NavItem {
   label: string;
@@ -19,8 +19,16 @@ export const SITE_NAV_LINKS: NavItem[] = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: 'Instagram', href: 'https://www.instagram.com/temperinho', icon: FaInstagram },
-  { label: 'Facebook', href: 'https://www.facebook.com/temperinho', icon: FaFacebook },
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/temperinho',
+    icon: Instagram,
+  },
+  {
+    label: 'Facebook',
+    href: 'https://www.facebook.com/temperinho',
+    icon: Facebook,
+  },
   // { label: 'Youtube', href: 'https://www.youtube.com/temperinho', icon: FaYoutube },
 ];
 

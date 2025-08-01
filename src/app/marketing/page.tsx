@@ -4,12 +4,11 @@ import { notFound } from 'next/navigation';
 import { getMarketingData } from '@/lib/api/marketing';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 import { MarketingHero } from '@/components/marketing/MarketingHero';
-// import { StatsCounter } from '@/components/marketing/StatsCounter';
 import { PricingCard } from '@/components/marketing/PricingCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-import type { MarketingStat, PricingPackage } from '@/types/marketing';
+import type { PricingPackage } from '@/types/marketing';
 
 export const metadata: Metadata = {
     title: 'Anuncie Conosco | Temperinho',
@@ -62,7 +61,7 @@ function CtaSection() {
 
 async function MarketingContent() {
     try {
-        const { stats, packages, heroImageUrl } = await getMarketingData();
+        const { packages, heroImageUrl } = await getMarketingData();
         return (
             <>
                 <MarketingHero imageUrl={heroImageUrl} />

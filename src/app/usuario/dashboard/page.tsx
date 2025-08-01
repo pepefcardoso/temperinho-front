@@ -3,6 +3,8 @@ import { getMyRecipes } from '@/lib/api/recipe.server';
 import { getMyPosts } from '@/lib/api/blog.server';
 import { DashboardClient } from '@/components/user-profile/DashboardClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UserDashboardPage() {
     try {
         const [userData, myRecipesResponse, myPostsResponse] = await Promise.all([
