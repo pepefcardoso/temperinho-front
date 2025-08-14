@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { User, BookOpen, PlusCircle, Heart, FileText, Menu, Home } from 'lucide-react';
+import { User, BookOpen, PlusCircle, Heart, FileText, Menu, Home, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,7 @@ const menuItems = [
   { icon: PlusCircle, label: 'Novo Artigo', href: '/usuario/artigos/novo' },
   { icon: Heart, label: 'Receitas Favoritas', href: '/usuario/favoritos/receitas' },
   { icon: Heart, label: 'Artigos Favoritos', href: '/usuario/favoritos/artigos' },
+  { icon: Building, label: 'Empresa', href: '/usuario/empresa' },
 ];
 
 function NavigationMenu({ onLinkClick }: { onLinkClick?: () => void }) {
