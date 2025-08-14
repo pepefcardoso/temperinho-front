@@ -11,12 +11,6 @@ import { RecipeDifficultyLabels, type RecipeCategory } from '@/types/recipe';
 import { getRecipeCategories } from '@/lib/api/recipe';
 import { RecipeFormData } from '@/lib/schemas/recipeSchema';
 
-/**
- * Propriedades para o componente RecipeFormBasicInfo.
- * @param control - O objeto de controle do react-hook-form.
- * @param register - A função de registro de campos do react-hook-form.
- * @param errors - O objeto de erros de validação do formulário.
- */
 interface BasicInfoProps {
     control: Control<RecipeFormData>;
     register: UseFormRegister<RecipeFormData>;

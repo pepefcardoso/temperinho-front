@@ -8,11 +8,6 @@ import type { RecipeDiet } from '@/types/recipe';
 import { getRecipeDiets } from '@/lib/api/recipe';
 import { RecipeFormData } from '@/lib/schemas/recipeSchema';
 
-/**
- * Propriedades para o componente RecipeFormDiets.
- * @param control - O objeto de controle do react-hook-form.
- * @param errors - O objeto de erros de validação do formulário.
- */
 interface DietsProps {
     control: Control<RecipeFormData>;
     errors: FieldErrors<RecipeFormData>;

@@ -7,12 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { RecipeFormData } from '@/lib/schemas/recipeSchema';
 
-/**
- * Propriedades para o componente RecipeFormSteps.
- * @param control - O objeto de controle do react-hook-form.
- * @param register - A função de registro de campos do react-hook-form.
- * @param errors - O objeto de erros de validação do formulário.
- */
 interface StepsProps {
     control: Control<RecipeFormData>;
     register: UseFormRegister<RecipeFormData>;

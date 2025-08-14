@@ -12,12 +12,6 @@ import type { RecipeUnit } from '@/types/recipe';
 import { getRecipeUnits } from '@/lib/api/recipe';
 import { RecipeFormData } from '@/lib/schemas/recipeSchema';
 
-/**
- * Propriedades para o componente RecipeFormIngredients.
- * @param control - O objeto de controle do react-hook-form.
- * @param register - A função de registro de campos do react-hook-form.
- * @param errors - O objeto de erros de validação do formulário.
- */
 interface IngredientsProps {
     control: Control<RecipeFormData>;
     register: UseFormRegister<RecipeFormData>;

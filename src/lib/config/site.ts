@@ -29,7 +29,6 @@ export const SOCIAL_LINKS: SocialLink[] = [
     href: 'https://www.facebook.com/temperinho',
     icon: Facebook,
   },
-  // { label: 'Youtube', href: 'https://www.youtube.com/temperinho', icon: FaYoutube },
 ];
 
 export const LEGAL_LINKS: NavItem[] = [

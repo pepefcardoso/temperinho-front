@@ -4,18 +4,18 @@ import { notFound } from 'next/navigation';
 import { getMarketingData } from '@/lib/api/marketing';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
 import { MarketingHero } from '@/components/marketing/MarketingHero';
-import { PricingCard } from '@/components/marketing/PricingCard';
+import { PlanCard } from '@/components/marketing/PlanCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
-import type { PricingPackage } from '@/types/marketing';
+import { Plan } from '@/types/company';
+import { getPlans } from '@/lib/api/plan';
 
 export const metadata: Metadata = {
     title: 'Anuncie Conosco | Temperinho',
     description: 'Conecte sua marca com milhares de pessoas apaixonadas por culinária inclusiva e alimentação saudável.',
 };
 
-function PricingSection({ packages }: { packages: PricingPackage[] }) {
+function PlansSection({ plans }: { plans: Plan[] }) {
     return (
         <section id="pacotes" className="py-16 bg-background">
             <div className="container mx-auto px-4">
@@ -24,26 +24,12 @@ function PricingSection({ packages }: { packages: PricingPackage[] }) {
                     <p className="text-muted-foreground max-w-2xl mx-auto">Escolha o plano ideal para sua marca e comece a alcançar resultados hoje.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start max-w-6xl mx-auto">
-                    {packages.map((pkg) => <PricingCard key={pkg.name} pkg={pkg} />)}
+                    {plans.map((plan, index) => <PlanCard key={plan.name} plan={plan} isPopular={index === 2} />)}
                 </div>
             </div>
         </section>
     );
 }
-
-// function StatsSection({ stats }: { stats: MarketingStat[] }) {
-//     return (
-//         <section className="py-16 bg-card">
-//             <div className="container mx-auto px-4">
-//                 <div className="text-center mb-12">
-//                     <h2 className="text-3xl font-display font-bold text-foreground mb-4">Números que Impressionam</h2>
-//                     <p className="text-muted-foreground max-w-2xl mx-auto">Nossa audiência engajada cresce constantemente, oferecendo excelentes oportunidades.</p>
-//                 </div>
-//                 <StatsCounter stats={stats} />
-//             </div>
-//         </section>
-//     );
-// }
 
 function CtaSection() {
     return (
@@ -61,12 +47,16 @@ function CtaSection() {
 
 async function MarketingContent() {
     try {
-        const { packages, heroImageUrl } = await getMarketingData();
+        const paginatedResponse = await getPlans({
+            limit: 3,
+        });
+        const plans = paginatedResponse.data;
+        const { heroImageUrl } = await getMarketingData();
+
         return (
             <>
                 <MarketingHero imageUrl={heroImageUrl} />
-                {/* <StatsSection stats={stats} /> */}
-                <PricingSection packages={packages} />
+                <PlansSection plans={plans} />
                 <CtaSection />
             </>
         );

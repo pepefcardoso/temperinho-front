@@ -3,9 +3,6 @@ import { cookies } from "next/headers";
 import type { PaginatedResponse } from "@/types/api";
 import type { Post } from "@/types/blog";
 
-/**
- * Cria uma instância do Axios pré-autenticada para uso em Server Components.
- */
 const createAuthenticatedServerApi = async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get("AUTH_TOKEN")?.value;
