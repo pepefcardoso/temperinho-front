@@ -1,5 +1,4 @@
 'use client';
-
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import axiosClient from '@/lib/axios';
@@ -46,25 +45,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const csrf = useCallback((): Promise<void> => {
-    return axiosClient.get(`${process.env.NEXT_PUBLIC_API_URL}/sanctum/csrf-cookie`);
-  }, []);
-
   const login = useCallback(async (credentials: LoginData) => {
-    await csrf();
     const data = await loginUser(credentials);
     setToken(data.token);
-  }, [csrf, setToken]);
+  }, [setToken]);
 
   const register = useCallback(async (data: RegisterData) => {
-    await csrf();
     const response = await registerUser(data);
     setToken(response.token);
-  }, [csrf, setToken]);
+  }, [setToken]);
 
   const logout = useCallback(async () => {
     try {
-      await axiosClient.post('/logout');
+      await axiosClient.post('/auth/logout');
     } catch (error) {
       console.error('API de logout falhou, mas o usuário será deslogado do cliente.', error);
     } finally {

@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Eye, EyeOff, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Loader2, Calendar } from 'lucide-react';
 import { isAxiosError } from 'axios';
 import { createAccountSchema } from '@/lib/schemas/auth';
 
@@ -93,6 +93,7 @@ export default function CreateAccountPage() {
     defaultValues: {
       name: '',
       email: '',
+      birthDate: '',
       password: '',
       confirmPassword: '',
       acceptTerms: false,
@@ -150,6 +151,7 @@ export default function CreateAccountPage() {
                 </p>
               )}
             </div>
+
             <div className='space-y-2'>
               <Label htmlFor='email'>Email</Label>
               <div className='relative'>
@@ -166,6 +168,25 @@ export default function CreateAccountPage() {
               {errors.email && (
                 <p className='text-sm text-destructive mt-1' role='alert'>
                   {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='birthDate'>Data de nascimento</Label>
+              <div className='relative'>
+                <Calendar className='absolute left-3 top-1/2 transform -translate-y-1/2 text-warm-500 h-4 w-4' />
+                <Input
+                  id='birthDate'
+                  type='date'
+                  {...register('birthDate')}
+                  className='pl-10'
+                  aria-invalid={!!errors.birthDate}
+                />
+              </div>
+              {errors.birthDate && (
+                <p className='text-sm text-destructive mt-1' role='alert'>
+                  {errors.birthDate.message}
                 </p>
               )}
             </div>

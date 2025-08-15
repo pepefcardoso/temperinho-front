@@ -24,7 +24,7 @@ function PlansSection({ plans }: { plans: Plan[] }) {
                     <p className="text-muted-foreground max-w-2xl mx-auto">Escolha o plano ideal para sua marca e comece a alcançar resultados hoje.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start max-w-6xl mx-auto">
-                    {plans.map((plan, index) => <PlanCard key={plan.name} plan={plan} isPopular={index === 2} />)}
+                    {plans.map((plan) => <PlanCard key={plan.name} plan={plan} />)}
                 </div>
             </div>
         </section>

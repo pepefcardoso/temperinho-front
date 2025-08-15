@@ -45,5 +45,6 @@ export type Plan = {
   limits: PlanLimits;
   newsletter: boolean;
   trial_days: number;
+  is_popular: boolean;
   created_at: string;
 };
