@@ -23,7 +23,7 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get('title') || '');
+  const [query, setQuery] = useState(searchParams.get('search') || '');
   const [recipes, setRecipes] = useState(initialRecipes);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [page, setPage] = useState(initialMeta.current_page + 1);
@@ -65,7 +65,7 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
           limit: 9,
           sortBy: (searchParams.get('sortBy') as SortByType) || undefined,
           filters: {
-            title: searchParams.get('title') || undefined,
+            search: searchParams.get('search') || undefined,
             category_id: Number(searchParams.get('category_id')) || undefined,
             diets: searchParams.get('diets')?.split(',').map(Number) || [],
           },
@@ -92,7 +92,7 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
       <RecipeFilterControls
         query={query}
         onQueryChange={setQuery}
-        onSearchSubmit={() => updateUrlParam('title', query.trim() || null)}
+        onSearchSubmit={() => updateUrlParam('search', query.trim() || null)}
         categories={availableCategories}
         selectedCategory={currentCategory}
         onCategoryChange={(value) => updateUrlParam('category_id', value)}

@@ -19,7 +19,7 @@ const createAuthenticatedServerApi = async () => {
 
 export async function getMyRecipes(
   options: {
-    title?: string;
+    search?: string;
     categoryId?: string;
     page?: number;
     limit?: number;
@@ -29,7 +29,7 @@ export async function getMyRecipes(
   const params = new URLSearchParams();
   if (options.page) params.append("page", String(options.page));
   if (options.limit) params.append("per_page", String(options.limit));
-  if (options.title) params.append("title", options.title);
+  if (options.search) params.append("search", options.search);
   if (options.categoryId) params.append("category_id", options.categoryId);
 
   const response = await api.get<PaginatedResponse<Recipe>>("/recipes/my", {
@@ -42,7 +42,7 @@ export async function getFavoriteRecipes(
   options: {
     page?: number;
     limit?: number;
-    title?: string;
+    search?: string;
     categoryId?: string;
   } = {}
 ): Promise<PaginatedResponse<Recipe>> {
@@ -50,7 +50,7 @@ export async function getFavoriteRecipes(
   const params = new URLSearchParams();
   if (options.page) params.append("page", String(options.page));
   if (options.limit) params.append("per_page", String(options.limit));
-  if (options.title) params.append("title", options.title);
+  if (options.search) params.append("search", options.search);
   if (options.categoryId) params.append("category_id", options.categoryId);
 
   const response = await api.get<PaginatedResponse<Recipe>>(

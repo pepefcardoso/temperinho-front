@@ -51,7 +51,7 @@ export function UserFavoritesRecipesClient({
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                             <Input
                                 placeholder="Buscar nos seus favoritos..."
-                                defaultValue={searchParams.get('title') || ''}
+                                defaultValue={searchParams.get('search') || ''}
                                 onChange={(e) => debouncedSearch(e.target.value)}
                                 className="pl-10"
                             />
@@ -104,7 +104,7 @@ export function UserFavoritesRecipesClient({
                             Nenhuma receita encontrada
                         </h3>
                         <p className="text-muted-foreground mt-2 mb-6">
-                            {searchParams.get('title') || searchParams.get('category_id')
+                            {searchParams.get('search') || searchParams.get('category_id')
                                 ? 'Tente ajustar seus filtros de busca.'
                                 : 'Explore nossas receitas e salve as que você mais ama.'}
                         </p>

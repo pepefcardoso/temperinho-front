@@ -21,7 +21,7 @@ function GlobalSearch() {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (!query.trim()) return;
-        router.push(`/receitas?title=${encodeURIComponent(query.trim())}`);
+        router.push(`/receitas?search=${encodeURIComponent(query.trim())}`);
     };
 
     return (

@@ -49,7 +49,7 @@ export function UserFavoritesArticlesClient({
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                             <Input
                                 placeholder="Buscar nos seus artigos favoritos..."
-                                defaultValue={searchParams.get('title') || ''}
+                                defaultValue={searchParams.get('search') || ''}
                                 onChange={(e) => debouncedSearch(e.target.value)}
                                 className="pl-10"
                             />
@@ -102,7 +102,7 @@ export function UserFavoritesArticlesClient({
                             Nenhum artigo encontrado
                         </h3>
                         <p className="text-muted-foreground mt-2">
-                            {searchParams.get('title') || searchParams.get('category_id')
+                            {searchParams.get('search') || searchParams.get('category_id')
                                 ? 'Tente ajustar seus filtros de busca.'
                                 : 'Explore o blog para encontrar novos favoritos.'}
                         </p>

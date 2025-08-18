@@ -15,7 +15,7 @@ async function RecipesList({
   searchParams,
 }: {
   searchParams: {
-    title?: string
+    search?: string
     category_id?: string
     sortBy?: 'created_at' | 'time' | 'difficulty'
     diets?: string
@@ -39,7 +39,7 @@ async function RecipesList({
     paginatedResponse = await getRecipes({
       sortBy: searchParams.sortBy,
       filters: {
-        title: searchParams.title,
+        search: searchParams.search,
         category_id: searchParams.category_id
           ? Number(searchParams.category_id)
           : undefined,
@@ -70,7 +70,7 @@ async function RecipesList({
 
 export default async function RecipesPage(props: {
   searchParams: Promise<{
-    title?: string
+    search?: string
     category_id?: string
     sortBy?: 'created_at' | 'time' | 'difficulty'
     diets?: string

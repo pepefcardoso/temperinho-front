@@ -3,8 +3,8 @@ import { getPosts, getPostCategories } from '@/lib/api/blog'
 import type { Post, PostCategory } from '@/types/blog'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
-import { BlogFilterControls } from '@/components/blog/BlogFIlterControls'
 import MarketingSection from '@/components/marketing/MarketingSection'
+import { BlogFilterControls } from '@/components/blog/BlogFIlterControls'
 
 const PostListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -14,14 +14,14 @@ const PostListSkeleton = () => (
 
 async function PostList({
   categoryId,
-  title,
+  search,
 }: {
   categoryId?: number
-  title?: string
+  search?: string
 }) {
   try {
     const paginatedResponse = await getPosts({
-      filters: { category_id: categoryId, title },
+      filters: { category_id: categoryId, search },
       limit: 100,
     })
     const allPosts = paginatedResponse.data
@@ -56,13 +56,13 @@ async function PostList({
 export default async function BlogPage(props: {
   searchParams: Promise<{
     category_id?: string
-    title?: string
+    search?: string
   }>
 }) {
   const sp = await props.searchParams
-  const { category_id, title } = sp
+  const { category_id, search } = sp
   const currentCategoryId = category_id ? parseInt(category_id, 10) : undefined
-  const currentTitleFilter = title
+  const currentSearchFilter = search
 
   let categories: PostCategory[] = []
   try {
@@ -71,7 +71,7 @@ export default async function BlogPage(props: {
     console.error('Falha ao carregar categorias de post:', error)
   }
 
-  const suspenseKey = `posts-${category_id ?? 'todas'}-${title ?? 'tudo'}`
+  const suspenseKey = `posts-${category_id ?? 'todas'}-${search ?? 'tudo'}`
 
   return (
     <div className="bg-background">
@@ -91,7 +91,7 @@ export default async function BlogPage(props: {
           <BlogFilterControls
             categories={categories}
             initialCategoryId={category_id}
-            initialQuery={currentTitleFilter}
+            initialQuery={currentSearchFilter}
           />
         </section>
 
@@ -100,7 +100,7 @@ export default async function BlogPage(props: {
             <Suspense key={suspenseKey} fallback={<PostListSkeleton />}>
               <PostList
                 categoryId={currentCategoryId}
-                title={currentTitleFilter}
+                search={currentSearchFilter}
               />
             </Suspense>
           </div>

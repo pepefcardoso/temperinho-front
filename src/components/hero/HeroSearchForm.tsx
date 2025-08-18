@@ -14,7 +14,7 @@ export function HeroSearchForm() {
         if (!query.trim()) return;
 
         const params = new URLSearchParams();
-        params.set('title', query.trim());
+        params.set('search', query.trim());
         router.push(`/receitas?${params.toString()}`);
     };
 

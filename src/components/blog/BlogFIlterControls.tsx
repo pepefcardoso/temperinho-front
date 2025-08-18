@@ -35,7 +35,7 @@ export function BlogFilterControls({ categories, initialCategoryId, initialQuery
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        updateSearchParam('title', query.trim() || null);
+        updateSearchParam('search', query.trim() || null);
     };
 
     const handleCategoryClick = (categoryId?: string) => {

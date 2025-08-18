@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 };
 
 interface LoaderParams {
-    title?: string;
+    search?: string;
     category_id?: string;
 }
 
 async function FavoritesLoader({ searchParams }: { searchParams: LoaderParams }) {
     try {
         const paginatedResponse = await getFavoriteRecipes({
-            title: searchParams.title,
+            search: searchParams.search,
             categoryId: searchParams.category_id,
         });
         const favoriteRecipes = paginatedResponse.data;
@@ -59,7 +59,7 @@ export default async function UserFavoriteRecipesPage({
     searchParams: Promise<LoaderParams>;
 }) {
     const sp = await searchParams;
-    const suspenseKey = `favoritas-${sp.category_id ?? 'todas'}-${sp.title ?? ''}`;
+    const suspenseKey = `favoritas-${sp.category_id ?? 'todas'}-${sp.search ?? ''}`;
 
     return (
         <div className="container mx-auto py-8">

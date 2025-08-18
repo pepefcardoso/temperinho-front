@@ -11,7 +11,7 @@ export interface GetRecipesOptions {
   sortBy?: 'title' | 'created_at' | 'time' | 'difficulty';
   sortDirection?: 'asc' | 'desc';
   filters?: {
-    title?: string;
+    search?: string;
     category_id?: number;
     diets?: number[];
     user_id?: number;
@@ -32,7 +32,7 @@ export async function getRecipes(
   if (options.limit) params.append('per_page', options.limit.toString());
 
   if (options.filters) {
-    if (options.filters.title) params.append('title', options.filters.title);
+    if (options.filters.search) params.append('search', options.filters.search);
     if (options.filters.category_id)
       params.append('category_id', options.filters.category_id.toString());
     if (options.filters.user_id)

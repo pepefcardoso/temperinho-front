@@ -55,7 +55,7 @@ export const useFilterableList = <T extends { id: string | number }>({
   );
 
   const debouncedSearch = useDebouncedCallback((term: string) => {
-    handleFilterChange('title', term);
+    handleFilterChange('search', term);
   }, 500);
 
   const removeItemById = useCallback((id: T['id']) => {

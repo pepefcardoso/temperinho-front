@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function UserMyRecipesPage(props: {
     searchParams: Promise<{
-        title?: string;
+        search?: string;
         category_id?: string;
     }>;
 }) {
@@ -21,7 +21,7 @@ export default async function UserMyRecipesPage(props: {
 
     try {
         paginated = await getMyRecipes({
-            title: searchParams.title,
+            search: searchParams.search,
             categoryId: searchParams.category_id,
         });
     } catch (error) {
