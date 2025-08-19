@@ -76,7 +76,7 @@ export default function PrivacyPage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-semibold text-warm-800 dark:text-warm-200 mb-4">
+                            <h2 className="text-2xl font-semibold text-warm-700 dark:text-warm-200 mb-4">
                                 5. Cookies e Tecnologias de Rastreamento
                             </h2>
                             <p className="text-warm-700 dark:text-warm-300 leading-relaxed mb-4">

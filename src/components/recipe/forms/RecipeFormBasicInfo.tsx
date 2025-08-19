@@ -23,7 +23,7 @@ export function RecipeFormBasicInfo({ control, register, errors }: BasicInfoProp
     React.useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const fetchedCategories = await getRecipeCategories();
+                const fetchedCategories = await getRecipeCategories({limit: 100});
                 setCategories(fetchedCategories);
             } catch (error) {
                 console.error("Falha ao buscar categorias:", error);

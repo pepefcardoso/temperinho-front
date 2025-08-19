@@ -1,16 +1,16 @@
 import z from 'zod';
 
-function isOver18(birthDate: string): boolean {
-  if (!birthDate) return false;
+function isOver18(birthday: string): boolean {
+  if (!birthday) return false;
   const today = new Date();
-  const birthDateObj = new Date(birthDate);
+  const birthdayObj = new Date(birthday);
 
-  let age = today.getFullYear() - birthDateObj.getFullYear();
-  const monthDifference = today.getMonth() - birthDateObj.getMonth();
+  let age = today.getFullYear() - birthdayObj.getFullYear();
+  const monthDifference = today.getMonth() - birthdayObj.getMonth();
 
   if (
     monthDifference < 0 ||
-    (monthDifference === 0 && today.getDate() < birthDateObj.getDate())
+    (monthDifference === 0 && today.getDate() < birthdayObj.getDate())
   ) {
     age--;
   }
@@ -24,7 +24,7 @@ export const createAccountSchema = z
       .string()
       .min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
     email: z.string().email({ message: 'Por favor, insira um email válido.' }),
-    birthDate: z
+    birthday: z
       .string()
       .refine((date) => new Date(date).toString() !== 'Invalid Date', {
         message: 'Por favor, insira uma data válida.',

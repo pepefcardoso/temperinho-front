@@ -1,5 +1,8 @@
 import axiosClient from '@/lib/axios';
-import type { PaginatedResponse } from '@/types/api';
+import type {
+  GetStandardPaginatedOptions,
+  PaginatedResponse,
+} from '@/types/api';
 import type { Post, PostCategory, PostTopic } from '@/types/blog';
 
 export interface GetPostsOptions {
@@ -90,14 +93,34 @@ export async function deletePost(id: number): Promise<void> {
   await axiosClient.delete(`/posts/${id}`);
 }
 
-export async function getPostCategories(): Promise<PostCategory[]> {
+export async function getPostCategories(
+  options: GetStandardPaginatedOptions = {}
+): Promise<PostCategory[]> {
+  const params = new URLSearchParams();
+  if (options.limit) {
+    params.append('per_page', options.limit.toString());
+  }
+
   const response = await axiosClient.get<{ data: PostCategory[] }>(
-    '/post-categories'
+    '/post-categories',
+    { params }
   );
+
   return response.data.data;
 }
 
-export async function getPostTopics(): Promise<PostTopic[]> {
-  const response = await axiosClient.get<{ data: PostTopic[] }>('/post-topics');
+export async function getPostTopics(
+  options: GetStandardPaginatedOptions = {}
+): Promise<PostTopic[]> {
+  const params = new URLSearchParams();
+  if (options.limit) {
+    params.append('per_page', options.limit.toString());
+  }
+
+  const response = await axiosClient.get<{ data: PostTopic[] }>(
+    '/post-topics',
+    { params }
+  );
+
   return response.data.data;
 }

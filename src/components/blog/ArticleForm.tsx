@@ -273,8 +273,8 @@ export function ArticleForm({ initialData, action }: ArticleFormProps) {
     const fetchData = async () => {
       try {
         const [cats, tops] = await Promise.all([
-          getPostCategories(),
-          getPostTopics(),
+          getPostCategories({limit: 100}),
+          getPostTopics({limit: 100}),
         ]);
         setCategories(cats);
         setTopics(tops);

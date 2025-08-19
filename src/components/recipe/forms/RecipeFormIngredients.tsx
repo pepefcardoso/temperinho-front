@@ -29,7 +29,7 @@ export function RecipeFormIngredients({ control, register, errors }: Ingredients
     React.useEffect(() => {
         const fetchUnits = async () => {
             try {
-                const fetchedUnits = await getRecipeUnits();
+                const fetchedUnits = await getRecipeUnits({limit: 100});
                 setUnits(fetchedUnits);
             } catch (error) {
                 console.error("Falha ao buscar unidades de medida:", error);

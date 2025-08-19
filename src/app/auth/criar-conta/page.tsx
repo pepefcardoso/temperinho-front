@@ -93,7 +93,7 @@ export default function CreateAccountPage() {
     defaultValues: {
       name: '',
       email: '',
-      birthDate: '',
+      birthday: '',
       password: '',
       confirmPassword: '',
       acceptTerms: false,
@@ -173,20 +173,20 @@ export default function CreateAccountPage() {
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='birthDate'>Data de nascimento</Label>
+              <Label htmlFor='birthday'>Data de nascimento</Label>
               <div className='relative'>
                 <Calendar className='absolute left-3 top-1/2 transform -translate-y-1/2 text-warm-500 h-4 w-4' />
                 <Input
-                  id='birthDate'
+                  id='birthday'
                   type='date'
-                  {...register('birthDate')}
+                  {...register('birthday')}
                   className='pl-10'
-                  aria-invalid={!!errors.birthDate}
+                  aria-invalid={!!errors.birthday}
                 />
               </div>
-              {errors.birthDate && (
+              {errors.birthday && (
                 <p className='text-sm text-destructive mt-1' role='alert'>
-                  {errors.birthDate.message}
+                  {errors.birthday.message}
                 </p>
               )}
             </div>

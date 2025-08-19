@@ -4,7 +4,7 @@ import type { Post, PostCategory } from '@/types/blog'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
 import MarketingSection from '@/components/marketing/MarketingSection'
-import { BlogFilterControls } from '@/components/blog/BlogFIlterControls'
+import { BlogFilterControls } from '@/components/blog/BlogFilterControls'
 
 const PostListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -64,11 +64,11 @@ export default async function BlogPage(props: {
   const currentCategoryId = category_id ? parseInt(category_id, 10) : undefined
   const currentSearchFilter = search
 
-  let categories: PostCategory[] = []
+  let categories: PostCategory[] = [];
   try {
-    categories = await getPostCategories()
+    categories = await getPostCategories({ limit: 50 });
   } catch (error) {
-    console.error('Falha ao carregar categorias de post:', error)
+    console.error('Falha ao carregar categorias de post:', error);
   }
 
   const suspenseKey = `posts-${category_id ?? 'todas'}-${search ?? 'tudo'}`

@@ -19,7 +19,7 @@ export function RecipeFormDiets({ control, errors }: DietsProps) {
     React.useEffect(() => {
         const fetchDiets = async () => {
             try {
-                const fetchedDiets = await getRecipeDiets();
+                const fetchedDiets = await getRecipeDiets({limit: 100});
                 setDiets(fetchedDiets);
             } catch (error) {
                 console.error("Falha ao buscar as dietas:", error);

@@ -52,8 +52,8 @@ async function RecipesList({
         page: 1,
         limit: 9,
       }),
-      getRecipeCategories(),
-      getRecipeDiets(),
+      getRecipeCategories({limit: 100}),
+      getRecipeDiets({limit: 100}),
     ]);
 
     paginatedResponse = recipesResponse;

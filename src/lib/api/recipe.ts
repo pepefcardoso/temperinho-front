@@ -1,5 +1,8 @@
 import axiosClient from '@/lib/axios';
-import type { PaginatedResponse } from '@/types/api';
+import type {
+  GetStandardPaginatedOptions,
+  PaginatedResponse,
+} from '@/types/api';
 import type {
   Recipe,
   RecipeCategory,
@@ -111,23 +114,50 @@ export async function deleteRecipe(id: number): Promise<void> {
   await axiosClient.delete(`/recipes/${id}`);
 }
 
-export async function getRecipeCategories(): Promise<RecipeCategory[]> {
+export async function getRecipeCategories(
+  options: GetStandardPaginatedOptions = {}
+): Promise<RecipeCategory[]> {
+  const params = new URLSearchParams();
+  if (options.limit) {
+    params.append('per_page', options.limit.toString());
+  }
+
   const response = await axiosClient.get<{ data: RecipeCategory[] }>(
-    '/recipe-categories'
+    '/recipe-categories',
+    { params }
   );
+
   return response.data.data;
 }
 
-export async function getRecipeDiets(): Promise<RecipeDiet[]> {
+export async function getRecipeDiets(
+  options: GetStandardPaginatedOptions = {}
+): Promise<RecipeDiet[]> {
+  const params = new URLSearchParams();
+  if (options.limit) {
+    params.append('per_page', options.limit.toString());
+  }
+
   const response = await axiosClient.get<{ data: RecipeDiet[] }>(
-    '/recipe-diets'
+    '/recipe-diets',
+    { params }
   );
+
   return response.data.data;
 }
 
-export async function getRecipeUnits(): Promise<RecipeUnit[]> {
+export async function getRecipeUnits(
+  options: GetStandardPaginatedOptions = {}
+): Promise<RecipeUnit[]> {
+  const params = new URLSearchParams();
+  if (options.limit) {
+    params.append('per_page', options.limit.toString());
+  }
+
   const response = await axiosClient.get<{ data: RecipeUnit[] }>(
-    '/recipe-units'
+    '/recipe-units',
+    { params }
   );
+
   return response.data.data;
 }
