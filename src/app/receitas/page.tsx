@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { getRecipes } from '@/lib/api/recipe';
+import { getRecipes, getRecipeDiets, getRecipeCategories } from '@/lib/api/recipe';
 import { RecipesPageClient } from '@/components/recipe/RecipePageClient';
 import { PageSkeleton } from '@/components/skeletons/PageSkeleton';
-import { Recipe } from '@/types/recipe';
+import { Recipe, RecipeDiet, RecipeCategory } from '@/types/recipe';
 import MarketingSection from '@/components/marketing/MarketingSection';
 
 export const metadata: Metadata = {
@@ -35,19 +35,30 @@ async function RecipesList({
     }
   };
 
+  let categories: RecipeCategory[] = [];
+  let diets: RecipeDiet[] = [];
+
   try {
-    paginatedResponse = await getRecipes({
-      sortBy: searchParams.sortBy,
-      filters: {
-        search: searchParams.search,
-        category_id: searchParams.category_id
-          ? Number(searchParams.category_id)
-          : undefined,
-        diets: dietFilters,
-      },
-      page: 1,
-      limit: 9,
-    });
+    const [recipesResponse, categoriesResponse, dietsResponse] = await Promise.all([
+      getRecipes({
+        sortBy: searchParams.sortBy,
+        filters: {
+          search: searchParams.search,
+          category_id: searchParams.category_id
+            ? Number(searchParams.category_id)
+            : undefined,
+          diets: dietFilters,
+        },
+        page: 1,
+        limit: 9,
+      }),
+      getRecipeCategories(),
+      getRecipeDiets(),
+    ]);
+
+    paginatedResponse = recipesResponse;
+    categories = categoriesResponse;
+    diets = dietsResponse;
   } catch {
     paginatedResponse = {
       data: [],
@@ -58,12 +69,16 @@ async function RecipesList({
         last_page: 1,
       },
     };
+    categories = [];
+    diets = [];
   }
 
   return (
     <RecipesPageClient
       initialRecipes={paginatedResponse.data}
       initialMeta={paginatedResponse.meta}
+      categories={categories}
+      diets={diets}
     />
   );
 }

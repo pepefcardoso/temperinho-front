@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Grid, List, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { getRecipes, getRecipeDiets, getRecipeCategories } from '@/lib/api/recipe';
+import { getRecipes } from '@/lib/api/recipe';
 import { Recipe, RecipeDiet, RecipeCategory } from '@/types/recipe';
 import RecipeCard from './RecipeCard';
 import AdBanner from '../marketing/AdBanner';
@@ -17,9 +17,16 @@ type SortByType = 'created_at' | 'time' | 'difficulty';
 interface RecipesPageClientProps {
   initialRecipes: Recipe[];
   initialMeta: { current_page: number; last_page: number; };
+  categories: RecipeCategory[];
+  diets: RecipeDiet[];
 }
 
-export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageClientProps) {
+export function RecipesPageClient({
+  initialRecipes,
+  initialMeta,
+  categories,
+  diets
+}: RecipesPageClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,21 +36,6 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
   const [page, setPage] = useState(initialMeta.current_page + 1);
   const [hasMore, setHasMore] = useState(initialMeta.current_page < initialMeta.last_page);
   const [isLoadingMore, startTransition] = useTransition();
-  const [availableDiets, setAvailableDiets] = useState<RecipeDiet[]>([]);
-  const [availableCategories, setAvailableCategories] = useState<RecipeCategory[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [diets, categories] = await Promise.all([getRecipeDiets(), getRecipeCategories()]);
-        setAvailableDiets(diets);
-        setAvailableCategories(categories);
-      } catch (error) {
-        console.error("Falha ao carregar dados dos filtros:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const updateUrlParam = (key: string, value: string | number[] | null) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -93,10 +85,10 @@ export function RecipesPageClient({ initialRecipes, initialMeta }: RecipesPageCl
         query={query}
         onQueryChange={setQuery}
         onSearchSubmit={() => updateUrlParam('search', query.trim() || null)}
-        categories={availableCategories}
+        categories={categories}
         selectedCategory={currentCategory}
         onCategoryChange={(value) => updateUrlParam('category_id', value)}
-        diets={availableDiets}
+        diets={diets}
         selectedDiets={currentDiets}
         onDietToggle={(dietId) => {
           const newDiets = currentDiets.includes(dietId)
