@@ -46,13 +46,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = useCallback(async (credentials: LoginData) => {
-    const data = await loginUser(credentials);
-    setToken(data.token);
+    try {
+      const data = await loginUser(credentials);
+      setToken(data.token);
+    } catch (error) {
+      console.error('Erro no login:', error);
+      throw error;
+    }
   }, [setToken]);
 
   const register = useCallback(async (data: RegisterData) => {
-    const response = await registerUser(data);
-    setToken(response.token);
+    try {
+      const response = await registerUser(data);
+      setToken(response.token);
+    } catch (error) {
+      console.error('Erro no registro:', error);
+      throw error;
+    }
   }, [setToken]);
 
   const logout = useCallback(async () => {
@@ -73,19 +83,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const response = await axiosClient.get('/users/me');
           setUser(response.data.data);
         } catch (error) {
-          console.error('Falha ao buscar usuário, limpando token.', error);
+          console.error('Falha ao buscar usuário:', error);
           if (isAxiosError(error) && error.response?.status === 401) {
+            console.warn('Token inválido, removendo...');
             setToken(null);
           }
-        } finally {
-          setLoading(false);
         }
-      } else {
-        setLoading(false);
       }
+      setLoading(false);
     };
+
     fetchUser();
   }, [token, setToken]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !token) {
+      const cookieToken = Cookies.get('AUTH_TOKEN');
+      if (cookieToken && cookieToken !== token) {
+        _setToken(cookieToken);
+        localStorage.setItem('AUTH_TOKEN', cookieToken);
+      }
+    }
+  }, [token]);
 
   const isAuthenticated = useMemo(() => !!user, [user]);
 
