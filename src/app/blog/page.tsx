@@ -4,7 +4,7 @@ import type { Post, PostCategory } from '@/types/blog'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
 import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
 import MarketingSection from '@/components/marketing/MarketingSection'
-import { BlogFilterControls } from '@/components/blog/BlogFilterControls'
+import { BlogFilterControls } from '@/components/blog/BlogFiltersControls'
 
 const PostListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

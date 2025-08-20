@@ -30,3 +30,12 @@ export async function updateCompany(
   );
   return response.data.data;
 }
+
+export async function deleteCompany(id: number): Promise<void> {
+  await axiosClient.delete(`/companies/${id}`);
+}
+
+export async function getCompany(id: number): Promise<Company> {
+  const response = await axiosClient.get<{ data: Company }>(`/companies/${id}`);
+  return response.data.data;
+}
