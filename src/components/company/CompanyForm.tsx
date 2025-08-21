@@ -25,7 +25,11 @@ interface CompanyFormProps {
     onSuccess?: () => void;
 }
 
-export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps) {
+export function CompanyForm({
+    initialData,
+    action,
+    onSuccess,
+}: CompanyFormProps) {
     const router = useRouter();
     const [imageFile, setImageFile] = React.useState<File | null>(null);
     const [imagePreview, setImagePreview] = React.useState<string | null>(
@@ -50,6 +54,8 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
         formState: { errors, isSubmitting },
     } = form;
 
+    const { onChange: onCnpjChange, ...cnpjProps } = register('cnpj');
+
     React.useEffect(() => {
         return () => {
             if (imagePreview && imagePreview.startsWith('blob:')) {
@@ -61,6 +67,20 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+            if (file.size > MAX_FILE_SIZE) {
+                toast.error('O arquivo é muito grande. O tamanho máximo é 2MB.');
+                e.target.value = '';
+                return;
+            }
+
+            const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                toast.error('Tipo de arquivo inválido. Apenas JPG, PNG, SVG ou WebP são permitidos.');
+                e.target.value = '';
+                return;
+            }
+
             setImageFile(file);
             if (imagePreview && imagePreview.startsWith('blob:')) {
                 URL.revokeObjectURL(imagePreview);
@@ -80,11 +100,11 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
     const onSubmit = async (data: CompanyFormData) => {
         const formData = new FormData();
         formData.append('name', data.name);
-        formData.append('cnpj', data.cnpj);
         formData.append('email', data.email);
-        if (data.phone) formData.append('phone', data.phone);
-        if (data.address) formData.append('address', data.address);
-        if (data.website) formData.append('website', data.website);
+        formData.append('phone', data.phone);
+        formData.append('address', data.address);
+        formData.append('website', data.website);
+        if (data.cnpj) formData.append('cnpj', data.cnpj);
         if (imageFile) formData.append('image', imageFile);
 
         try {
@@ -110,7 +130,6 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Company Logo */}
                 <div className="lg:col-span-1">
                     <Card>
                         <CardHeader>
@@ -136,7 +155,6 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                         </div>
                                     )}
                                 </div>
-                                
                                 <div className="flex gap-2 justify-center">
                                     <Label htmlFor="logo-upload" className="cursor-pointer">
                                         <Button type="button" size="sm" asChild>
@@ -158,7 +176,6 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                         </Button>
                                     )}
                                 </div>
-                                
                                 <Input
                                     id="logo-upload"
                                     type="file"
@@ -166,16 +183,13 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                     className="sr-only"
                                     onChange={handleImageChange}
                                 />
-                                
                                 <p className="text-xs text-muted-foreground mt-2">
-                                    JPG, PNG, SVG (máx 2MB)
+                                    JPG, PNG, SVG, WebP (máx 2MB)
                                 </p>
                             </div>
                         </CardContent>
                     </Card>
                 </div>
-
-                {/* Company Information */}
                 <div className="lg:col-span-2 space-y-6">
                     <Card>
                         <CardHeader>
@@ -197,15 +211,19 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                         </p>
                                     )}
                                 </div>
-
                                 <div>
-                                    <Label htmlFor="cnpj">CNPJ *</Label>
+                                    <Label htmlFor="cnpj">CNPJ</Label>
                                     <Input
                                         id="cnpj"
-                                        {...register('cnpj')}
-                                        placeholder="00.000.000/0000-00"
+                                        {...cnpjProps}
+                                        onChange={(e) => {
+                                            const onlyNumbers = e.target.value.replace(/\D/g, '');
+                                            e.target.value = onlyNumbers;
+                                            onCnpjChange(e);
+                                        }}
+                                        placeholder="Somente números"
                                         className="mt-1"
-                                        maxLength={18}
+                                        maxLength={14}
                                     />
                                     {errors.cnpj && (
                                         <p className="text-sm text-destructive mt-1">
@@ -214,7 +232,6 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                     )}
                                 </div>
                             </div>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <Label htmlFor="email">Email *</Label>
@@ -231,9 +248,8 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                         </p>
                                     )}
                                 </div>
-
                                 <div>
-                                    <Label htmlFor="phone">Telefone</Label>
+                                    <Label htmlFor="phone">Telefone *</Label>
                                     <Input
                                         id="phone"
                                         {...register('phone')}
@@ -247,9 +263,8 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                     )}
                                 </div>
                             </div>
-
                             <div>
-                                <Label htmlFor="address">Endereço</Label>
+                                <Label htmlFor="address">Endereço *</Label>
                                 <Input
                                     id="address"
                                     {...register('address')}
@@ -262,9 +277,8 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                                     </p>
                                 )}
                             </div>
-
                             <div>
-                                <Label htmlFor="website">Website</Label>
+                                <Label htmlFor="website">Website *</Label>
                                 <Input
                                     id="website"
                                     type="url"
@@ -282,7 +296,6 @@ export function CompanyForm({ initialData, action, onSuccess }: CompanyFormProps
                     </Card>
                 </div>
             </div>
-
             <div className="flex justify-end gap-4">
                 <Button
                     type="button"
