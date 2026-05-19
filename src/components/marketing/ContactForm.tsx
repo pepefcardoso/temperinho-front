@@ -1,16 +1,18 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Send, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { createContact } from '@/lib/api/customer';
 import { contactFormSchema } from '@/lib/schemas/marketing';
 
@@ -19,12 +21,13 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 export function ContactForm() {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: { name: '', email: '', phone: '', message: '' },
+    defaultValues: { name: '', email: '', phone: '', message: '', acceptTerms: false },
   });
 
   const onSubmit = async (data: ContactFormData) => {
@@ -113,6 +116,42 @@ export function ContactForm() {
               {errors.message.message}
             </p>
           )}
+        </div>
+
+        <div className='flex items-start space-x-3'>
+          <Controller
+            name='acceptTerms'
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id='acceptTerms'
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                className='mt-1'
+                aria-invalid={!!errors.acceptTerms}
+              />
+            )}
+          />
+          <div className='grid gap-1.5 leading-none'>
+            <Label
+              htmlFor='acceptTerms'
+              className='text-sm font-medium leading-relaxed cursor-pointer'
+            >
+              Concordo com o processamento dos meus dados conforme a{' '}
+              <Link
+                href='/privacidade'
+                className='text-primary hover:underline transition-colors'
+              >
+                Política de Privacidade
+              </Link>
+              .
+            </Label>
+            {errors.acceptTerms && (
+              <p className='text-sm text-destructive' role='alert'>
+                {errors.acceptTerms.message}
+              </p>
+            )}
+          </div>
         </div>
 
         <Button type='submit' className='w-full' disabled={isSubmitting}>

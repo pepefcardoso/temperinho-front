@@ -106,6 +106,12 @@ export default function Footer() {
                             )}
                             {status === 'error' && <p className="text-red-400">{message}</p>}
                         </div>
+                        <p className="text-muted-foreground mt-3 text-xs">
+                            Ao se inscrever, você concorda com nossa{' '}
+                            <Link href="/privacidade" className="underline hover:text-background transition-colors">
+                                Política de Privacidade
+                            </Link>.
+                        </p>
                     </div>
                 </div>
             </div>

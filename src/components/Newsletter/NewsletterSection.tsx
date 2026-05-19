@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { subscribeToNewsletter } from '@/lib/api/customer';
@@ -71,7 +72,13 @@ export default function NewsletterSection() {
           </Button>
         </form>
 
-        <p className="text-sage-200 text-sm mt-4">Sem spam. Cancele a qualquer momento.</p>
+        <p className="text-sage-200 text-sm mt-4">
+          Ao assinar, você concorda com nossa{' '}
+          <Link href="/privacidade" className="underline hover:text-white transition-colors">
+            Política de Privacidade
+          </Link>.
+          Sem spam, cancele a qualquer momento.
+        </p>
       </div>
     </section>
   );

@@ -8,16 +8,6 @@ This backlog tracks the technical tasks required to mitigate security vulnerabil
 
 _Tasks focused on user interface and privacy documentation alignment to ensure transparent data processing._
 
-### [P2-01] Add Privacy Disclaimers and Opt-ins to Data Collection Points
-
-- **Files Affected:** `NewsletterSection.tsx`, `Footer.tsx`, `ContactForm.tsx`
-- **Context:** These components capture personal data (emails, names, phone numbers) without any privacy disclaimer at the point of collection, missing links to the Privacy Policy, and without granular consent checkboxes (Violation of LGPD Art. 9).
-- **Action Required:**
-  1. Add a clear informational notice below/adjacent to the input forms (e.g., "By submitting this form, you agree to our Privacy Policy").
-  2. Hyperlink the text to the `/privacidade` route.
-  3. For the contact form, introduce an optional/mandatory checkbox for explicit processing consent depending on the exact business use case.
-- **Definition of Done (DoD):** Every data collection form contains a visible, accessible link to the application's Privacy Policy before a user can submit information.
-
 ### [P2-02] Align Privacy Policy Documentation with Codebase Reality
 
 - **Files Affected:** `src/app/privacidade/page.tsx`
