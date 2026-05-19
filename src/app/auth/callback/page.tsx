@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Loader2 } from 'lucide-react';
@@ -11,6 +11,16 @@ function AuthCallbackContent() {
 
     useEffect(() => {
         const handleOAuthCallback = async () => {
+            if (typeof window !== 'undefined') {
+                const hash = window.location.hash.substring(1);
+                const params = new URLSearchParams(hash);
+                const token = params.get('token');
+
+                if (token) {
+                    localStorage.setItem('AUTH_TOKEN', token);
+                }
+            }
+
             await fetchUser();
             router.push('/usuario/dashboard');
         };
@@ -28,8 +38,6 @@ function AuthCallbackContent() {
 
 export default function AuthCallbackPage() {
     return (
-        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Carregando...</div>}>
-            <AuthCallbackContent />
-        </Suspense>
+        <AuthCallbackContent />
     );
 }
