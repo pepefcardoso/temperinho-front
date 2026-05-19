@@ -8,16 +8,6 @@ This backlog tracks the technical tasks required to mitigate security vulnerabil
 
 _Tasks involving unauthorized collection/transmission of Personally Identifiable Information (PII) or direct violation of user consent._
 
-### [P1-01] Conditionally Load Google AdSense Based on CookieYes Consent
-
-- **Files Affected:** `src/app/layout.tsx`
-- **Context:** The Google AdSense script is currently configured with `strategy="afterInteractive"`. This causes it to execute and deposit tracking/advertising cookies during hydration (~200ms) before the user interacts with or accepts the CookieYes consent banner (Violation of LGPD Art. 7 I and Art. 11).
-- **Action Required:**
-  1. Remove the unconditional loading of the AdSense script from the main layout.
-  2. Implement an event listener for the CookieYes API consent update (`window.addEventListener('CookieYes-consent-update', ...)`).
-  3. Dynamically inject the AdSense script into the DOM only if the user gives explicit consent for the "advertisement" category.
-- **Definition of Done (DoD):** The browser's network/storage panel confirms that no requests to `pagead2.googlesyndication.com` occur and no advertising cookies are set during a clean anonymous session before clicking "Accept" on the banner.
-
 ### [P1-02] Disable Automatic PII Transmission in Sentry
 
 - **Files Affected:** `sentry.server.config.ts`, `sentry.edge.config.ts`

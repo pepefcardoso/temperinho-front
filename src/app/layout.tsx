@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
@@ -8,7 +7,8 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
 import Script from 'next/script';
-import * as Sentry from '@sentry/nextjs'
+import * as Sentry from '@sentry/nextjs';
+import AdSenseLoader from '@/components/marketing/AdSenseLoader';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   },
   description: "Descubra receitas deliciosas para todos os gostos e restrições.",
   other: {
-      ...Sentry.getTraceData(),
-    },
+    ...Sentry.getTraceData(),
+  },
 };
 
 export default function RootLayout({
@@ -47,19 +47,14 @@ export default function RootLayout({
           src="https://cdn-cookieyes.com/client_data/482e3ab6588d9ec52fc08147/script.js"
           strategy="beforeInteractive"
         />
-
-        <Script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}`}
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
       </head>
       <body className={cn(
         "min-h-screen bg-background font-sans antialiased",
         inter.variable,
         playfair.variable
       )}>
+        <AdSenseLoader clientId={process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT || ''} />
+
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-3 focus:px-4 focus:py-2 focus:bg-card focus:border focus:rounded-lg">
           Pular para o conteúdo principal
         </a>
