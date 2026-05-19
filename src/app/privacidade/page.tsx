@@ -30,7 +30,7 @@ export default function PrivacyPage() {
                             <h2 className="text-2xl font-semibold text-warm-800 mb-4">1. Informações que Coletamos</h2>
                             <p className="text-warm-700 leading-relaxed mb-2"><strong>a) Informações Fornecidas por Você:</strong></p>
                             <ul className="list-disc pl-6 text-warm-700 space-y-2 mb-4">
-                                <li><strong>Dados Cadastrais:</strong> Nome e email ao criar uma conta.</li>
+                                <li><strong>Dados Cadastrais:</strong> Nome, email, data de nascimento e telefone ao criar ou atualizar uma conta.</li>
                                 <li><strong>Conteúdo Gerado pelo Usuário:</strong> Receitas, comentários, fotos e outras informações que você publica.</li>
                                 <li><strong>Dados Pessoais Sensíveis:</strong> Preferências e restrições alimentares (como alergias, intolerâncias, dietas específicas) que você voluntariamente especifica em seu perfil. Tratamos esses dados com o máximo rigor, conforme detalhado na Seção 3.</li>
                                 <li><strong>Informações de Contato:</strong> Dados fornecidos ao nos contatar para suporte ou outras dúvidas.</li>
@@ -93,10 +93,13 @@ export default function PrivacyPage() {
                                     <strong>Cookies Estritamente Necessários:</strong> Essenciais para o funcionamento do site, como manter sua sessão de login. Eles não podem ser desativados e não requerem consentimento.
                                 </li>
                                 <li>
-                                    <strong>Cookies de Análise (ou Desempenho):</strong> Nos ajudam a entender como os visitantes interagem com o site, coletando informações de forma anônima. Utilizamos o <strong>Google Analytics</strong> para analisar padrões de uso e melhorar nossa plataforma.
+                                    <strong>Cookies de Análise (ou Desempenho):</strong> Nos ajudam a entender como os visitantes interagem com o site, coletando informações de forma anônima para monitorar e melhorar o desempenho técnico da nossa plataforma.
                                 </li>
                                 <li>
-                                    <strong>Cookies de Publicidade (ou Marketing):</strong> Usados para rastrear visitantes através de websites com a intenção de exibir anúncios que são relevantes e atraentes. Nosso parceiro para isso é o <strong>Google AdSense</strong>.
+                                    <strong>Monitoramento de Sessão e Erros:</strong> Condicionado ao seu consentimento para cookies de análise, utilizamos tecnologias de monitoramento (como o Sentry) que podem capturar reproduções comportamentais da sua sessão (session replay). Esses dados são utilizados estritamente para depuração técnica e correção de falhas de sistema. Para sua privacidade, todos os textos e mídias pessoais são completamente ocultados (mascarados) antes do envio.
+                                </li>
+                                <li>
+                                    <strong>Cookies de Publicidade (ou Marketing):</strong> Usados para rastrear visitantes através de websites com a intenção de exibir anúncios que são relevantes e atraentes. Utilizamos o <strong>Google AdSense</strong> para viabilizar campanhas de publicidade comportamental e monetização da plataforma.
                                 </li>
                             </ul>
                             <h3 className="text-xl font-semibold text-warm-800 dark:text-warm-200 mt-6 mb-3">

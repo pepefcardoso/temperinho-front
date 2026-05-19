@@ -4,23 +4,6 @@ This backlog tracks the technical tasks required to mitigate security vulnerabil
 
 ---
 
-## 🟠 Priority 2: High (Transparency & Compliance Gaps)
-
-_Tasks focused on user interface and privacy documentation alignment to ensure transparent data processing._
-
-### [P2-02] Align Privacy Policy Documentation with Codebase Reality
-
-- **Files Affected:** `src/app/privacidade/page.tsx`
-- **Context:** The current policy contains inaccuracies: Section 1a fails to list mandatory registration fields (`birthday` and `phone`), and Section 5 references Google Analytics which does not exist in the codebase, while failing to mention Google AdSense which is active (Violation of the principle of transparency, LGPD Art. 9 IV).
-- **Action Required:**
-  1. Update Section 1a to explicitly list `date of birth` (birthday) and `phone number` as collected personal data.
-  2. Remove all references to "Google Analytics".
-  3. Add an explicit clause detailing the use of "Google AdSense" for behavioral advertising and monetization.
-  4. If Session Replay is kept under [P1-03], add a disclosure regarding behavioral replay for debugging purposes.
-- **Definition of Done (DoD):** The published Privacy Policy completely and accurately reflects the exact data schemas and third-party scripts present in the repository.
-
----
-
 ## 🟡 Priority 3: Medium (Structural Risks & Technical Debt)
 
 _Architecture-level security tasks that require coordination with backend development to safeguard sessions._
