@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
-  sendDefaultPii: true,
+  sendDefaultPii: false,
   tracesSampleRate: 1.0,
   integrations: [
     Sentry.browserTracingIntegration(),

@@ -8,14 +8,6 @@ This backlog tracks the technical tasks required to mitigate security vulnerabil
 
 _Tasks involving unauthorized collection/transmission of Personally Identifiable Information (PII) or direct violation of user consent._
 
-### [P1-02] Disable Automatic PII Transmission in Sentry
-
-- **Files Affected:** `sentry.server.config.ts`, `sentry.edge.config.ts`
-- **Context:** The current configuration sets `sendDefaultPii: true`, which automatically transmits user IPs, session cookies, and full HTTP headers to international servers (Sentry Inc., USA) without explicit legal basis or a user-visible Data Processing Agreement (DPA) safeguard (Violation of LGPD Art. 33).
-- **Action Required:**
-  1. Change the value of `sendDefaultPii` to `false` across all Sentry configuration files.
-- **Definition of Done (DoD):** Verify in the Sentry issue dashboard that newly generated error logs no longer include sensitive client IPs, session tokens, or Authorization headers.
-
 ### [P1-03] Restrict or Refactor Sentry Session Replay
 
 - **Files Affected:** `instrumentation-client.ts`
