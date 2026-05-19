@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { SITE_NAV_LINKS } from '@/lib/config/site';
 import { useAuth } from '@/context/AuthContext';
-// import { ThemeToggle } from '../theme/ThemeToggle';
+import { ThemeToggle } from '../theme/ThemeToggle';
 
 function GlobalSearch() {
     const [query, setQuery] = useState('');
@@ -126,7 +126,7 @@ export default function Header() {
                     </div>
 
                     <div className="flex items-center gap-1 sm:gap-2">
-                        {/* <ThemeToggle /> */}
+                        <ThemeToggle />
 
                         {loading ? (
                             <div className="h-10 w-10 bg-muted rounded-full animate-pulse"></div>

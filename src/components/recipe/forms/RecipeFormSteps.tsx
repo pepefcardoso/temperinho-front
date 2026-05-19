@@ -28,7 +28,13 @@ export function RecipeFormSteps({ control, register, errors }: StepsProps) {
                             className="flex-1"
                             placeholder="Descreva o passo..."
                         />
-                        <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => remove(index)}
+                            aria-label={`Remover passo ${index + 1}`}
+                        >
                             <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                     </div>

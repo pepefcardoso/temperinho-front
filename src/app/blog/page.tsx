@@ -2,15 +2,9 @@ import { Suspense } from 'react'
 import { getPosts, getPostCategories } from '@/lib/api/blog'
 import type { Post, PostCategory } from '@/types/blog'
 import { BlogPostCard } from '@/components/blog/BlogPostCard'
-import { CardSkeleton } from '@/components/skeletons/CardSkeleton'
+import { BlogSkeleton } from '@/components/skeletons/BlogSkeleton'
 import MarketingSection from '@/components/marketing/MarketingSection'
 import { BlogFilterControls } from '@/components/blog/BlogFiltersControls'
-
-const PostListSkeleton = () => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
-  </div>
-)
 
 async function PostList({
   categoryId,
@@ -97,7 +91,7 @@ export default async function BlogPage(props: {
 
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <Suspense key={suspenseKey} fallback={<PostListSkeleton />}>
+            <Suspense key={suspenseKey} fallback={<BlogSkeleton />}>
               <PostList
                 categoryId={currentCategoryId}
                 search={currentSearchFilter}
