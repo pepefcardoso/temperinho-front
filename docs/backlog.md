@@ -4,21 +4,6 @@ This backlog tracks the technical tasks required to mitigate security vulnerabil
 
 ---
 
-## 🔴 Priority 1: Critical (Immediate Legal & Security Risk)
-
-_Tasks involving unauthorized collection/transmission of Personally Identifiable Information (PII) or direct violation of user consent._
-
-### [P1-03] Restrict or Refactor Sentry Session Replay
-
-- **Files Affected:** `instrumentation-client.ts`
-- **Context:** Sentry Session Replay is active (`replaysSessionSampleRate: 0.1`, `replaysOnErrorSampleRate: 1.0`). Although `maskAllText: true` is configured, user behavior, navigation flows, clicks, and scrolls are recorded without disclosure in the privacy policy and without explicit consent (Violation of LGPD Art. 9 regarding transparency of form and duration of processing).
-- **Action Required:**
-  1. Either fully remove the `Sentry.replayIntegration()` and its sample rates, OR
-  2. Dynamically initialize the Replay integration only after the user consents to performance/analytical cookies via the CookieYes callback.
-- **Definition of Done (DoD):** Replay data is not recorded or transmitted for users who have either rejected or not yet interacted with the cookie consent banner.
-
----
-
 ## 🟠 Priority 2: High (Transparency & Compliance Gaps)
 
 _Tasks focused on user interface and privacy documentation alignment to ensure transparent data processing._
