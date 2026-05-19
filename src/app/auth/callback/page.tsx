@@ -1,24 +1,22 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
 function AuthCallbackContent() {
-    const { setToken } = useAuth();
+    const { fetchUser } = useAuth();
     const router = useRouter();
-    const searchParams = useSearchParams();
 
     useEffect(() => {
-        const token = searchParams.get('token');
-        if (token) {
-            setToken(token);
+        const handleOAuthCallback = async () => {
+            await fetchUser();
             router.push('/usuario/dashboard');
-        } else {
-            router.push('/auth/login?error=token-missing');
-        }
-    }, [router, searchParams, setToken]);
+        };
+
+        handleOAuthCallback();
+    }, [router, fetchUser]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">

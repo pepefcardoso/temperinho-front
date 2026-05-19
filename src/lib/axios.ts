@@ -7,17 +7,7 @@ const axiosClient = axios.create({
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
-  withCredentials: false,
-});
-
-axiosClient.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('AUTH_TOKEN');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
+  withCredentials: true,
 });
 
 axiosClient.interceptors.response.use(
@@ -25,7 +15,6 @@ axiosClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('AUTH_TOKEN');
         window.location.href = '/auth/login';
       }
     }
