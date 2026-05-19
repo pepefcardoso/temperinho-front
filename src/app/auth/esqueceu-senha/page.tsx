@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className='min-h-screen bg-warm-50 flex items-center justify-center py-12 px-4'>
+    <div className='min-h-screen bg-background flex items-center justify-center py-12 px-4'>
       {emailSent ? (
         <EmailSentView
           email={submittedEmail}

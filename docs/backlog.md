@@ -2,8 +2,6 @@
 
 | Priority   | Category      | File Path                                               | Issue                                  |
 | ---------- | ------------- | ------------------------------------------------------- | -------------------------------------- |
-| **High**   | Color         | `src/app/auth/*/page.tsx`                               | Hardcoded `bg-warm-50`                 |
-| **High**   | Color         | `src/app/privacidade/page.tsx`                          | Usage of `bg-white`                    |
 | **Medium** | Accessibility | `src/components/recipe/forms/RecipeFormSteps.tsx`       | Missing `aria-label` on delete buttons |
 | **Medium** | Accessibility | `src/components/recipe/forms/RecipeFormIngredients.tsx` | Missing `aria-label` on delete buttons |
 | **Low**    | Skeleton      | `src/app/blog/page.tsx`                                 | Local skeleton duplication             |
@@ -12,28 +10,6 @@
 ---
 
 #### Detailed Remediation Tasks
-
-##### 1. Refactor Hardcoded Backgrounds (High)
-
-**Location:** `src/app/auth/login/page.tsx`, `src/app/auth/criar-conta/page.tsx`, `src/app/auth/esqueceu-senha/page.tsx`, `src/app/auth/redefinir-senha/page.tsx`
-
-- **Issue:** These pages use `bg-warm-50`. This breaks when the user switches to Dark Mode.
-- **Implementation:**
-
-1. Locate the main wrapper `<div>`.
-2. Replace `bg-warm-50` with `bg-background`.
-3. Verify that elements inside maintain visibility (they should use `bg-card` which automatically shifts colors).
-
-##### 2. Standardize Privacy Policy Surface (High)
-
-**Location:** `src/app/privacidade/page.tsx`
-
-- **Issue:** The main content container uses `bg-white`, which is hardcoded and ignores dark mode tokens.
-- **Implementation:**
-
-1. Locate the main container `div` inside the `main` tag.
-2. Replace `bg-white` with `bg-card`.
-3. This aligns with the Surface Pattern defined in the design docs, which expects `bg-card` for internal sections.
 
 ##### 3. Add ARIA Labels to Dynamic Forms (Medium)
 
